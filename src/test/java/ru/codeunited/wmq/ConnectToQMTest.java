@@ -1,0 +1,36 @@
+package ru.codeunited.wmq;
+
+import com.ibm.mq.MQException;
+import com.ibm.mq.MQQueueManager;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Properties;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.*;
+
+/**
+ * Created by ikonovalov on 22.10.14.
+ */
+public class ConnectToQMTest implements TestEnvironmentSetting {
+
+    private static final Logger LOG = Logger.getLogger(ConnectToQMTest.class.getName());
+
+    final Properties properties = new Properties();
+
+    @Before
+    public void init() throws MQException {
+        properties.putAll(ClientModeUtils.createProps());
+    }
+
+    @Test
+    public void doConnect() throws MQException {
+        final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory(QMGR_NAME, properties);
+        MQQueueManager mqQueueManager = connectionFactory.connectQueueManager();
+        assertTrue("Connection lost.", mqQueueManager.isConnected());
+        LOG.info("Connected to " + QMGR_NAME);
+        mqQueueManager.disconnect();
+        assertFalse("Still connected", mqQueueManager.isConnected());
+    }
+}
