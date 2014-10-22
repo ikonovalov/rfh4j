@@ -41,10 +41,14 @@ public class CommandChainMaker extends AbstractCommand {
         return this;
     }
 
+    public List<Command> getCommandChain() {
+        return Collections.unmodifiableList(commandChain);
+    }
 
     @Override
     public ReturnCode work() {
-        final List<Command> unmodCommandChain = Collections.unmodifiableList(commandChain);
+        // fixing work size
+        final List<Command> unmodCommandChain = getCommandChain();
         List<ReturnCode> allReturnCodes = new ArrayList<>(unmodCommandChain.size());
         for (Command command : commandChain) {
             try {
