@@ -9,6 +9,10 @@ import java.io.PrintWriter;
  */
 public class CLIFactory {
 
+    private CLIFactory() {
+
+    }
+
     /**
      * Create CLI options parameters.
      *

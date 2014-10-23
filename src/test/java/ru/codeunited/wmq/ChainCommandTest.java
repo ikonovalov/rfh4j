@@ -31,4 +31,10 @@ public class ChainCommandTest extends CLITestSupport {
         final int workSize = maker.getCommandChain().size();
         assertTrue("Wrong chain size expected 2 but there is " + workSize, workSize == 2);
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void immutableWorkload() throws ParseException {
+        final CommandChainMaker maker = new CommandChainMaker(getCommandLine_With_Qc());
+        maker.getCommandChain().add(new DisconnectCommand());
+    }
 }

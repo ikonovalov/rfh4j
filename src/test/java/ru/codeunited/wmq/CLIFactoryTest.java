@@ -15,4 +15,10 @@ public class CLIFactoryTest {
         final Options options = CLIFactory.createOptions();
         assertTrue("CLIfacory produce 0 options", options.getOptions().size() > 0);
     }
+
+    @Test
+    public void printHelp() {
+        // not real test but should run without exception
+        CLIFactory.showHelp();
+    }
 }

@@ -1,18 +1,35 @@
 package ru.codeunited.wmq.commands;
 
 /**
- * Created by ikonovalov on 22.10.14.
- */
+ * Workflow:
+ * READY -> SKIPPED | EXECUTING -> SUCCESS | FAILED
+ **/
 public enum ReturnCode {
 
+
     /**
-     * Workflow:
-     * READY -> SKIPPED | EXECUTING -> SUCCESS | FAILED
-    **/
+     * code 0
+     */
     SUCCESS(0,"SUCCESS"),
+
+    /**
+     * code 1
+     */
     SKIPPED(1, "SKIPPED"),
+
+    /**
+     * code 5
+     */
     EXECUTING(5,"EXECUTING"),
+
+    /**
+     * code 10
+     */
     READY(10, "READY"),
+
+    /**
+     * code -1 (negative)
+     */
     FAILED(-1, "FAILED");
 
     private int code;
@@ -24,11 +41,11 @@ public enum ReturnCode {
         this.shortDescription = shortDescription;
     }
 
-    public int getCode() {
+    public int code() {
         return code;
     }
 
-    public String getShortDescription() {
+    public String shortDescription() {
         return shortDescription;
     }
 }
