@@ -39,6 +39,11 @@ public class CommandChainMaker extends AbstractCommand {
         return this;
     }
 
+    /**
+     * Get all loaded commands.
+     * This list is unmodifiable!
+     * @return List<Command>
+     */
     public List<Command> getCommandChain() {
         return Collections.unmodifiableList(commandChain);
     }

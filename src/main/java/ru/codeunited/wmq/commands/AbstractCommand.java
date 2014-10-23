@@ -65,7 +65,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Check inner command state.
-     * @return true if all right.
+     * @return true if all right and false if something wrong.
      */
     public boolean selfStateCheckOK() {
         return (executionContext != null && commandLine != null);
@@ -102,7 +102,13 @@ public abstract class AbstractCommand implements Command {
     }
 
     public void updateCurrentState(ReturnCode newState) {
-        LOG.info(this.getClass().getSimpleName() + " changing state [" + getState() +"] -> [" + newState + "]");
-        this.currentState = newState;
+        final String implClassName = this.getClass().getSimpleName();
+        if (newState != null && currentState == newState) {
+            LOG.warning(implClassName + " perform strange state changing form " + currentState + " to " + newState);
+        } else {
+            LOG.info(implClassName + " changing state [" + getState() + "] -> [" + newState + "]");
+            this.currentState = newState;
+        }
+
     }
 }

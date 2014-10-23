@@ -18,6 +18,11 @@ public class DisconnectCommand extends AbstractCommand {
         if (mqQueueManager != null && mqQueueManager.isConnected()) {
             try {
                 mqQueueManager.disconnect();
+
+                // check disconnection
+                if (mqQueueManager.isConnected()) {
+                    throw new CommandGeneralException(mqQueueManager.getName() + " still connected but was performed disconnect.");
+                }
                 console.writeln("Disconnected.");
             } catch (MQException e) {
                 LOG.severe(e.getMessage());
