@@ -74,6 +74,13 @@ public class CLIFactory {
                 .hasArg(true)
                 .create('p');
 
+        final Option textMessage = OptionBuilder
+                .withArgName("text")
+                .withDescription("text for message")
+                .withLongOpt("text")
+                .hasArg(true)
+                .create('t');
+
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
         options
@@ -84,7 +91,8 @@ public class CLIFactory {
                 .addOption(channel)
                 .addOption(user)
                 .addOption(config)
-                .addOption(payload);
+                .addOption(payload)
+                .addOption(textMessage);
 
         return options;
     }

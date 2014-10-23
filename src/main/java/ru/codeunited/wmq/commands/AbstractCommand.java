@@ -20,6 +20,14 @@ public abstract class AbstractCommand implements Command {
 
     protected static final Logger LOG = Logger.getLogger(Command.class.getName());
 
+    public boolean hasOption(char option) {
+        return getCommandLine().hasOption(option);
+    }
+
+    public String getOption(char option) {
+        return getCommandLine().getOptionValue(option);
+    }
+
     /**
      * Real work implementation for command.
      * @throws CommandGeneralException if something goes wrong.
