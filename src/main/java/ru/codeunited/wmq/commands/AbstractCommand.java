@@ -6,6 +6,8 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import java.util.logging.Logger;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public abstract class AbstractCommand implements Command {
@@ -16,7 +18,7 @@ public abstract class AbstractCommand implements Command {
 
     private ReturnCode currentState = ReturnCode.READY;
 
-    protected static Logger LOG = Logger.getLogger(Command.class.getName());
+    protected static final Logger LOG = Logger.getLogger(Command.class.getName());
 
     /**
      * Real work implementation for command.
@@ -78,7 +80,7 @@ public abstract class AbstractCommand implements Command {
         if (executionContext == null || commandLine == null) {
             throw new IllegalStateException(
                     "Command is in a illegal state. "
-                    + (executionContext == null ? "SharedContex is null. " : "")
+                    + (executionContext == null ? "SharedContext is null. " : "")
                     + (commandLine == null ? "CommandLine is null." : "")
             );
         }

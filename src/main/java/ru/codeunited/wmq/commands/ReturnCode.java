@@ -32,9 +32,9 @@ public enum ReturnCode {
      */
     FAILED(-1, "FAILED");
 
-    private int code;
+    private final int code;
 
-    private String shortDescription;
+    private final String shortDescription;
 
     ReturnCode(int code, String shortDescription) {
         this.code = code;

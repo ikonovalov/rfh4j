@@ -6,6 +6,8 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class ConsoleWriter {

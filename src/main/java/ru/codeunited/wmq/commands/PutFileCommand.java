@@ -12,14 +12,16 @@ import java.util.UUID;
 import static com.ibm.mq.constants.CMQC.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class PutFileCommand extends AbstractCommand {
 
     private static long writeStreamToMessage(InputStream stream, MQMessage message) throws IOException {
-        final byte[] buffer = new byte[1024];
+        final byte[] buffer = new byte[2048];
         int readCount = 0;
-        long totalBytes = 0;
+        long totalBytes = 0; // total message bytes counter
         while ((readCount = stream.read(buffer)) != -1) {
             message.write(buffer, 0, readCount);
             totalBytes += readCount;

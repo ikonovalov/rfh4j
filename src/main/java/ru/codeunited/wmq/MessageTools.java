@@ -5,6 +5,8 @@ import com.ibm.mq.MQMessage;
 import static com.ibm.mq.constants.MQConstants.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
 public class MessageTools {

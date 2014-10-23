@@ -11,13 +11,15 @@ import java.util.logging.Logger;
 import static org.junit.Assert.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class ConnectToQMTest implements TestEnvironmentSetting {
 
     private static final Logger LOG = Logger.getLogger(ConnectToQMTest.class.getName());
 
-    final Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     @Before
     public void init() throws MQException {

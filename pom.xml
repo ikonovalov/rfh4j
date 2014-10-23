@@ -9,6 +9,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mq.home>/opt/mqm</mq.home>
         <mq.java.lib>${mq.home}/java/lib</mq.java.lib>
         <mq.version>7.5.0</mq.version>

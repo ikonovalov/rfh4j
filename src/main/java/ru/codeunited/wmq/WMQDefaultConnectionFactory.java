@@ -15,8 +15,6 @@ public class WMQDefaultConnectionFactory implements WMQConnectionFactory {
 
     private final String queueManagerName;
 
-    private MQQueueManager queueManager;
-
     public WMQDefaultConnectionFactory(String queueManager, Properties properties) {
         this.connectionProperties = properties;
         this.queueManagerName = queueManager;
@@ -24,7 +22,6 @@ public class WMQDefaultConnectionFactory implements WMQConnectionFactory {
 
     @Override
     public MQQueueManager connectQueueManager() throws MQException {
-        queueManager = new MQQueueManager(queueManagerName, connectionProperties);
-        return queueManager;
+        return new MQQueueManager(queueManagerName, connectionProperties);
     }
 }

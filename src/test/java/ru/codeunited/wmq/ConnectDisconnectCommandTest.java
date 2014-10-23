@@ -8,6 +8,8 @@ import static org.junit.Assert.*;
 import ru.codeunited.wmq.commands.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
 public class ConnectDisconnectCommandTest extends CLITestSupport {

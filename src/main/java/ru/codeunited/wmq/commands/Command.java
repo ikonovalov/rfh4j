@@ -3,6 +3,8 @@ package ru.codeunited.wmq.commands;
 import org.apache.commons.cli.CommandLine;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public interface Command {

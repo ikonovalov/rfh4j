@@ -10,17 +10,17 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import java.util.Properties;
 
 import static com.ibm.mq.constants.CMQC.*;
-import static com.ibm.mq.constants.CMQC.TRANSPORT_MQSERIES_CLIENT;
-import static com.ibm.mq.constants.CMQC.USER_ID_PROPERTY;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class ConnectCommand extends AbstractCommand {
 
-    public static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_HOST = "localhost";
 
-    public static final int DEFAULT_PORT = 1414;
+    private static final int DEFAULT_PORT = 1414;
 
     @Override
     protected void work() throws CommandGeneralException {
@@ -45,13 +45,8 @@ public class ConnectCommand extends AbstractCommand {
                         .append("], user [").append(user != null ? user : "<empty>")
                         .append("]")
                         .toString());
-        final Properties connectionProperties = createProps(new Object[] {
-                host,
-                port,
-                channelName,
-                user
-        });
-        WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory(queueManagerName, connectionProperties);
+        final Properties connectionProperties = createProps(host, port, channelName, user);
+        final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory(queueManagerName, connectionProperties);
         try {
             final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager();
             context.setQueueManager(mqQueueManager);

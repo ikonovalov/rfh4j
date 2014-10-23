@@ -25,23 +25,13 @@
 # Mongo Explorer plugin:
 # .idea/mongoSettings.xml
 
-## File-based project format:
-*.ipr
-*.iws
-
 ## Plugin-specific files:
 
-# IntelliJ
-out/
+# Maven
 target/
 
 # mpeltonen/sbt-idea plugin
-.idea_modules/
+#.idea_modules/
 
 # JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
+#atlassian-ide-plugin.xml

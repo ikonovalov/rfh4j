@@ -1,6 +1,8 @@
 package ru.codeunited.wmq.commands;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class CommandGeneralException extends Exception {

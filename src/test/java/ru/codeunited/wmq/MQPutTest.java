@@ -13,6 +13,8 @@ import java.util.logging.Logger;
 import static com.ibm.mq.constants.MQConstants.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by Igor on 21.05.2014.
  */
 public class MQPutTest implements TestEnvironmentSetting {

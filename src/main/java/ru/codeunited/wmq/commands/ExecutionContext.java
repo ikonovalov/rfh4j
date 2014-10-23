@@ -4,6 +4,8 @@ import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class ExecutionContext {

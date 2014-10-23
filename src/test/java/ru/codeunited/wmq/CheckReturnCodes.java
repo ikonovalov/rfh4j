@@ -6,6 +6,8 @@ import ru.codeunited.wmq.commands.ReturnCode;
 import static org.junit.Assert.*;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
 public class CheckReturnCodes {

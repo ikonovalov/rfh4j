@@ -5,9 +5,10 @@ import org.apache.commons.cli.CommandLine;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
 public class CommandChainMaker extends AbstractCommand {
@@ -52,7 +53,7 @@ public class CommandChainMaker extends AbstractCommand {
     protected void work() throws CommandGeneralException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
-        for (Command command : commandChain) {
+        for (Command command : unmodCommandChain) {
             try {
                 if (command.resolve()) {
                     command.execute();

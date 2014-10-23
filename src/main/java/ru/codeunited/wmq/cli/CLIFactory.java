@@ -2,9 +2,9 @@ package ru.codeunited.wmq.cli;
 
 import org.apache.commons.cli.*;
 
-import java.io.PrintWriter;
-
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 21.10.14.
  */
 public class CLIFactory {

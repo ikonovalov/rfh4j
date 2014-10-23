@@ -3,13 +3,13 @@ package ru.codeunited.wmq;
 import java.util.Properties;
 
 import static com.ibm.mq.constants.CMQC.*;
-import static com.ibm.mq.constants.CMQC.TRANSPORT_MQSERIES_CLIENT;
-import static com.ibm.mq.constants.CMQC.USER_ID_PROPERTY;
 
 /**
+ * codeunited.ru
+ * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class ClientModeUtils implements TestEnvironmentSetting{
+class ClientModeUtils implements TestEnvironmentSetting{
 
     /**
      * Create all needed properties for MQ_CLIENT_CONNECTION
