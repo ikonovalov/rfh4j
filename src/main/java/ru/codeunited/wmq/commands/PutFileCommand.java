@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.MessageTools;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.io.FileInputStream;
@@ -33,9 +34,8 @@ public class PutFileCommand extends AbstractCommand {
         try {
             final MQQueueManager manager = context.getQueueManager();
             final MQQueue queue = manager.accessQueue("MFC.APPLICATION_OUT", MQOO_OUTPUT);
-            MQMessage message = new MQMessage();
-            //message.format = MQFMT_STRING;
-            message.characterSet = 1208;
+
+            final MQMessage message = MessageTools.createUTFMessage();
 
             try {
                 final long totalSize = writeStreamToMessage(

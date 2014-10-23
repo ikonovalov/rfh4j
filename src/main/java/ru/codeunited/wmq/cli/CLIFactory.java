@@ -67,6 +67,13 @@ public class CLIFactory {
                 .hasArg(true)
                 .create();
 
+        final Option payload = OptionBuilder
+                .withArgName("file")
+                .withDescription("file to send")
+                .withLongOpt("payload")
+                .hasArg(true)
+                .create('p');
+
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
         options
@@ -76,7 +83,8 @@ public class CLIFactory {
                 .addOption(queueManager)
                 .addOption(channel)
                 .addOption(user)
-                .addOption(config);
+                .addOption(config)
+                .addOption(payload);
 
         return options;
     }
