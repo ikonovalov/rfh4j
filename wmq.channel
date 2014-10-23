@@ -1,3 +1,16 @@
+**********************
+** Connection setup **
+**********************
+** Make sure that you already have TPC listener!
+
+** create your personal svrconn type channel
 DEFINE CHANNEL(JVM.DEF.SVRCONN) CHLTYPE(SVRCONN) TRPTYPE(TCP);
+
+** setup channel auth
 SET CHLAUTH(JVM.DEF.*) TYPE(BLOCKUSER) USERLIST('nobody');
+
+** refresh security cache
 REFRESH SECURITY(*);
+
+** Just run
+** $MQ_INSTALLATION_PATH/bin/runmqsc <YOUR QM name> < wmq.channel

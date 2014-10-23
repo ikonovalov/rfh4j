@@ -10,7 +10,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 public class DisconnectCommand extends AbstractCommand {
 
     @Override
-    public ReturnCode work() throws CommandGeneralException {
+    public void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
         final MQQueueManager mqQueueManager = context.getQueueManager();
         final ConsoleWriter console = getConsoleWriter();
@@ -26,7 +26,6 @@ public class DisconnectCommand extends AbstractCommand {
             }
         }
         LOG.info("Perform disconnect.");
-        return getState();
     }
 
     @Override

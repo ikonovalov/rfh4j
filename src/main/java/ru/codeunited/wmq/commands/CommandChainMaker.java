@@ -12,8 +12,6 @@ import java.util.logging.Logger;
  */
 public class CommandChainMaker extends AbstractCommand {
 
-    private static final Logger LOG = Logger.getLogger(CommandChainMaker.class.getName());
-
     private final List<Command> commandChain = new ArrayList<>();
 
     public CommandChainMaker(CommandLine commandLine) {
@@ -46,26 +44,20 @@ public class CommandChainMaker extends AbstractCommand {
     }
 
     @Override
-    public ReturnCode work() {
+    protected void work() throws CommandGeneralException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
-        List<ReturnCode> allReturnCodes = new ArrayList<>(unmodCommandChain.size());
         for (Command command : commandChain) {
             try {
                 if (command.resolve()) {
-                    ReturnCode rCode = command.execute();
-                    allReturnCodes.add(rCode);
-                } else {
-                    allReturnCodes.add(command.getState());
+                    command.execute();
                 }
             } catch (CommandGeneralException e) {
                 LOG.severe(e.getMessage());
-                allReturnCodes.add(ReturnCode.FAILED);
-                break;
+                throw e;
             }
 
-        }       ReturnCode finalReturnCode = scanIfFailed(allReturnCodes);
-        return finalReturnCode;
+        }
     }
 
     @Override

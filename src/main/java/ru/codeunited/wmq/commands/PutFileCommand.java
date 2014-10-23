@@ -27,7 +27,7 @@ public class PutFileCommand extends AbstractCommand {
     }
 
     @Override
-    public ReturnCode work() throws CommandGeneralException {
+    public void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
         try {
@@ -56,7 +56,6 @@ public class PutFileCommand extends AbstractCommand {
             console.errorln(e.getMessage());
             throw new CommandGeneralException(e);
         }
-        return getState();
     }
 
     @Override

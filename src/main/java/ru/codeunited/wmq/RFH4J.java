@@ -28,13 +28,11 @@ public class RFH4J {
                         .addCommand(new ConnectCommand())
                         .addCommand(new PutFileCommand())
                         .addCommand(new DisconnectCommand());
-                ReturnCode code = commandMaker.work();
-
-                consoleWriter.writeln(code).flash();
+               commandMaker.execute();
             }
 
-        } catch (ParseException e) {
-            System.err.println(e.getMessage());
+        } catch (ParseException | CommandGeneralException e) {
+            consoleWriter.errorln(e.getMessage());
             CLIFactory.showHelp();
         }
 

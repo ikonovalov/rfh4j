@@ -18,13 +18,17 @@ public abstract class AbstractCommand implements Command {
 
     protected static Logger LOG = Logger.getLogger(Command.class.getName());
 
-    protected abstract ReturnCode work() throws CommandGeneralException;
+    /**
+     * Real work implementation for command.
+     * @throws CommandGeneralException if something goes wrong.
+     */
+    protected abstract void work() throws CommandGeneralException;
 
     @Override
-    public ReturnCode execute() throws CommandGeneralException {
+    public final ReturnCode execute() throws CommandGeneralException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
-            final ReturnCode returnCode = work();
+            work();
             updateCurrentState(ReturnCode.SUCCESS);
         } catch (Exception e) {
             updateCurrentState(ReturnCode.FAILED);
@@ -33,11 +37,6 @@ public abstract class AbstractCommand implements Command {
         return getState();
     }
 
-    /**
-     * Copy command metadata and environment to another command.
-     * If context not equals this context it will be override.
-     * @param anotherCommand
-     */
     @Override
     public void copyEnvironmentTo(Command anotherCommand) {
         anotherCommand.setContext(getExecutionContext());
@@ -73,7 +72,7 @@ public abstract class AbstractCommand implements Command {
     }
 
     /**
-     * Check inner command state and throw exception if something wrong.
+     * Check inner command environment and throw exception if something wrong.
      */
     public void selfStateCheckOKForced() {
         if (executionContext == null || commandLine == null) {
@@ -88,7 +87,7 @@ public abstract class AbstractCommand implements Command {
     /**
      * This is a revers of selfStateCheckOK method.
      * @see AbstractCommand selfStateCheckOK
-     * @return
+     * @return true if inner test failed and false if all right.
      */
     public boolean selfStateCheckFailed() {
         return !selfStateCheckOK();

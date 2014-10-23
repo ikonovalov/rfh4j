@@ -23,7 +23,7 @@ public class ConnectCommand extends AbstractCommand {
     public static final int DEFAULT_PORT = 1414;
 
     @Override
-    public ReturnCode work() throws CommandGeneralException {
+    protected void work() throws CommandGeneralException {
         final CommandLine commandLine = getCommandLine();
         final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
@@ -59,8 +59,6 @@ public class ConnectCommand extends AbstractCommand {
         } catch (MQException e) {
             throw new CommandGeneralException(e);
         }
-
-        return getState();
     }
 
     @Override
