@@ -16,7 +16,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
 
 
     @Test
-    public void makeConnection() throws CommandGeneralException, ParseException {
+    public void makeConnection() throws CommandGeneralException, ParseException, ParameterException {
 
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
 

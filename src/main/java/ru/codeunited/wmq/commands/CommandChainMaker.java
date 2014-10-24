@@ -50,7 +50,7 @@ public class CommandChainMaker extends AbstractCommand {
     }
 
     @Override
-    protected void work() throws CommandGeneralException {
+    protected void work() throws CommandGeneralException, ParameterException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {

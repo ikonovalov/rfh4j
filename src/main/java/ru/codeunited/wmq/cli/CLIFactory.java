@@ -59,6 +59,14 @@ public class CLIFactory {
                 .hasArg(true)
                 .create('u');
 
+        final Option destQueue = OptionBuilder
+                .withArgName("queue")
+                .withDescription("Destination queue")
+                .withLongOpt("dstq")
+                .withType(String.class)
+                .hasArg(true)
+                .create();
+
         final Option config = OptionBuilder
                 .withArgName("config_file")
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
@@ -92,7 +100,8 @@ public class CLIFactory {
                 .addOption(user)
                 .addOption(config)
                 .addOption(payload)
-                .addOption(textMessage);
+                .addOption(textMessage)
+                .addOption(destQueue);
 
         return options;
     }

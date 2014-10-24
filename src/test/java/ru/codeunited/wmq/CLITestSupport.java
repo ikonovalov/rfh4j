@@ -6,6 +6,7 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.commands.*;
 
 /**
  * codeunited.ru
@@ -35,4 +36,19 @@ public class CLITestSupport {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
         return getCliParser().parse(getOptions(), args);
     }
+
+    /**
+     * Create chain with Connect -> YOUR_COMMAND -> Disconnect
+     * @param commandLine
+     * @param command
+     * @return
+     */
+    public CommandChainMaker surroundSingleCommandWithConnectionAdvices(CommandLine commandLine, Command command) {
+        final CommandChainMaker maker = new CommandChainMaker(commandLine);
+        final AbstractCommand cmdConnect = new ConnectCommand();
+        final AbstractCommand cmdDisconnect = new DisconnectCommand();
+        return maker.addCommand(cmdConnect).addCommand(command).addCommand(cmdDisconnect);
+    }
+
+
 }

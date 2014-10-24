@@ -26,7 +26,7 @@ public interface Command {
      * @see ru.codeunited.wmq.commands.ReturnCode
      * @throws CommandGeneralException
      */
-    ReturnCode execute() throws CommandGeneralException;
+    ReturnCode execute() throws CommandGeneralException, ParameterException;
 
     /**
      * Analize input parameters and current environment and work decision.

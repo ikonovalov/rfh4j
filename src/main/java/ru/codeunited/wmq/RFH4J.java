@@ -28,12 +28,12 @@ public class RFH4J {
                 context.setConsoleWriter(consoleWriter);
                 CommandChainMaker commandMaker = new CommandChainMaker(cli, context)
                         .addCommand(new ConnectCommand())
-                        .addCommand(new PutFileCommand())
+                        .addCommand(new MQPutCommand())
                         .addCommand(new DisconnectCommand());
                commandMaker.execute();
             }
 
-        } catch (ParseException | CommandGeneralException e) {
+        } catch (ParameterException | ParseException | CommandGeneralException e) {
             consoleWriter.errorln(e.getMessage());
             CLIFactory.showHelp();
         }

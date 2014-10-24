@@ -16,24 +16,26 @@ import static com.ibm.mq.constants.CMQC.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class PutFileCommand extends AbstractCommand {
+public class MQPutCommand extends QueueCommand {
 
     @Override
-    public void work() throws CommandGeneralException {
+    public void work() throws CommandGeneralException, ParameterException {
         final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
         try {
-            final MQQueueManager manager = context.getQueueManager();
-            final MQQueue queue = manager.accessQueue("MFC.APPLICATION_OUT", MQOO_OUTPUT);
+            final MQQueue queue = getDestinationQueue();
 
             final MQMessage message = MessageTools.createUTFMessage();
 
+            // handle payload parameters
             if (hasOption('p')) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(getOption('p'))) {
                     MessageTools.writeStreamToMessage(fileStream, message);
                 }
             } else if (getCommandLine().hasOption('t')) { // just text message
                 MessageTools.writeStringToMessage(getOption('t'), message);
+            } else {
+                throw new ParameterException("pass -p (for file) or -t (for text message)");
             }
 
             MQPutMessageOptions putSpec = new MQPutMessageOptions();
