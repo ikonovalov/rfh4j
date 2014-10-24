@@ -31,13 +31,22 @@ public class MissedParameterException extends Exception {
 
     @Override
     public String getMessage() {
+        // TODO bad output. Array toString needed!
         return "Option " + name + " " + (longName != null ? "--" + longName : "") + " are missed";
     }
 
+    /**
+     * Get array of missed single character parameters.
+     * @return char[] or null if long named parameters used only.
+     */
     public char[] getSingleCharName() {
         return name;
     }
 
+    /**
+     * Get array of missed long named parameters
+     * @return String[] or null of used single character parameters.
+     */
     public String[] getLongName() {
         return longName;
     }
