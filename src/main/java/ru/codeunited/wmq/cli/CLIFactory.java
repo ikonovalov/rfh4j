@@ -26,6 +26,7 @@ public class CLIFactory {
                 .withDescription("WMQ SVRCON channel name")
                 .withLongOpt("channel")
                 .hasArg(true)
+                .isRequired(false)
                 .create('c');
 
         final Option queueManager = OptionBuilder
@@ -33,6 +34,7 @@ public class CLIFactory {
                 .withDescription("WMQ queue manager name")
                 .withLongOpt("qmanager")
                 .hasArg(true)
+                .isRequired(true)
                 .create('Q');
 
         final Option host = OptionBuilder
@@ -75,7 +77,9 @@ public class CLIFactory {
                 .hasArg(true)
                 .create();
 
-        final Option payload = OptionBuilder
+        // message payload group
+        final OptionGroup messagePayload = new OptionGroup();
+        final Option filePayload = OptionBuilder
                 .withArgName("file")
                 .withDescription("file to send")
                 .withLongOpt("payload")
@@ -88,6 +92,7 @@ public class CLIFactory {
                 .withLongOpt("text")
                 .hasArg(true)
                 .create('t');
+        messagePayload.addOption(textMessage).addOption(filePayload);
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
@@ -99,9 +104,8 @@ public class CLIFactory {
                 .addOption(channel)
                 .addOption(user)
                 .addOption(config)
-                .addOption(payload)
-                .addOption(textMessage)
-                .addOption(destQueue);
+                .addOption(destQueue)
+                .addOptionGroup(messagePayload);
 
         return options;
     }
@@ -123,7 +127,13 @@ public class CLIFactory {
         formatter.setWidth(300);
         formatter.setDescPadding(5);
         formatter.setLeftPadding(5);
-        formatter.printHelp("rfh4j", createOptions(), true);
+        formatter.printHelp("rfh4j", "Option description", createOptions(), commandExamples(), true);
+    }
+
+    public static String commandExamples() {
+        return  "Usage examples:\n"
+                + "1) Send text message to queue (host, port, channel are default)\n"
+                + "rfh4j.sh -Q DEFQM --dstq Q1 -t hello!";
     }
 
 }
