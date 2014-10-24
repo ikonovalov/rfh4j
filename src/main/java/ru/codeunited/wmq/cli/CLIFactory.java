@@ -34,7 +34,7 @@ public class CLIFactory {
                 .withDescription("WMQ queue manager name")
                 .withLongOpt("qmanager")
                 .hasArg(true)
-                .isRequired(true)
+                .isRequired(false)
                 .create('Q');
 
         final Option host = OptionBuilder
@@ -96,16 +96,22 @@ public class CLIFactory {
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
-        options
+        OptionGroup globalUsegeGroup = new OptionGroup()
                 .addOption(help)
+                .addOption(queueManager);
+        globalUsegeGroup.setRequired(true);
+
+        options
+                //.addOption(help)
                 .addOption(host)
                 .addOption(port)
-                .addOption(queueManager)
+                //.addOption(queueManager)
                 .addOption(channel)
                 .addOption(user)
                 .addOption(config)
                 .addOption(destQueue)
-                .addOptionGroup(messagePayload);
+                .addOptionGroup(messagePayload)
+                .addOptionGroup(globalUsegeGroup);
 
         return options;
     }
