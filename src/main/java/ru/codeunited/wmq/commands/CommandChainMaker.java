@@ -58,7 +58,7 @@ public class CommandChainMaker extends AbstractCommand {
                 if (command.resolve()) {
                     command.execute();
                 }
-            } catch (CommandGeneralException e) {
+            } catch (ParameterException | CommandGeneralException e) {
                 LOG.severe(e.getMessage());
                 throw e;
             }

@@ -28,6 +28,7 @@ public class MQPutCommand extends QueueCommand {
             final MQMessage message = MessageTools.createUTFMessage();
 
             // handle payload parameters
+            // TODO ADD INSUFICIENT PARAMS TEST!
             if (hasOption('p')) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(getOption('p'))) {
                     MessageTools.writeStreamToMessage(fileStream, message);
