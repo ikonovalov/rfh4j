@@ -12,19 +12,42 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractCommand implements Command {
 
-    private ExecutionContext executionContext;
+    protected ExecutionContext executionContext;
 
-    private CommandLine commandLine;
+    protected CommandLine commandLine;
 
-    private ReturnCode currentState = ReturnCode.READY;
+    protected ReturnCode currentState = ReturnCode.READY;
 
     protected static final Logger LOG = Logger.getLogger(Command.class.getName());
 
+    /**
+     * Check if single character parameter is passed in command line.
+     * @param option single character option.
+     * @return true if passed, false if missed.
+     */
     public boolean hasOption(char option) {
         return getCommandLine().hasOption(option);
     }
 
+    public boolean hasOption(String option) {
+        return getCommandLine().hasOption(option);
+    }
+
+    /**
+     * Get single character parameter argument.
+     * @param option single character option.
+     * @return String value of option if passed, null otherwise.
+     */
     public String getOption(char option) {
+        return getCommandLine().getOptionValue(option);
+    }
+
+    /**
+     * Get value of long named parameter argument.
+     * @param option long option name.
+     * @return String value of option if passed, null otherwise.
+     */
+    public String getOption(String option) {
         return getCommandLine().getOptionValue(option);
     }
 
@@ -32,10 +55,10 @@ public abstract class AbstractCommand implements Command {
      * Real work implementation for command.
      * @throws CommandGeneralException if something goes wrong.
      */
-    protected abstract void work() throws CommandGeneralException;
+    protected abstract void work() throws CommandGeneralException, ParameterException;
 
     @Override
-    public final ReturnCode execute() throws CommandGeneralException {
+    public final ReturnCode execute() throws CommandGeneralException, ParameterException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             work();
@@ -65,10 +88,18 @@ public abstract class AbstractCommand implements Command {
             this.commandLine = cl;
     }
 
+    /**
+     * Get current execution context.
+     * @return ExecutionContext
+     */
     protected ExecutionContext getExecutionContext() {
         return executionContext;
     }
 
+    /**
+     * Get current command line. Already parsed.
+     * @return CommandLine
+     */
     protected CommandLine getCommandLine() {
         return commandLine;
     }
