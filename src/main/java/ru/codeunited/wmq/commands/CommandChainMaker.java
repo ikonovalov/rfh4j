@@ -50,7 +50,7 @@ public class CommandChainMaker extends AbstractCommand {
     }
 
     @Override
-    protected void work() throws CommandGeneralException, ParameterException {
+    protected void work() throws CommandGeneralException, MissedParameterException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {
@@ -58,7 +58,7 @@ public class CommandChainMaker extends AbstractCommand {
                 if (command.resolve()) {
                     command.execute();
                 }
-            } catch (ParameterException | CommandGeneralException e) {
+            } catch (MissedParameterException | CommandGeneralException e) {
                 LOG.severe(e.getMessage());
                 throw e;
             }

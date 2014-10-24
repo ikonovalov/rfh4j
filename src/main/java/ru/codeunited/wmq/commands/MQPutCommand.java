@@ -6,7 +6,6 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.UUID;
 
 import static com.ibm.mq.constants.CMQC.*;
@@ -19,7 +18,7 @@ import static com.ibm.mq.constants.CMQC.*;
 public class MQPutCommand extends QueueCommand {
 
     @Override
-    public void work() throws CommandGeneralException, ParameterException {
+    public void work() throws CommandGeneralException, MissedParameterException {
         final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
         try {
@@ -28,7 +27,6 @@ public class MQPutCommand extends QueueCommand {
             final MQMessage message = MessageTools.createUTFMessage();
 
             // handle payload parameters
-            // TODO ADD INSUFICIENT PARAMS TEST!
             if (hasOption('p')) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(getOption('p'))) {
                     MessageTools.writeStreamToMessage(fileStream, message);
@@ -36,7 +34,7 @@ public class MQPutCommand extends QueueCommand {
             } else if (getCommandLine().hasOption('t')) { // just text message
                 MessageTools.writeStringToMessage(getOption('t'), message);
             } else {
-                throw new ParameterException("pass -p (for file) or -t (for text message)");
+                throw new MissedParameterException('p','t');
             }
 
             MQPutMessageOptions putSpec = new MQPutMessageOptions();

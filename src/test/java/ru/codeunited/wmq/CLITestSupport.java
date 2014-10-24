@@ -37,6 +37,11 @@ public class CLITestSupport {
         return getCliParser().parse(getOptions(), args);
     }
 
+    CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
+        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1".split(" ");
+        return getCliParser().parse(getOptions(), args);
+    }
+
     /**
      * Create chain with Connect -> YOUR_COMMAND -> Disconnect
      * @param commandLine

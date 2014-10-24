@@ -26,13 +26,13 @@ public abstract class QueueCommand extends AbstractCommand {
      * @return
      * @throws MQException
      */
-    public MQQueue getDestinationQueue() throws MQException, ParameterException {
+    public MQQueue getDestinationQueue() throws MQException, MissedParameterException {
         if (hasOption("dstq")) {
             final String queueName = getOption("dstq");
             final MQQueue queue = getQueue("MFC.APPLICATION_OUT", MQOO_OUTPUT);
             return queue;
         } else {
-            throw new ParameterException("dstq");
+            throw new MissedParameterException("dstq");
         }
     }
 

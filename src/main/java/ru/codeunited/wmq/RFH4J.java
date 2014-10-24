@@ -33,7 +33,7 @@ public class RFH4J {
                commandMaker.execute();
             }
 
-        } catch (ParameterException | ParseException | CommandGeneralException e) {
+        } catch (MissedParameterException | ParseException | CommandGeneralException e) {
             consoleWriter.errorln(e.getMessage());
             CLIFactory.showHelp();
         }

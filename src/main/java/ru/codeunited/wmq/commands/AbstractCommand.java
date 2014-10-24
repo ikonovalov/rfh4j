@@ -55,10 +55,10 @@ public abstract class AbstractCommand implements Command {
      * Real work implementation for command.
      * @throws CommandGeneralException if something goes wrong.
      */
-    protected abstract void work() throws CommandGeneralException, ParameterException;
+    protected abstract void work() throws CommandGeneralException, MissedParameterException;
 
     @Override
-    public final ReturnCode execute() throws CommandGeneralException, ParameterException {
+    public final ReturnCode execute() throws CommandGeneralException, MissedParameterException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             work();

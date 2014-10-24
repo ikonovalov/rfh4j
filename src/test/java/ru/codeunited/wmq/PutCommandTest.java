@@ -6,7 +6,9 @@ import org.junit.Test;
 import ru.codeunited.wmq.commands.CommandChainMaker;
 import ru.codeunited.wmq.commands.CommandGeneralException;
 import ru.codeunited.wmq.commands.MQPutCommand;
-import ru.codeunited.wmq.commands.ParameterException;
+import ru.codeunited.wmq.commands.MissedParameterException;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -18,15 +20,50 @@ import static org.junit.Assert.*;
 public class PutCommandTest extends CLITestSupport {
 
     @Test
-    public void testInsuficientParams() throws ParseException, ParameterException, CommandGeneralException {
+    /**
+     * --dstq was missed.
+     */
+    public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
         final MQPutCommand putCommand = new MQPutCommand();
         final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
+        boolean exceptionOccured = false;
         try {
             maker.execute();
-        } catch (ParameterException pe) {
-            assertTrue("Parameter --dstq should be missed, but really " + pe.getMessage(), pe.getLongName().equals("dstq"));
+        } catch (MissedParameterException pe) {
+            final String[] dstqParam = {"dstq"};
+            assertTrue(
+                    "Parameter --dstq should be missed, but really " + pe.getMessage(),
+                    Arrays.equals(dstqParam, pe.getLongName()));
+            exceptionOccured = true;
+        }
+        if (!exceptionOccured) {
+            throw new CommandGeneralException(MQPutCommand.class.getName() + " has no reaction for a missed --dstq parameter.");
+        }
+    }
+
+    @Test
+    /**
+     * -t or -p was missed.
+     */
+    public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException {
+        final CommandLine commandLine = getCommandLine_With_Qc_dstq();
+        final MQPutCommand putCommand = new MQPutCommand();
+        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
+        boolean exceptionOccured = false;
+        try {
+            maker.execute();
+        } catch (MissedParameterException pe) {
+            final char[] ptParams = {'p','t'};
+            assertTrue(
+                    "Parameter -t or -p are missed, but we got another error here. [" + pe.getMessage() + "]",
+                    Arrays.equals(pe.getSingleCharName(), ptParams));
+            exceptionOccured = true;
+        }
+
+        if (!exceptionOccured) {
+            throw new CommandGeneralException(MQPutCommand.class.getName() + " has no reaction for a missed -p or -t parameter.");
         }
     }
 }
