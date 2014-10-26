@@ -26,7 +26,12 @@ public class PutCommandTest extends CLITestSupport {
     public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
-        final MQPutCommand putCommand = new MQPutCommand();
+        final MQPutCommand putCommand = new MQPutCommand() {
+            @Override
+            public boolean resolve() { /** we should override it because chain will reject this command without parameters **/
+                return true;
+            }
+        };
         final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
         boolean exceptionOccured = false;
         try {
@@ -49,7 +54,12 @@ public class PutCommandTest extends CLITestSupport {
      */
     public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException {
         final CommandLine commandLine = getCommandLine_With_Qc_dstq();
-        final MQPutCommand putCommand = new MQPutCommand();
+        final MQPutCommand putCommand = new MQPutCommand() {
+            @Override
+            public boolean resolve() { /** we should override it because chain will reject this command without parameters **/
+                return true;
+            }
+        };
         final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
         boolean exceptionOccured = false;
         try {

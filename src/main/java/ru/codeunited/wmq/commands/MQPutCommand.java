@@ -53,6 +53,6 @@ public class MQPutCommand extends QueueCommand {
 
     @Override
     public boolean resolve() {
-        return true;
+        return hasOption("dstq") && (hasOption('p') || hasOption('t'));
     }
 }
