@@ -1,6 +1,9 @@
 package ru.codeunited.wmq.commands;
 
-import com.ibm.mq.*;
+import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
+import com.ibm.mq.MQPutMessageOptions;
+import com.ibm.mq.MQQueue;
 import ru.codeunited.wmq.MessageTools;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
@@ -8,7 +11,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.CMQC.MQPMO_NEW_MSG_ID;
+import static com.ibm.mq.constants.CMQC.MQPMO_NO_SYNCPOINT;
 
 /**
  * codeunited.ru
@@ -19,7 +23,6 @@ public class MQPutCommand extends QueueCommand {
 
     @Override
     public void work() throws CommandGeneralException, MissedParameterException {
-        final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
         try {
             final MQQueue queue = getDestinationQueue();

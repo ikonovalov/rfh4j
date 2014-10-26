@@ -15,6 +15,18 @@ public class MissedParameterException extends Exception {
     // sorted string array
     private String[] longName;
 
+    // additional information
+    private String message = "";
+
+    public MissedParameterException withMessage(String message) {
+        this.message = message;
+        return this;
+    }
+
+    public String withMessage() {
+        return message;
+    }
+
     public MissedParameterException(String... message) {
         super();
         if (message == null || message.length == 0)
@@ -43,7 +55,7 @@ public class MissedParameterException extends Exception {
         if (longName != null) for (String s : longName) {
             missedOptions.append('[').append(s).append(']').append(' ');
         }
-        return "Option(s) " + missedOptions.toString() + " are missed";
+        return "Option(s) " + missedOptions.toString() + " are missed. " + message;
     }
 
     /**

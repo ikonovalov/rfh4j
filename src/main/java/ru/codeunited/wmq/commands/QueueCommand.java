@@ -29,8 +29,11 @@ public abstract class QueueCommand extends AbstractCommand {
     public MQQueue getDestinationQueue() throws MQException, MissedParameterException {
         if (hasOption("dstq")) {
             final String queueName = getOption("dstq");
-            final MQQueue queue = getQueue("MFC.APPLICATION_OUT", MQOO_OUTPUT);
-            return queue;
+            if (queueName.length() > 0) {
+                return getQueue(queueName, MQOO_OUTPUT);
+            } else {
+                throw new MissedParameterException("dstq").withMessage("Parameter dstq has wrong argument [" + queueName +"]");
+            }
         } else {
             throw new MissedParameterException("dstq");
         }

@@ -62,7 +62,7 @@ public class MessageTools {
 
     public static MQMessage writeStreamToMessage(InputStream stream, MQMessage message) throws IOException {
         final byte[] buffer = new byte[STREAM_BUFFER_SZ];
-        int readCount = 0;
+        int readCount;
         long totalBytes = 0; // total message bytes counter
         while ((readCount = stream.read(buffer)) != -1) {
             message.write(buffer, 0, readCount);
