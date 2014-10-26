@@ -3,6 +3,8 @@ package ru.codeunited.wmq;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 
+import java.util.Properties;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -15,6 +17,6 @@ public interface WMQConnectionFactory {
      * @return
      * @throws MQException
      */
-    public MQQueueManager connectQueueManager() throws MQException;
+    public MQQueueManager connectQueueManager(String queueManagerName, Properties properties) throws MQException;
 
 }
