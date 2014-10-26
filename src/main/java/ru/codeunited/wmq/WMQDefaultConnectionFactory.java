@@ -11,17 +11,12 @@ import java.util.Properties;
  */
 public class WMQDefaultConnectionFactory implements WMQConnectionFactory {
 
-    private final Properties connectionProperties;
+    public WMQDefaultConnectionFactory() {
 
-    private final String queueManagerName;
-
-    public WMQDefaultConnectionFactory(String queueManager, Properties properties) {
-        this.connectionProperties = properties;
-        this.queueManagerName = queueManager;
     }
 
     @Override
-    public MQQueueManager connectQueueManager() throws MQException {
-        return new MQQueueManager(queueManagerName, connectionProperties);
+    public MQQueueManager connectQueueManager(String queueManagerName, Properties properties) throws MQException {
+        return new MQQueueManager(queueManagerName, properties);
     }
 }

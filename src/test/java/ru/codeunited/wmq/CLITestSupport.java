@@ -32,12 +32,12 @@ public class CLITestSupport {
 
     private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
 
-    CommandLine getCommandLine_With_Qc() throws ParseException {
+    protected CommandLine getCommandLine_With_Qc() throws ParseException {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
         return getCliParser().parse(getOptions(), args);
     }
 
-    CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
+    protected CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1".split(" ");
         return getCliParser().parse(getOptions(), args);
     }
@@ -48,7 +48,7 @@ public class CLITestSupport {
      * @param command
      * @return
      */
-    public CommandChainMaker surroundSingleCommandWithConnectionAdvices(CommandLine commandLine, Command command) {
+    protected CommandChainMaker surroundSingleCommandWithConnectionAdvices(CommandLine commandLine, Command command) {
         final CommandChainMaker maker = new CommandChainMaker(commandLine);
         final AbstractCommand cmdConnect = new ConnectCommand();
         final AbstractCommand cmdDisconnect = new DisconnectCommand();

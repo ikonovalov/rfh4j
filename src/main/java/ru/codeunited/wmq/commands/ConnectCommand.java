@@ -22,6 +22,16 @@ public class ConnectCommand extends AbstractCommand {
 
     private static final int DEFAULT_PORT = 1414;
 
+    private final WMQConnectionFactory connectionFactory;
+
+    public ConnectCommand() {
+        connectionFactory = new WMQDefaultConnectionFactory();
+    }
+
+    public ConnectCommand(WMQConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
     @Override
     protected void work() throws CommandGeneralException {
         final CommandLine commandLine = getCommandLine();
@@ -46,11 +56,16 @@ public class ConnectCommand extends AbstractCommand {
                         .append("]")
                         .toString());
         final Properties connectionProperties = createProps(host, port, channelName, user);
-        final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory(queueManagerName, connectionProperties);
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager();
+            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, connectionProperties);
             context.setQueueManager(mqQueueManager);
-            console.writeln("Connected to [" + queueManagerName + "]");
+
+            // check connection
+            if (mqQueueManager.isConnected()) {
+                console.writeln("Connected to [" + queueManagerName + "]");
+            } else {
+                throw new MQConnectionException("Connection performed but queue manager looks like disconnected");
+            }
         } catch (MQException e) {
             throw new CommandGeneralException(e);
         }
@@ -68,10 +83,11 @@ public class ConnectCommand extends AbstractCommand {
      * USER     - arg[3]
      * All if optional but order is strict.
      * If you want omit one or more params then set null in this position.
+     *
      * @param args
      * @return
      */
-    private static Properties createProps(Object...args) {
+    private static Properties createProps(Object... args) {
         final Properties properties = new Properties();
         if (args.length > 0 && args[0] != null)
             properties.put(HOST_NAME_PROPERTY, args[0]); // required

@@ -28,8 +28,8 @@ public class ConnectToQMTest implements TestEnvironmentSetting {
 
     @Test
     public void doConnect() throws MQException {
-        final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory(QMGR_NAME, properties);
-        MQQueueManager mqQueueManager = connectionFactory.connectQueueManager();
+        final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory();
+        MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(QMGR_NAME, properties);
         assertTrue("Connection lost.", mqQueueManager.isConnected());
         LOG.info("Connected to " + QMGR_NAME);
         mqQueueManager.disconnect();
