@@ -30,9 +30,20 @@ public class MissedParameterException extends Exception {
     }
 
     @Override
+    public String toString() {
+        return getMessage();
+    }
+
+    @Override
     public String getMessage() {
-        // TODO bad output. Array toString needed!
-        return "Option " + name + " " + (longName != null ? "--" + longName : "") + " are missed";
+        final StringBuilder missedOptions = new StringBuilder(32);
+        if (name != null) for (char c : name) { // I know that it is a bad syntax but Ruby-like
+            missedOptions.append('[').append(c).append(']').append(' ');
+        }
+        if (longName != null) for (String s : longName) {
+            missedOptions.append('[').append(s).append(']').append(' ');
+        }
+        return "Option(s) " + missedOptions.toString() + " are missed";
     }
 
     /**
