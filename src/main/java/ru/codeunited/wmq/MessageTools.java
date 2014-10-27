@@ -50,6 +50,13 @@ public class MessageTools {
         return createMessage(DEFAULT_CHARACTER_SET);
     }
 
+    /**
+     * Write string to MQMessage
+     * @param str - string message.
+     * @param message - MQQueue object
+     * @return MQMessage with written str
+     * @throws IOException
+     */
     public static MQMessage writeStringToMessage(String str, MQMessage message) throws IOException {
         message.writeString(str);
         return message;

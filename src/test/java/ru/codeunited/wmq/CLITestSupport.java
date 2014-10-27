@@ -32,14 +32,23 @@ public class CLITestSupport {
 
     private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
 
+    protected CommandLine prepareCommandLine(String line) throws ParseException {
+        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
+        return prepareCommandLine(args);
+    }
+
+    protected CommandLine prepareCommandLine(String[] args) throws ParseException {
+        return getCliParser().parse(getOptions(), args);
+    }
+
     protected CommandLine getCommandLine_With_Qc() throws ParseException {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
-        return getCliParser().parse(getOptions(), args);
+        return prepareCommandLine(args);
     }
 
     protected CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1".split(" ");
-        return getCliParser().parse(getOptions(), args);
+        return prepareCommandLine(args);
     }
 
     /**
