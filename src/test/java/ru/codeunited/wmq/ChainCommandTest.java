@@ -62,7 +62,7 @@ public class ChainCommandTest extends CLITestSupport {
                 .addAfter(put,connect)
                 .addAfter(disconnect, put);
         List<Command> chain = maker.getCommandChain();
-        assertThat("Wrong chain size after add one command", chain.size(), is(3));
+        assertThat("Wrong chain size after add one command. " + chain.toString(), chain.size(), is(3));
         assertThat(chain.get(0), instanceOf(ConnectCommand.class));
         assertThat(chain.get(1), instanceOf(MQPutCommand.class));
         assertThat(chain.get(2), instanceOf(DisconnectCommand.class));

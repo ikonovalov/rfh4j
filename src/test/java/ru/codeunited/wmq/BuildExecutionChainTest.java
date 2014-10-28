@@ -41,6 +41,18 @@ public class BuildExecutionChainTest extends CLITestSupport {
     }
 
     @Test
+    public void hasAnyOptions() throws ParseException {
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
+        final DefaultExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
+        assertThat(executionPlanBuilder.hasAnyOption('Q', 'c'), is(true));
+        assertThat(executionPlanBuilder.hasAnyOption('p', 'c'), is(true));
+        assertThat(executionPlanBuilder.hasAnyOption('p', 'Q'), is(true));
+        assertThat(executionPlanBuilder.hasAnyOption('t', 'p', 'Q'), is(true));
+        assertThat(executionPlanBuilder.hasAnyOption('p', 't'), is(false));
+    }
+
+
+    @Test
     public void ConnectDisconnectContainsAndResolve() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
 
@@ -59,7 +71,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     @Test
     public void MQPutTextContainsAndResolve() throws ParseException {
-        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN -dstq Q1 -t Hello");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -t Hello");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
 
@@ -88,6 +100,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
     @Test
     public void MQPutFileContainsAndResolve() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -p /tmp/some.file");
+        assertTrue(commandLine.hasOption("dstq"));
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
 
@@ -95,8 +108,20 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         final List<Command> commands = chain.getCommandChain();
 
-        // check total commands size
         assertThat("Wrong commands list size", commands.size(), is(3));
+
+        // check ConnectCommand position and resolve it
+        Command unknownCommand0 = commands.get(0);
+        assertThatCommandInstanceOf(unknownCommand0, ConnectCommand.class);
+        assertThatCommandResolved(unknownCommand0);
+
+        Command unknownCommand1 = commands.get(1);
+        assertThatCommandInstanceOf(unknownCommand1, MQPutCommand.class);
+        assertThatCommandResolved(unknownCommand1);
+
+        Command unknownCommand2 = commands.get(2);
+        assertThatCommandInstanceOf(unknownCommand2, DisconnectCommand.class);
+        assertThatCommandResolved(unknownCommand2);
 
     }
 

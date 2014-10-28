@@ -33,7 +33,7 @@ public class CLITestSupport {
     private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
 
     protected CommandLine prepareCommandLine(String line) throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
+        final String[] args = line.split(" ");
         return prepareCommandLine(args);
     }
 

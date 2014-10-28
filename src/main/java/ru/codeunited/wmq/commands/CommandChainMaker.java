@@ -26,19 +26,27 @@ public class CommandChainMaker extends AbstractCommand {
         setContext(executionContext);
     }
 
+    private CommandChainMaker checkAndAdd(int index, Command command) {
+        if (selfStateCheckOK()) {
+            copyEnvironmentTo(command);
+            commandChain.add(index, command);
+        } else {
+            throw new IllegalStateException("CommandMaker is in invalid state. Some basic parameters are not set.");
+        }
+        return this;
+    }
+
     /**
      * Add new command to chain.
      * @param command
      * @return instance of CommandMaker.
      */
     public CommandChainMaker addCommand(Command command) {
-        if (selfStateCheckOK()) {
-            copyEnvironmentTo(command);
-            commandChain.add(command);
-        } else {
-            throw new IllegalStateException("CommandMaker is in invalid state. Some basic parameters are not set.");
-        }
-        return this;
+        return checkAndAdd(commandChain.size(), command);
+    }
+
+    public CommandChainMaker addCommand(int index, Command command) {
+        return checkAndAdd(index, command);
     }
 
     /**
@@ -51,11 +59,10 @@ public class CommandChainMaker extends AbstractCommand {
         if (commandChain.size() == 0 || afterThat == null) { // add like first element
             addCommand(newCommand);
         } else { // insert after
-            ListIterator<Command> commandListIterator = commandChain.listIterator();
-            while (commandListIterator.hasNext()) {
-                Command current = commandListIterator.next();
-                if (current == afterThat) {
-                    commandListIterator.add(newCommand);
+            for (int z = 0; z < commandChain.size(); z++) {
+                if (afterThat == commandChain.get(z)) {
+                    addCommand(z + 1, newCommand);
+                    break;
                 }
             }
         }
