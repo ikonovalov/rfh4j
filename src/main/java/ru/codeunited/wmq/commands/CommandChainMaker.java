@@ -30,6 +30,7 @@ public class CommandChainMaker extends AbstractCommand {
         if (selfStateCheckOK()) {
             copyEnvironmentTo(command);
             commandChain.add(index, command);
+            LOG.info("Adding " + command.getClass().getSimpleName() + " to chain...");
         } else {
             throw new IllegalStateException("CommandMaker is in invalid state. Some basic parameters are not set.");
         }

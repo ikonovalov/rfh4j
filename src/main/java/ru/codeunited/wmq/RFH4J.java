@@ -26,11 +26,9 @@ public class RFH4J {
             } else {
                 final ExecutionContext context = new ExecutionContext();
                 context.setConsoleWriter(consoleWriter);
-                CommandChainMaker commandMaker = new CommandChainMaker(cli, context)
-                        .addCommand(new ConnectCommand())
-                        .addCommand(new MQPutCommand())
-                        .addCommand(new DisconnectCommand());
-               commandMaker.execute();
+                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context, cli);
+                final CommandChainMaker commandMaker = executionPlanBuilder.buildChain();
+                commandMaker.execute();
             }
 
         } catch (MissedParameterException | ParseException | CommandGeneralException e) {
