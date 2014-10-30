@@ -20,14 +20,19 @@ public class FrontHandler extends AbstractHandler {
 
     @Override
     public void handle(String s, Request request, HttpServletRequest baseRequest, HttpServletResponse response) throws IOException, ServletException {
-        final PrintWriter servletWriter = response.getWriter();
-        final ConsoleWriter console = new ConsoleWriter(servletWriter);
-        console.setNextLineMarkerL("<br>");
-        console.writeln("<b>RFH4Jetty</b>");
+        if (response.isCommitted() && request.isHandled())
+            return;
+        // setup response
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
+
+        final PrintWriter servletWriter = response.getWriter();
+        servletWriter.write("<b>RFH4Jetty</b><br>");
+        servletWriter.print("<pre><code>");
         CLIFactory.showHelp(servletWriter);
+        servletWriter.print("</code></pre>");
         servletWriter.flush();
+
         request.setHandled(true);
     }
 }

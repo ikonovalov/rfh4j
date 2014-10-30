@@ -4,7 +4,10 @@ import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import ru.codeunited.wmq.handlers.FrontHandler;
 
 /**
@@ -21,7 +24,18 @@ public class RFH4Jetty {
         server.setConnectors(new Connector[] { connector });
 
         final HandlerCollection handlers = new HandlerCollection();
-        handlers.setHandlers(new Handler[] { new FrontHandler()});
+
+        ContextHandler contextStaticHandler = new ContextHandler();
+        contextStaticHandler.setContextPath("/static");
+
+        final ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(false);
+        resourceHandler.setResourceBase(".");
+        contextStaticHandler.setHandler(resourceHandler);
+
+        final FrontHandler frontHandler = new FrontHandler();
+
+        handlers.setHandlers(new Handler[]{contextStaticHandler, frontHandler});
         server.setHandler(handlers);
 
         server.start();
