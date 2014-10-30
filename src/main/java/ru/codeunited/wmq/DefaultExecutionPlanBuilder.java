@@ -39,7 +39,7 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
     public CommandChainMaker buildChain() {
         final CommandChainMaker chain = new CommandChainMaker(commandLine, executionContext);
         // just a scratch
-        if (hasOption('Q')) { // need to connect to queue manager
+        if (hasOption('Q') || hasOption("config")) { // need to connect to queue manager
             chain
                     .addCommand(new ConnectCommand())
                     .addCommand(new DisconnectCommand());
