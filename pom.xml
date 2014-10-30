@@ -13,6 +13,7 @@
         <mq.home>/opt/mqm</mq.home>
         <mq.java.lib>${mq.home}/java/lib</mq.java.lib>
         <mq.version>7.5.0</mq.version>
+        <jetty.version>9.2.3.v20140905</jetty.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,11 @@
             <artifactId>commons-cli</artifactId>
             <version>1.2</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-server</artifactId>
+            <version>${jetty.version}</version>
         </dependency>
     </dependencies>
 

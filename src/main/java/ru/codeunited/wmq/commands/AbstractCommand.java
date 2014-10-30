@@ -66,7 +66,7 @@ public abstract class AbstractCommand implements Command {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             work();
-            getConsoleWriter().flash();
+            getConsoleWriter().flush();
             updateCurrentState(ReturnCode.SUCCESS);
         } catch (Exception e) {
             updateCurrentState(ReturnCode.FAILED);

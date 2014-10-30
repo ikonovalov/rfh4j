@@ -16,9 +16,24 @@ public class ConsoleWriter {
 
     private final PrintWriter errorWriter;
 
+    private String NL = "\n"; // next line
+
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
         this.normalWriter = new PrintWriter(printWriter);
+    }
+
+    public ConsoleWriter(PrintWriter printWriter, PrintWriter errorWriter) {
+        this.normalWriter = printWriter;
+        this.errorWriter = errorWriter;
+    }
+
+    public String getNextLineMarker() {
+        return NL;
+    }
+
+    public void setNextLineMarkerL(String NL) {
+        this.NL = NL;
     }
 
     /**
@@ -26,6 +41,10 @@ public class ConsoleWriter {
      * @param printWriter
      */
     public ConsoleWriter(PrintStream printWriter) {
+        this(printWriter, printWriter);
+    }
+
+    public ConsoleWriter(PrintWriter printWriter) {
         this(printWriter, printWriter);
     }
 
@@ -40,7 +59,7 @@ public class ConsoleWriter {
     }
 
     public ConsoleWriter writeln(String string) {
-        return write(string).write('\n');
+        return write(string).write(NL);
     }
 
     public ConsoleWriter write(ReturnCode code) {
@@ -56,13 +75,13 @@ public class ConsoleWriter {
         return this;
     }
 
-    public ConsoleWriter flash() {
+    public ConsoleWriter flush() {
         this.errorWriter.flush();
         this.normalWriter.flush();
         return this;
     }
 
     public ConsoleWriter errorln(String message) {
-        return error(message).write('\n');
+        return error(message).write(NL);
     }
 }

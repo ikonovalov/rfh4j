@@ -2,6 +2,8 @@ package ru.codeunited.wmq.cli;
 
 import org.apache.commons.cli.*;
 
+import java.io.PrintWriter;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -129,11 +131,26 @@ public class CLIFactory {
      * Show help information.
      */
     public static void showHelp() {
+        final PrintWriter systemOut = new PrintWriter(System.out);
+        showHelp(systemOut);
+        systemOut.flush();
+    }
+
+    /**
+     * Show help information.
+     */
+    public static void showHelp(PrintWriter printWriter) {
         HelpFormatter formatter = new HelpFormatter();
-        formatter.setWidth(300);
-        formatter.setDescPadding(5);
-        formatter.setLeftPadding(5);
-        formatter.printHelp("rfh4j", "Option description", createOptions(), commandExamples(), true);
+        formatter.printHelp(
+                printWriter,
+                300,
+                "rfh4j", /** header **/
+                "Option description",
+                createOptions(),
+                5,
+                5,
+                commandExamples(),
+                true);
     }
 
     public static String commandExamples() {
