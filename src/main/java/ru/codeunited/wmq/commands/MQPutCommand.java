@@ -1,8 +1,6 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQPutMessageOptions;
-import ru.codeunited.wmq.MessageTools;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
@@ -10,9 +8,6 @@ import ru.codeunited.wmq.messaging.MessageProducerImpl;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
-
-import static com.ibm.mq.constants.CMQC.MQPMO_NEW_MSG_ID;
-import static com.ibm.mq.constants.CMQC.MQPMO_NO_SYNCPOINT;
 
 /**
  * codeunited.ru

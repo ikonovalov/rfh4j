@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.*;
-import ru.codeunited.wmq.MessageTools;
 
 import java.io.FileInputStream;
 import java.io.IOException;

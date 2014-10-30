@@ -1,6 +1,7 @@
 package ru.codeunited.wmq;
 
 import org.junit.Test;
+import ru.codeunited.wmq.messaging.MessageTools;
 
 import static org.junit.Assert.*;
 /**
