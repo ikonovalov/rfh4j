@@ -17,20 +17,16 @@ public abstract class QueueCommand extends AbstractCommand {
         return executionContext.getQueueManager();
     }
 
-    private MQQueue getQueue(String name, int options) throws MQException {
-        return getQueueManager().accessQueue(name, options);
-    }
-
     /**
      * Create destination queue specified in --dstq parameter.
      * @return
      * @throws MQException
      */
-    public MQQueue getDestinationQueue() throws MQException, MissedParameterException {
+    public String getDestinationQueueName() throws MQException, MissedParameterException {
         if (hasOption("dstq")) {
             final String queueName = getOption("dstq");
             if (queueName.length() > 0) {
-                return getQueue(queueName, MQOO_OUTPUT);
+                return queueName;
             } else {
                 throw new MissedParameterException("dstq").withMessage("Parameter dstq has wrong argument [" + queueName +"]");
             }

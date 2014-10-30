@@ -22,6 +22,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Check if single character parameter is passed in command line.
+     *
      * @param option single character option.
      * @return true if passed, false if missed.
      */
@@ -35,6 +36,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Get single character parameter argument.
+     *
      * @param option single character option.
      * @return String value of option if passed, null otherwise.
      */
@@ -44,6 +46,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Get value of long named parameter argument.
+     *
      * @param option long option name.
      * @return String value of option if passed, null otherwise.
      */
@@ -53,6 +56,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Real work implementation for command.
+     *
      * @throws CommandGeneralException if something goes wrong.
      */
     protected abstract void work() throws CommandGeneralException, MissedParameterException;
@@ -62,6 +66,7 @@ public abstract class AbstractCommand implements Command {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             work();
+            getConsoleWriter().flash();
             updateCurrentState(ReturnCode.SUCCESS);
         } catch (Exception e) {
             updateCurrentState(ReturnCode.FAILED);
@@ -90,6 +95,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Get current execution context.
+     *
      * @return ExecutionContext
      */
     protected ExecutionContext getExecutionContext() {
@@ -98,6 +104,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Get current command line. Already parsed.
+     *
      * @return CommandLine
      */
     protected CommandLine getCommandLine() {
@@ -106,6 +113,7 @@ public abstract class AbstractCommand implements Command {
 
     /**
      * Check inner command state.
+     *
      * @return true if all right and false if something wrong.
      */
     public boolean selfStateCheckOK() {
@@ -119,16 +127,17 @@ public abstract class AbstractCommand implements Command {
         if (executionContext == null || commandLine == null) {
             throw new IllegalStateException(
                     "Command is in a illegal state. "
-                    + (executionContext == null ? "SharedContext is null. " : "")
-                    + (commandLine == null ? "CommandLine is null." : "")
+                            + (executionContext == null ? "SharedContext is null. " : "")
+                            + (commandLine == null ? "CommandLine is null." : "")
             );
         }
     }
 
     /**
      * This is a revers of selfStateCheckOK method.
-     * @see AbstractCommand selfStateCheckOK
+     *
      * @return true if inner test failed and false if all right.
+     * @see AbstractCommand selfStateCheckOK
      */
     public boolean selfStateCheckFailed() {
         return !selfStateCheckOK();

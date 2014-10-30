@@ -3,9 +3,7 @@ package ru.codeunited.wmq.mock;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import ru.codeunited.wmq.WMQConnectionFactory;
+import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 
 import java.util.Properties;
 

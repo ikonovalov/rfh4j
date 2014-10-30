@@ -1,11 +1,11 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQMessage;
 import com.ibm.mq.MQPutMessageOptions;
-import com.ibm.mq.MQQueue;
 import ru.codeunited.wmq.MessageTools;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.MessageProducerImpl;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,25 +25,21 @@ public class MQPutCommand extends QueueCommand {
     public void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
         try {
-            final MQQueue queue = getDestinationQueue();
 
-            final MQMessage message = MessageTools.createUTFMessage();
-
+            final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
+            byte[] messageId;
             // handle payload parameters
             if (hasOption('p')) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(getOption('p'))) {
-                    MessageTools.writeStreamToMessage(fileStream, message);
+                    messageId = messageProducer.send(fileStream);
                 }
             } else if (getCommandLine().hasOption('t')) { // just text message
-                MessageTools.writeStringToMessage(getOption('t'), message);
+                messageId = messageProducer.send(getOption('t'));
             } else {
                 throw new MissedParameterException('p','t');
             }
 
-            MQPutMessageOptions putSpec = new MQPutMessageOptions();
-            putSpec.options = putSpec.options | MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
-            queue.put(message, putSpec);
-            console.writeln("Message PUT with messageId = " + UUID.nameUUIDFromBytes(message.messageId));
+            console.writeln("Message PUT with messageId = " + UUID.nameUUIDFromBytes(messageId));
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());

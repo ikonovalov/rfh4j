@@ -1,4 +1,4 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;

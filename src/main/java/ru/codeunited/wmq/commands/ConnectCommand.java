@@ -3,8 +3,8 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import org.apache.commons.cli.CommandLine;
-import ru.codeunited.wmq.WMQConnectionFactory;
-import ru.codeunited.wmq.WMQDefaultConnectionFactory;
+import ru.codeunited.wmq.messaging.WMQConnectionFactory;
+import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.util.Properties;
@@ -62,7 +62,7 @@ public class ConnectCommand extends AbstractCommand {
 
             // check connection
             if (mqQueueManager.isConnected()) {
-                console.writeln("Connected to [" + queueManagerName + "]");
+                console.writeln("[" + mqQueueManager.getName() + "] connected");
             } else {
                 throw new MQConnectionException("Connection performed but queue manager looks like disconnected");
             }

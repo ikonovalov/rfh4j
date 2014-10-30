@@ -4,6 +4,8 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import org.junit.Before;
 import org.junit.Test;
+import ru.codeunited.wmq.messaging.WMQConnectionFactory;
+import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
 import java.util.Properties;
 import java.util.logging.Logger;
