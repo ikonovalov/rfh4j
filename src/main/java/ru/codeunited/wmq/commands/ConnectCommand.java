@@ -47,31 +47,22 @@ public class ConnectCommand extends AbstractCommand {
         this.connectionFactory = connectionFactory;
     }
 
-    @Override
-    protected void work() throws CommandGeneralException {
-        final ExecutionContext context = getExecutionContext();
-        final ConsoleWriter console = getConsoleWriter();
-        // TODO SHOULD BE MOVED TO SEPARATED METHODS AND HEAVY TESTED
-        // merged properties
-        final Properties mergedProperties = new Properties();
-
-        // apply default setting
-        mergedProperties.putAll(defaultProperties); /** MQQueueManager use Hashtable and not real Properties, so **/
-
-        // try to load config file is specified
+    protected Properties configFileAsProperties() {
+        final Properties fileProperties = new Properties();
         if (hasOption("config")) {
-            final Properties fileProperties = new Properties();
             try (final FileInputStream propertiesStream = new FileInputStream(getOption("config"))) {
                 fileProperties.load(propertiesStream);
-                // fix port issue (String -> Integer)
+
+            /* fix port issue (String -> Integer) */
                 fileProperties.put(PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(PORT_PROPERTY)));
-                mergedProperties.putAll(fileProperties);
             } catch (IOException e) {
                 LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
             }
         }
+        return fileProperties;
+    }
 
-        // Override config with CLI passed arguments
+    protected Properties passedArgumentsAsProperties() {
         final Properties passedProperties = new Properties();
         if (hasOption("channel"))
             passedProperties.put(CHANNEL_PROPERTY, getOption("channel"));
@@ -83,8 +74,32 @@ public class ConnectCommand extends AbstractCommand {
             passedProperties.put(PORT_PROPERTY, Integer.valueOf(getOption("port")));
         if (hasOption("user"))
             passedProperties.put(USER_ID_PROPERTY, getOption("user"));
+        return passedProperties;
+    }
 
-        mergedProperties.putAll(passedProperties);
+    protected Properties mergeArguments() {
+        final Properties mergedProperties = new Properties();
+
+        // apply default setting
+        mergedProperties.putAll(defaultProperties); /** MQQueueManager use Hashtable and not real Properties, so **/
+
+        // try to load config file is specified
+        mergedProperties.putAll(configFileAsProperties());
+
+        // Override config with CLI passed arguments
+        mergedProperties.putAll(passedArgumentsAsProperties());
+
+        return mergedProperties;
+    }
+
+    @Override
+    protected void work() throws CommandGeneralException {
+        final ExecutionContext context = getExecutionContext();
+        final ConsoleWriter console = getConsoleWriter();
+        // TODO SHOULD BE MOVED TO SEPARATED METHODS AND HEAVY TESTED
+        // merged properties
+        final Properties mergedProperties = mergeArguments();
+
         LOG.info("Connecting with " + mergedProperties.toString());
 
         // perform connection
