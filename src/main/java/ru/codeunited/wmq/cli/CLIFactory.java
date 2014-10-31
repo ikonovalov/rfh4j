@@ -98,22 +98,16 @@ public class CLIFactory {
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
-        OptionGroup globalUsegeGroup = new OptionGroup()
-                .addOption(help)
-                .addOption(queueManager);
-        globalUsegeGroup.setRequired(true);
-
         options
-                //.addOption(help)
+                .addOption(help)
                 .addOption(host)
                 .addOption(port)
-                //.addOption(queueManager)
+                .addOption(queueManager)
                 .addOption(channel)
                 .addOption(user)
                 .addOption(config)
                 .addOption(destQueue)
-                .addOptionGroup(messagePayload)
-                .addOptionGroup(globalUsegeGroup);
+                .addOptionGroup(messagePayload);
 
         return options;
     }

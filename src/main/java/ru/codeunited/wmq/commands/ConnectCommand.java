@@ -7,6 +7,11 @@ import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Properties;
 
 import static com.ibm.mq.constants.CMQC.*;
@@ -22,7 +27,17 @@ public class ConnectCommand extends AbstractCommand {
 
     private static final int DEFAULT_PORT = 1414;
 
+    public static final String QMANAGER = "qmanager";
+
     private final WMQConnectionFactory connectionFactory;
+
+    private final Properties defaultProperties = new Properties();
+
+    {
+        defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
+        defaultProperties.put(PORT_PROPERTY, DEFAULT_PORT);
+        defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
+    }
 
     public ConnectCommand() {
         connectionFactory = new WMQDefaultConnectionFactory();
@@ -32,32 +47,64 @@ public class ConnectCommand extends AbstractCommand {
         this.connectionFactory = connectionFactory;
     }
 
+    protected Properties configFileAsProperties() {
+        final Properties fileProperties = new Properties();
+        if (hasOption("config")) {
+            try (final FileInputStream propertiesStream = new FileInputStream(getOption("config"))) {
+                fileProperties.load(propertiesStream);
+
+            /* fix port issue (String -> Integer) */
+                fileProperties.put(PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(PORT_PROPERTY)));
+            } catch (IOException e) {
+                LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
+            }
+        }
+        return fileProperties;
+    }
+
+    protected Properties passedArgumentsAsProperties() {
+        final Properties passedProperties = new Properties();
+        if (hasOption("channel"))
+            passedProperties.put(CHANNEL_PROPERTY, getOption("channel"));
+        if (hasOption(QMANAGER))
+            passedProperties.put(QMANAGER, getOption(QMANAGER));
+        if (hasOption("host"))
+            passedProperties.put(HOST_NAME_PROPERTY, getOption("host"));
+        if (hasOption("port"))
+            passedProperties.put(PORT_PROPERTY, Integer.valueOf(getOption("port")));
+        if (hasOption("user"))
+            passedProperties.put(USER_ID_PROPERTY, getOption("user"));
+        return passedProperties;
+    }
+
+    protected Properties mergeArguments() {
+        final Properties mergedProperties = new Properties();
+
+        // apply default setting
+        mergedProperties.putAll(defaultProperties); /** MQQueueManager use Hashtable and not real Properties, so **/
+
+        // try to load config file is specified
+        mergedProperties.putAll(configFileAsProperties());
+
+        // Override config with CLI passed arguments
+        mergedProperties.putAll(passedArgumentsAsProperties());
+
+        return mergedProperties;
+    }
+
     @Override
     protected void work() throws CommandGeneralException {
-        final CommandLine commandLine = getCommandLine();
         final ExecutionContext context = getExecutionContext();
         final ConsoleWriter console = getConsoleWriter();
+        // TODO SHOULD BE MOVED TO SEPARATED METHODS AND HEAVY TESTED
+        // merged properties
+        final Properties mergedProperties = mergeArguments();
 
-        final String channelName = commandLine.getOptionValue("channel");
-        final String queueManagerName = commandLine.getOptionValue("qmanager");
-        final String host = (commandLine.hasOption("host") ? commandLine.getOptionValue("host") : DEFAULT_HOST);
-        final int port = commandLine.hasOption("port") ? Integer.valueOf(commandLine.getOptionValue("port")) : DEFAULT_PORT;
-        final String user = commandLine.getOptionValue("user");
+        LOG.info("Connecting with " + mergedProperties.toString());
 
-        // print connection input parameters
-        LOG.info(
-                new StringBuilder()
-                        .append("Perform connection.")
-                        .append(" host [").append(host)
-                        .append("], port [").append(port)
-                        .append("], queue manager [").append(queueManagerName)
-                        .append("], channel [").append(channelName)
-                        .append("], user [").append(user != null ? user : "<empty>")
-                        .append("]")
-                        .toString());
-        final Properties connectionProperties = createProps(host, port, channelName, user);
+        // perform connection
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, connectionProperties);
+            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(mergedProperties.getProperty(QMANAGER), mergedProperties);
             context.setQueueManager(mqQueueManager);
 
             // check connection
@@ -74,30 +121,5 @@ public class ConnectCommand extends AbstractCommand {
     @Override
     public boolean resolve() {
         return true;
-    }
-
-    /**
-     * HOST     - arg[0]
-     * PORT     - arg[1]
-     * CHANNEL  - arg[2]
-     * USER     - arg[3]
-     * All if optional but order is strict.
-     * If you want omit one or more params then set null in this position.
-     *
-     * @param args
-     * @return
-     */
-    private static Properties createProps(Object... args) {
-        final Properties properties = new Properties();
-        if (args.length > 0 && args[0] != null)
-            properties.put(HOST_NAME_PROPERTY, args[0]); // required
-        if (args.length > 1 && args[1] != null)
-            properties.put(PORT_PROPERTY, args[1]); // required
-        if (args.length > 2 && args[2] != null)
-            properties.put(CHANNEL_PROPERTY, args[2]); // required
-        properties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT); // opt: if default not defined
-        if (args.length > 3 && args[3] != null)
-            properties.put(USER_ID_PROPERTY, args[3]); // opt: if necessary.
-        return properties;
     }
 }
