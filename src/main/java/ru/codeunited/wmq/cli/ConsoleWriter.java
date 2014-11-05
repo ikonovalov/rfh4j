@@ -1,7 +1,5 @@
 package ru.codeunited.wmq.cli;
 
-import ru.codeunited.wmq.commands.ReturnCode;
-
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -38,6 +36,7 @@ public class ConsoleWriter {
 
     /**
      * Use same stream for normal output and errors.
+     *
      * @param printWriter
      */
     public ConsoleWriter(PrintStream printWriter) {
@@ -60,14 +59,6 @@ public class ConsoleWriter {
 
     public ConsoleWriter writeln(String string) {
         return write(string).write(NL);
-    }
-
-    public ConsoleWriter write(ReturnCode code) {
-        return write(code.name());
-    }
-
-    public ConsoleWriter writeln(ReturnCode code) {
-        return writeln(code.name());
     }
 
     public ConsoleWriter error(String string) {
