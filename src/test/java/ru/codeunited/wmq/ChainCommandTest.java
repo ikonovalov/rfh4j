@@ -18,7 +18,7 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test
     public void addCommandToChain() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(getCommandLine_With_Qc());
+        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
         final AbstractCommand cmd1 = new ConnectCommand();
         final AbstractCommand cmd2 = new DisconnectCommand();
 
@@ -39,13 +39,13 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test(expected = UnsupportedOperationException.class)
     public void immutableWorkload() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(getCommandLine_With_Qc());
+        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.getCommandChain().add(new DisconnectCommand());
     }
 
     @Test
     public void insertAfterCommandS1() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(getCommandLine_With_Qc());
+        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.addAfter(new ConnectCommand(), null);
         assertThat("Wrong chain size after add one command", maker.getCommandChain().size(), is(1));
         assertThat(maker.getCommandChain().get(0), instanceOf(ConnectCommand.class));
@@ -53,7 +53,7 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test
     public void insertAfterCommandS3() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(getCommandLine_With_Qc());
+        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
         final Command connect = new ConnectCommand();
         final Command disconnect = new DisconnectCommand();
         final MQPutCommand put = new MQPutCommand();

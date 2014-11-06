@@ -1,7 +1,5 @@
 package ru.codeunited.wmq.commands;
 
-import org.apache.commons.cli.CommandLine;
-
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -10,8 +8,6 @@ import org.apache.commons.cli.CommandLine;
 public interface Command {
 
     void setContext(ExecutionContext context);
-
-    void setCommandLine(CommandLine cl);
 
     /**
      * Copy current command environment to another command.

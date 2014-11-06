@@ -3,10 +3,7 @@ package ru.codeunited.wmq;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
-import ru.codeunited.wmq.commands.CommandChainMaker;
-import ru.codeunited.wmq.commands.CommandGeneralException;
-import ru.codeunited.wmq.commands.MQPutCommand;
-import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.commands.*;
 
 import java.util.Arrays;
 
@@ -32,7 +29,7 @@ public class PutCommandTest extends CLITestSupport {
                 return true;
             }
         };
-        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
+        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
         boolean exceptionOccured = false;
         try {
             maker.execute();
@@ -60,7 +57,7 @@ public class PutCommandTest extends CLITestSupport {
                 return true;
             }
         };
-        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(commandLine, putCommand);
+        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
         boolean exceptionOccured = false;
         try {
             maker.execute();

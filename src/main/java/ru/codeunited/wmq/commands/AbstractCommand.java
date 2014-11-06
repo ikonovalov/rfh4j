@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.commands;
 
-import org.apache.commons.cli.CommandLine;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.util.logging.Logger;
@@ -14,45 +13,9 @@ public abstract class AbstractCommand implements Command {
 
     protected ExecutionContext executionContext;
 
-    protected CommandLine commandLine;
-
     protected ReturnCode currentState = ReturnCode.READY;
 
     protected static final Logger LOG = Logger.getLogger(Command.class.getName());
-
-    /**
-     * Check if single character parameter is passed in command line.
-     *
-     * @param option single character option.
-     * @return true if passed, false if missed.
-     */
-    public boolean hasOption(char option) {
-        return getCommandLine().hasOption(option);
-    }
-
-    public boolean hasOption(String option) {
-        return getCommandLine().hasOption(option);
-    }
-
-    /**
-     * Get single character parameter argument.
-     *
-     * @param option single character option.
-     * @return String value of option if passed, null otherwise.
-     */
-    public String getOption(char option) {
-        return getCommandLine().getOptionValue(option);
-    }
-
-    /**
-     * Get value of long named parameter argument.
-     *
-     * @param option long option name.
-     * @return String value of option if passed, null otherwise.
-     */
-    public String getOption(String option) {
-        return getCommandLine().getOptionValue(option);
-    }
 
     /**
      * Real work implementation for command.
@@ -78,19 +41,12 @@ public abstract class AbstractCommand implements Command {
     @Override
     public void copyEnvironmentTo(Command anotherCommand) {
         anotherCommand.setContext(getExecutionContext());
-        anotherCommand.setCommandLine(getCommandLine());
     }
 
     @Override
     public void setContext(ExecutionContext context) {
         if (selfStateCheckFailed())
             this.executionContext = context;
-    }
-
-    @Override
-    public void setCommandLine(CommandLine cl) {
-        if (selfStateCheckFailed())
-            this.commandLine = cl;
     }
 
     /**
@@ -103,34 +59,12 @@ public abstract class AbstractCommand implements Command {
     }
 
     /**
-     * Get current command line. Already parsed.
-     *
-     * @return CommandLine
-     */
-    protected CommandLine getCommandLine() {
-        return commandLine;
-    }
-
-    /**
      * Check inner command state.
      *
      * @return true if all right and false if something wrong.
      */
     public boolean selfStateCheckOK() {
-        return (executionContext != null && commandLine != null);
-    }
-
-    /**
-     * Check inner command environment and throw exception if something wrong.
-     */
-    public void selfStateCheckOKForced() {
-        if (executionContext == null || commandLine == null) {
-            throw new IllegalStateException(
-                    "Command is in a illegal state. "
-                            + (executionContext == null ? "SharedContext is null. " : "")
-                            + (commandLine == null ? "CommandLine is null." : "")
-            );
-        }
+        return (executionContext != null);
     }
 
     /**

@@ -2,16 +2,12 @@ package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
-import org.apache.commons.cli.CommandLine;
+import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
-import ru.codeunited.wmq.cli.ConsoleWriter;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.Properties;
 
 import static com.ibm.mq.constants.CMQC.*;
@@ -49,8 +45,9 @@ public class ConnectCommand extends AbstractCommand {
 
     protected Properties configFileAsProperties() {
         final Properties fileProperties = new Properties();
-        if (hasOption("config")) {
-            try (final FileInputStream propertiesStream = new FileInputStream(getOption("config"))) {
+        final ExecutionContext ctx = getExecutionContext();
+        if (ctx.hasOption("config")) {
+            try (final FileInputStream propertiesStream = new FileInputStream(ctx.getOption("config"))) {
                 fileProperties.load(propertiesStream);
 
             /* fix port issue (String -> Integer) */
@@ -64,16 +61,17 @@ public class ConnectCommand extends AbstractCommand {
 
     protected Properties passedArgumentsAsProperties() {
         final Properties passedProperties = new Properties();
-        if (hasOption("channel"))
-            passedProperties.put(CHANNEL_PROPERTY, getOption("channel"));
-        if (hasOption(QMANAGER))
-            passedProperties.put(QMANAGER, getOption(QMANAGER));
-        if (hasOption("host"))
-            passedProperties.put(HOST_NAME_PROPERTY, getOption("host"));
-        if (hasOption("port"))
-            passedProperties.put(PORT_PROPERTY, Integer.valueOf(getOption("port")));
-        if (hasOption("user"))
-            passedProperties.put(USER_ID_PROPERTY, getOption("user"));
+        final ExecutionContext ctx = getExecutionContext();
+        if (ctx.hasOption("channel"))
+            passedProperties.put(CHANNEL_PROPERTY, ctx.getOption("channel"));
+        if (ctx.hasOption(QMANAGER))
+            passedProperties.put(QMANAGER, ctx.getOption(QMANAGER));
+        if (ctx.hasOption("host"))
+            passedProperties.put(HOST_NAME_PROPERTY, ctx.getOption("host"));
+        if (ctx.hasOption("port"))
+            passedProperties.put(PORT_PROPERTY, Integer.valueOf(ctx.getOption("port")));
+        if (ctx.hasOption("user"))
+            passedProperties.put(USER_ID_PROPERTY, ctx.getOption("user"));
         return passedProperties;
     }
 

@@ -43,12 +43,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
     @Test
     public void hasAnyOptions() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
-        final DefaultExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
-        assertThat(executionPlanBuilder.hasAnyOption('Q', 'c'), is(true));
-        assertThat(executionPlanBuilder.hasAnyOption('p', 'c'), is(true));
-        assertThat(executionPlanBuilder.hasAnyOption('p', 'Q'), is(true));
-        assertThat(executionPlanBuilder.hasAnyOption('t', 'p', 'Q'), is(true));
-        assertThat(executionPlanBuilder.hasAnyOption('p', 't'), is(false));
+        ExecutionContext context = new CLIExecutionContext(commandLine);
+        assertThat(context.hasAnyOption('Q', 'c'), is(true));
+        assertThat(context.hasAnyOption('p', 'c'), is(true));
+        assertThat(context.hasAnyOption('p', 'Q'), is(true));
+        assertThat(context.hasAnyOption('t', 'p', 'Q'), is(true));
+        assertThat(context.hasAnyOption('p', 't'), is(false));
     }
 
 
@@ -56,7 +56,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
     public void ConnectDisconnectContainsAndResolve() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
         final CommandChainMaker chain = executionPlanBuilder.buildChain();
 
@@ -73,7 +73,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
     public void MQPutTextContainsAndResolve() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -t Hello");
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
         final CommandChainMaker chain = executionPlanBuilder.buildChain();
 
@@ -102,7 +102,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -p /tmp/some.file");
         assertTrue(commandLine.hasOption("dstq"));
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new ExecutionContext(), commandLine);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
         final CommandChainMaker chain = executionPlanBuilder.buildChain();
 

@@ -1,10 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
-
-import static com.ibm.mq.constants.CMQC.MQOO_OUTPUT;
 
 /**
  * codeunited.ru
@@ -19,12 +16,13 @@ public abstract class QueueCommand extends AbstractCommand {
 
     /**
      * Create destination queue specified in --dstq parameter.
-     * @return
+     * @return String - destination queue name.
      * @throws MQException
      */
     public String getDestinationQueueName() throws MQException, MissedParameterException {
-        if (hasOption("dstq")) {
-            final String queueName = getOption("dstq");
+        final ExecutionContext ctx = getExecutionContext();
+        if (ctx.hasOption("dstq")) {
+            final String queueName = ctx.getOption("dstq");
             if (queueName.length() > 0) {
                 return queueName;
             } else {

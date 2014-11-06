@@ -1,11 +1,8 @@
 package ru.codeunited.wmq.commands;
 
-import org.apache.commons.cli.CommandLine;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * codeunited.ru
@@ -16,13 +13,7 @@ public class CommandChainMaker extends AbstractCommand {
 
     private final List<Command> commandChain = new ArrayList<>();
 
-    public CommandChainMaker(CommandLine commandLine) {
-        setCommandLine(commandLine);
-        setContext(new ExecutionContext());
-    }
-
-    public CommandChainMaker(CommandLine commandLine, ExecutionContext executionContext) {
-        setCommandLine(commandLine);
+    public CommandChainMaker(ExecutionContext executionContext) {
         setContext(executionContext);
     }
 
@@ -39,7 +30,7 @@ public class CommandChainMaker extends AbstractCommand {
 
     /**
      * Add new command to chain.
-     * @param command
+     * @param command new command instance.
      * @return instance of CommandMaker.
      */
     public CommandChainMaker addCommand(Command command) {
@@ -102,18 +93,5 @@ public class CommandChainMaker extends AbstractCommand {
     public boolean resolve() {
         // always ready for action
         return true;
-    }
-
-    /**
-     * Search failed return code. If found return it, otherwise return SUCCESS.
-     * @param returnCodeses
-     * @return
-     */
-    private ReturnCode scanIfFailed(List<ReturnCode> returnCodeses) {
-        for (ReturnCode rCode : returnCodeses) {
-            if (rCode == ReturnCode.FAILED)
-                return rCode;
-        }
-        return ReturnCode.SUCCESS;
     }
 }
