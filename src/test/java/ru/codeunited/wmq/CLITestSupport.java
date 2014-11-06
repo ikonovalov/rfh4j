@@ -18,10 +18,6 @@ public class CLITestSupport {
 
     private final CommandLineParser cliParser = CLIFactory.createParser();
 
-    public ConsoleWriter getConsoleWriter() {
-        return consoleWriter;
-    }
-
     CommandLineParser getCliParser() {
         return cliParser;
     }
@@ -53,12 +49,12 @@ public class CLITestSupport {
 
     /**
      * Create chain with Connect -> YOUR_COMMAND -> Disconnect
-     * @param commandLine
+     * @param context
      * @param command
      * @return
      */
-    protected CommandChainMaker surroundSingleCommandWithConnectionAdvices(CommandLine commandLine, Command command) {
-        final CommandChainMaker maker = new CommandChainMaker(commandLine);
+    protected CommandChainMaker surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Command command) {
+        final CommandChainMaker maker = new CommandChainMaker(context);
         final AbstractCommand cmdConnect = new ConnectCommand();
         final AbstractCommand cmdDisconnect = new DisconnectCommand();
         return maker.addCommand(cmdConnect).addCommand(command).addCommand(cmdDisconnect);

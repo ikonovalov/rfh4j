@@ -16,7 +16,7 @@ public class ConnectDisconnectMockTest extends CLITestSupport {
     public void connectDisconnectWithMockFactory() throws ParseException, MissedParameterException, CommandGeneralException {
         final ConnectCommand connectCommand = new ConnectCommand(new WMQConnectionFactoryMocked());
         final DisconnectCommand disconnectCommand = new DisconnectCommand();
-        final CommandChainMaker chain = new CommandChainMaker(getCommandLine_With_Qc())
+        final CommandChainMaker chain = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()))
                 .addCommand(connectCommand)
                 .addCommand(disconnectCommand);
         chain.execute();

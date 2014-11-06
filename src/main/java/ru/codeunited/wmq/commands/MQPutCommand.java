@@ -19,17 +19,18 @@ public class MQPutCommand extends QueueCommand {
     @Override
     public void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
+        final ExecutionContext ctx = getExecutionContext();
         try {
 
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
             byte[] messageId;
             // handle payload parameters
-            if (hasOption('p')) { // file payload
-                try (final FileInputStream fileStream = new FileInputStream(getOption('p'))) {
+            if (ctx.hasOption('p')) { // file payload
+                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption('p'))) {
                     messageId = messageProducer.send(fileStream);
                 }
-            } else if (getCommandLine().hasOption('t')) { // just text message
-                messageId = messageProducer.send(getOption('t'));
+            } else if (ctx.hasOption('t')) { // just text message
+                messageId = messageProducer.send(ctx.getOption('t'));
             } else {
                 throw new MissedParameterException('p','t');
             }
@@ -44,6 +45,7 @@ public class MQPutCommand extends QueueCommand {
 
     @Override
     public boolean resolve() {
-        return hasOption("dstq") && (hasOption('p') || hasOption('t'));
+        final ExecutionContext ctx = getExecutionContext();
+        return ctx.hasOption("dstq") && (ctx.hasOption('p') || ctx.hasOption('t'));
     }
 }

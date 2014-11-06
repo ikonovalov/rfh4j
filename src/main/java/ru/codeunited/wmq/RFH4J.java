@@ -24,9 +24,9 @@ public class RFH4J {
             if (cli.hasOption('h')) {
                 CLIFactory.showHelp();
             } else {
-                final ExecutionContext context = new ExecutionContext();
+                final ExecutionContext context = new CLIExecutionContext(cli);
                 context.setConsoleWriter(consoleWriter);
-                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context, cli);
+                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context);
                 final CommandChainMaker commandMaker = executionPlanBuilder.buildChain();
                 commandMaker.execute();
             }

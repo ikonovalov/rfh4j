@@ -23,8 +23,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
         final CommandLine commandLine = getCliParser().parse(getOptions(), args);
 
         final ConnectCommand connectCommand = new ConnectCommand();
-        connectCommand.setCommandLine(commandLine);
-        connectCommand.setContext(new ExecutionContext());
+        connectCommand.setContext(new CLIExecutionContext(commandLine));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());
 
