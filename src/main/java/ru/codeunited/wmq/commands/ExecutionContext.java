@@ -50,7 +50,13 @@ public abstract class ExecutionContext {
 
     public abstract boolean hasOption(char opt);
 
-    public abstract boolean hasAnyOption(char... opts);
+    public boolean hasAnyOption(char...opts) {
+        for (char c : opts) {
+            if (hasOption(c))
+                return true;
+        }
+        return false;
+    }
 
     /**
      * Get single character parameter argument.
