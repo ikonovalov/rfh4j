@@ -25,7 +25,11 @@ public abstract class ExecutionContext {
         return consoleWriter;
     }
 
-    public void setQueueManager(MQQueueManager queueManager) {
+    /**
+     * Set active queue manager.
+     * @param queueManager
+     */
+    public final void setQueueManager(MQQueueManager queueManager) {
         this.queueManager = queueManager;
     }
 
@@ -33,10 +37,15 @@ public abstract class ExecutionContext {
      * Get current active WebSpehere MQ queue manager.
      * @return
      */
-    public MQQueueManager getQueueManager() {
+    public final MQQueueManager getQueueManager() {
         return queueManager;
     }
 
+    /**
+     * Check if context has specified option.
+     * @param opt option name (long name)
+     * @return
+     */
     public abstract boolean hasOption(String opt);
 
     public abstract boolean hasOption(char opt);

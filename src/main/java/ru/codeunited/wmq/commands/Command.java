@@ -7,6 +7,10 @@ package ru.codeunited.wmq.commands;
  */
 public interface Command {
 
+    /**
+     * Set current command context.
+     * @param context
+     */
     void setContext(ExecutionContext context);
 
     /**
