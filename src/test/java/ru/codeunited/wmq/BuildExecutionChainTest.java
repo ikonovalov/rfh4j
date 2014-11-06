@@ -3,6 +3,7 @@ package ru.codeunited.wmq;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
+import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 
 import java.util.Arrays;

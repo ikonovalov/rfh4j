@@ -1,6 +1,7 @@
-package ru.codeunited.wmq.commands;
+package ru.codeunited.wmq.cli;
 
 import org.apache.commons.cli.CommandLine;
+import ru.codeunited.wmq.ExecutionContext;
 
 /**
  * codeunited.ru

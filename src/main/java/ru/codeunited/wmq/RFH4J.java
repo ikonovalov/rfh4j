@@ -1,6 +1,7 @@
 package ru.codeunited.wmq;
 
 import org.apache.commons.cli.*;
+import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.commands.*;

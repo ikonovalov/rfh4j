@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.commands;
 
+import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.util.logging.Logger;

@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.commands;
+package ru.codeunited.wmq;
 
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.cli.ConsoleWriter;

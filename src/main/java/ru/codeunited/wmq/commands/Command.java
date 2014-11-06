@@ -1,5 +1,7 @@
 package ru.codeunited.wmq.commands;
 
+import ru.codeunited.wmq.ExecutionContext;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com

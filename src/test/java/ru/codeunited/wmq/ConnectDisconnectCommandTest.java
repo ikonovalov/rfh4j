@@ -5,6 +5,7 @@ import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
+import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 
 /**

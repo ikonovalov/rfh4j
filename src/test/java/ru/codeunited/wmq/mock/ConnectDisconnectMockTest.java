@@ -3,6 +3,7 @@ package ru.codeunited.wmq.mock;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import ru.codeunited.wmq.CLITestSupport;
+import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 
 /**

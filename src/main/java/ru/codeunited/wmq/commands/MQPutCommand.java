@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
+import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
