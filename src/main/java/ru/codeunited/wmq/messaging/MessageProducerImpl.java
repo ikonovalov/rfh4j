@@ -45,14 +45,15 @@ public class MessageProducerImpl implements MessageProducer {
     }
 
     @Override
-    public byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException {
+    public byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStreamToMessage(stream, message);
+        queue.put(message, options);
         return message.messageId;
     }
 
     @Override
-    public byte[] send(FileInputStream fileStream) throws IOException {
+    public byte[] send(FileInputStream fileStream) throws IOException, MQException {
         return send(fileStream, defaultPutSpec);
     }
 
