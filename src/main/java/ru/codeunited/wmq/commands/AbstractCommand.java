@@ -45,9 +45,10 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public void setContext(ExecutionContext context) {
+    public AbstractCommand setContext(ExecutionContext context) {
         if (selfStateCheckFailed())
             this.executionContext = context;
+        return this;
     }
 
     /**

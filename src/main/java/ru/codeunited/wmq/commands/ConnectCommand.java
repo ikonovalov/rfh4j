@@ -99,7 +99,7 @@ public class ConnectCommand extends AbstractCommand {
         // merged properties
         final Properties mergedProperties = mergeArguments();
 
-        LOG.info("Connecting with " + mergedProperties.toString());
+        LOG.info("Connecting to [" + mergedProperties.getProperty(QMANAGER) + "] with " + mergedProperties.toString());
 
         // perform connection
         try {

@@ -2,6 +2,7 @@ package ru.codeunited.wmq.cli;
 
 import org.apache.commons.cli.CommandLine;
 import ru.codeunited.wmq.ExecutionContext;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * codeunited.ru
@@ -33,5 +34,10 @@ public class CLIExecutionContext extends ExecutionContext {
 
     public String getOption(String option) {
         return commandLine.getOptionValue(option);
+    }
+
+    @Override
+    public ExecutionContext putOption(String key, String value) {
+        throw new NotImplementedException();
     }
 }

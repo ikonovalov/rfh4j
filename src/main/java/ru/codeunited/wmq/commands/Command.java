@@ -13,7 +13,7 @@ public interface Command {
      * Set current command context.
      * @param context
      */
-    void setContext(ExecutionContext context);
+    AbstractCommand setContext(ExecutionContext context);
 
     /**
      * Copy current command environment to another command.

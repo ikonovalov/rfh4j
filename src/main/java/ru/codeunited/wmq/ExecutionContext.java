@@ -73,4 +73,6 @@ public abstract class ExecutionContext {
      * @return String value of option if passed, null otherwise.
      */
     public abstract String getOption(String option);
+
+    public abstract ExecutionContext putOption(String key, String value);
 }
