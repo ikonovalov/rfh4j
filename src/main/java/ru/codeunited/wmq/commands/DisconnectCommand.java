@@ -35,9 +35,4 @@ public class DisconnectCommand extends AbstractCommand {
         }
         LOG.info("Perform disconnect.");
     }
-
-    @Override
-    public boolean resolve() {
-        return true;
-    }
 }

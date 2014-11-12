@@ -78,22 +78,12 @@ public class CommandChainMaker extends AbstractCommand {
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {
             try {
-                if (command.resolve()) {
-                    command.execute();
-                } else {
-                    LOG.warning("Command skipped! [" + command.getClass().getSimpleName() + "]");
-                }
+                command.execute();
             } catch (MissedParameterException | CommandGeneralException e) {
                 LOG.severe(e.getMessage());
                 throw e;
             }
 
         }
-    }
-
-    @Override
-    public boolean resolve() {
-        // always ready for action
-        return true;
     }
 }

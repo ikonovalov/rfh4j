@@ -43,9 +43,4 @@ public class MQPutCommand extends QueueCommand {
             throw new CommandGeneralException(e);
         }
     }
-
-    @Override
-    public boolean resolve() {
-        return true;
-    }
 }

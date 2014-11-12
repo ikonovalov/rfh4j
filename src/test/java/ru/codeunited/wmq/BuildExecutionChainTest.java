@@ -35,12 +35,6 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     }
 
-    public void assertThatCommandResolved(Command command) {
-        assertTrue(
-                "ConnectCommand not resolved",
-               command.resolve());
-    }
-
     @Test
     public void hasAnyOptions() throws ParseException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
@@ -86,15 +80,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
         // check ConnectCommand position and resolve it
         Command unknownCommand0 = commands.get(0);
         assertThatCommandInstanceOf(unknownCommand0, ConnectCommand.class);
-        assertThatCommandResolved(unknownCommand0);
 
         Command unknownCommand1 = commands.get(1);
         assertThatCommandInstanceOf(unknownCommand1, MQPutCommand.class);
-        assertThatCommandResolved(unknownCommand1);
 
         Command unknownCommand2 = commands.get(2);
         assertThatCommandInstanceOf(unknownCommand2, DisconnectCommand.class);
-        assertThatCommandResolved(unknownCommand2);
 
     }
 
@@ -114,15 +105,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
         // check ConnectCommand position and resolve it
         Command unknownCommand0 = commands.get(0);
         assertThatCommandInstanceOf(unknownCommand0, ConnectCommand.class);
-        assertThatCommandResolved(unknownCommand0);
 
         Command unknownCommand1 = commands.get(1);
         assertThatCommandInstanceOf(unknownCommand1, MQPutCommand.class);
-        assertThatCommandResolved(unknownCommand1);
 
         Command unknownCommand2 = commands.get(2);
         assertThatCommandInstanceOf(unknownCommand2, DisconnectCommand.class);
-        assertThatCommandResolved(unknownCommand2);
 
     }
 

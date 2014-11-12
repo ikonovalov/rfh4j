@@ -116,9 +116,4 @@ public class ConnectCommand extends AbstractCommand {
             throw new CommandGeneralException(e);
         }
     }
-
-    @Override
-    public boolean resolve() {
-        return true;
-    }
 }
