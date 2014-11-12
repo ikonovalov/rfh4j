@@ -26,13 +26,12 @@ public class DisconnectCommand extends AbstractCommand {
                 if (mqQueueManager.isConnected()) {
                     throw new CommandGeneralException(mqQueueManager.getName() + " still connected but was performed disconnect.");
                 }
-                console.writeln("[" + mqQueueManager.getName() + "] disconnected");
+                LOG.fine("[" + mqQueueManager.getName() + "] disconnected");
             } catch (MQException e) {
                 LOG.severe(e.getMessage());
                 console.errorln(e.getMessage());
                 throw new CommandGeneralException(e);
             }
         }
-        LOG.info("Perform disconnect.");
     }
 }
