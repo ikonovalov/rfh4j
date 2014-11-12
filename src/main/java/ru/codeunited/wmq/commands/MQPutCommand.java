@@ -17,6 +17,10 @@ import java.util.UUID;
  */
 public class MQPutCommand extends QueueCommand {
 
+    private static final char FILE_PAYLOAD = 'p';
+
+    private static final char TEXT_PAYLOAD = 't';
+
     @Override
     public void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
@@ -26,14 +30,14 @@ public class MQPutCommand extends QueueCommand {
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
             byte[] messageId;
             // handle payload parameters
-            if (ctx.hasOption('p')) { // file payload
-                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption('p'))) {
+            if (ctx.hasOption(FILE_PAYLOAD)) { // file payload
+                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(FILE_PAYLOAD))) {
                     messageId = messageProducer.send(fileStream);
                 }
-            } else if (ctx.hasOption('t')) { // just text message
-                messageId = messageProducer.send(ctx.getOption('t'));
+            } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
+                messageId = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
             } else {
-                throw new MissedParameterException('p','t');
+                throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD);
             }
 
             console.table(getQueueManager().getName(), getDestinationQueueName(), "PUT", UUID.nameUUIDFromBytes(messageId).toString());

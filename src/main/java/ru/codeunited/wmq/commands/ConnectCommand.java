@@ -24,7 +24,7 @@ public class ConnectCommand extends AbstractCommand {
 
     private static final int DEFAULT_PORT = 1414;
 
-    public static final String QMANAGER = "qmanager";
+    public static final String QUEUE_MANAGER = "qmanager";
 
     private final WMQConnectionFactory connectionFactory;
 
@@ -65,8 +65,8 @@ public class ConnectCommand extends AbstractCommand {
         final ExecutionContext ctx = getExecutionContext();
         if (ctx.hasOption("channel"))
             passedProperties.put(CHANNEL_PROPERTY, ctx.getOption("channel"));
-        if (ctx.hasOption(QMANAGER))
-            passedProperties.put(QMANAGER, ctx.getOption(QMANAGER));
+        if (ctx.hasOption(QUEUE_MANAGER))
+            passedProperties.put(QUEUE_MANAGER, ctx.getOption(QUEUE_MANAGER));
         if (ctx.hasOption("host"))
             passedProperties.put(HOST_NAME_PROPERTY, ctx.getOption("host"));
         if (ctx.hasOption("port"))
@@ -99,11 +99,11 @@ public class ConnectCommand extends AbstractCommand {
         // merged properties
         final Properties mergedProperties = mergeArguments();
 
-        LOG.fine("Connecting to [" + mergedProperties.getProperty(QMANAGER) + "] with " + mergedProperties.toString());
+        LOG.fine("Connecting to [" + mergedProperties.getProperty(QUEUE_MANAGER) + "] with " + mergedProperties.toString());
 
         // perform connection
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(mergedProperties.getProperty(QMANAGER), mergedProperties);
+            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(mergedProperties.getProperty(QUEUE_MANAGER), mergedProperties);
             context.setQueueManager(mqQueueManager);
 
             // check connection
