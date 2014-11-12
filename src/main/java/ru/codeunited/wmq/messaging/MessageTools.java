@@ -76,7 +76,7 @@ public class MessageTools {
             totalBytes += readCount;
         }
 
-        LOG.info("File with size " + totalBytes + "b stored in a message.");
+        LOG.fine("File with size " + totalBytes + "b stored in a message.");
         return message;
     }
 

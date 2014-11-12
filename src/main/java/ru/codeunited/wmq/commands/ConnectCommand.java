@@ -99,7 +99,7 @@ public class ConnectCommand extends AbstractCommand {
         // merged properties
         final Properties mergedProperties = mergeArguments();
 
-        LOG.info("Connecting to [" + mergedProperties.getProperty(QMANAGER) + "] with " + mergedProperties.toString());
+        LOG.fine("Connecting to [" + mergedProperties.getProperty(QMANAGER) + "] with " + mergedProperties.toString());
 
         // perform connection
         try {
@@ -108,7 +108,7 @@ public class ConnectCommand extends AbstractCommand {
 
             // check connection
             if (mqQueueManager.isConnected()) {
-                console.writeln("[" + mqQueueManager.getName() + "] connected");
+                LOG.fine("[" + mqQueueManager.getName() + "] connected");
             } else {
                 throw new MQConnectionException("Connection performed but queue manager looks like disconnected");
             }

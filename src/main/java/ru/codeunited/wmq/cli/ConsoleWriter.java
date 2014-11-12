@@ -14,7 +14,9 @@ public class ConsoleWriter {
 
     private final PrintWriter errorWriter;
 
-    private String NL = "\n"; // next line
+    private static final char NL = '\n'; // next line
+
+    private static final char TAB = '\t';
 
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
@@ -24,14 +26,6 @@ public class ConsoleWriter {
     public ConsoleWriter(PrintWriter printWriter, PrintWriter errorWriter) {
         this.normalWriter = printWriter;
         this.errorWriter = errorWriter;
-    }
-
-    public String getNextLineMarker() {
-        return NL;
-    }
-
-    public void setNextLineMarkerL(String NL) {
-        this.NL = NL;
     }
 
     /**
@@ -47,8 +41,27 @@ public class ConsoleWriter {
         this(printWriter, printWriter);
     }
 
+    public ConsoleWriter table(String... delimited) {
+        for (int z = 0; z < delimited.length; z++) {
+            write(delimited[z]);
+            if (z < delimited.length)
+                write(TAB);
+        }
+        end();
+        return this;
+    }
+
+    public ConsoleWriter table(String string) {
+        return table(string.split("|"));
+    }
+
     public ConsoleWriter write(String string) {
         normalWriter.write(string);
+        return this;
+    }
+
+    public ConsoleWriter end() {
+        write(NL);
         return this;
     }
 
@@ -58,7 +71,7 @@ public class ConsoleWriter {
     }
 
     public ConsoleWriter writeln(String string) {
-        return write(string).write(NL);
+        return write(string).end();
     }
 
     public ConsoleWriter error(String string) {
@@ -73,6 +86,6 @@ public class ConsoleWriter {
     }
 
     public ConsoleWriter errorln(String message) {
-        return error(message).write(NL);
+        return error(message).end();
     }
 }

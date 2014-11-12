@@ -31,8 +31,8 @@ public class MessageProducerImpl implements MessageProducer {
         defaultPutSpec.options = defaultPutSpec.options | MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
     }
 
-    private byte[] putWithOptions(MQQueue mqQueue, MQMessage mqMessage) throws MQException {
-        mqQueue.put(mqMessage);
+    private byte[] putWithOptions(MQQueue mqQueue, MQMessage mqMessage, MQPutMessageOptions options) throws MQException {
+        mqQueue.put(mqMessage, options);
         return mqMessage.messageId;
     }
 
@@ -40,7 +40,7 @@ public class MessageProducerImpl implements MessageProducer {
     public byte[] send(String messageText, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStringToMessage(messageText, message);
-        queue.put(message, options);
+        putWithOptions(queue, message, options);
         return message.messageId;
     }
 
@@ -48,7 +48,7 @@ public class MessageProducerImpl implements MessageProducer {
     public byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStreamToMessage(stream, message);
-        queue.put(message, options);
+        putWithOptions(queue, message, options);
         return message.messageId;
     }
 

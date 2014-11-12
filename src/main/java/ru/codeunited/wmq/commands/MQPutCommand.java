@@ -36,7 +36,7 @@ public class MQPutCommand extends QueueCommand {
                 throw new MissedParameterException('p','t');
             }
 
-            console.writeln("Message PUT with messageId = " + UUID.nameUUIDFromBytes(messageId));
+            console.table(getQueueManager().getName(), getDestinationQueueName(), "PUT", UUID.nameUUIDFromBytes(messageId).toString());
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());
@@ -46,7 +46,6 @@ public class MQPutCommand extends QueueCommand {
 
     @Override
     public boolean resolve() {
-        final ExecutionContext ctx = getExecutionContext();
-        return ctx.hasOption("dstq") && (ctx.hasOption('p') || ctx.hasOption('t'));
+        return true;
     }
 }
