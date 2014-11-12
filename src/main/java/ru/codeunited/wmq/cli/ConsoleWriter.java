@@ -37,13 +37,9 @@ public class ConsoleWriter {
         this(printWriter, printWriter);
     }
 
-    public ConsoleWriter(PrintWriter printWriter) {
-        this(printWriter, printWriter);
-    }
-
     public ConsoleWriter table(String... delimited) {
         for (int z = 0; z < delimited.length; z++) {
-            write(delimited[z]);
+            printf("%-12s", delimited[z]);
             if (z < delimited.length)
                 write(TAB);
         }
@@ -53,6 +49,11 @@ public class ConsoleWriter {
 
     public ConsoleWriter table(String string) {
         return table(string.split("|"));
+    }
+
+    public ConsoleWriter printf(String format, String string) {
+        normalWriter.printf(format, string);
+        return this;
     }
 
     public ConsoleWriter write(String string) {

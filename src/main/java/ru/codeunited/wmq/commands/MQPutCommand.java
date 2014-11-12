@@ -40,7 +40,7 @@ public class MQPutCommand extends QueueCommand {
                 throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD);
             }
 
-            console.table(getQueueManager().getName(), getDestinationQueueName(), "PUT", UUID.nameUUIDFromBytes(messageId).toString());
+            console.table("PUT", getQueueManager().getName(), getDestinationQueueName(), UUID.nameUUIDFromBytes(messageId).toString());
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());

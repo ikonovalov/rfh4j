@@ -99,13 +99,15 @@ public class ConnectCommand extends AbstractCommand {
         // merged properties
         final Properties mergedProperties = mergeArguments();
 
-        LOG.fine("Connecting to [" + mergedProperties.getProperty(QUEUE_MANAGER) + "] with " + mergedProperties.toString());
+        final String queueManagerName = mergedProperties.getProperty(QUEUE_MANAGER);
+
+        LOG.fine("Connecting to [" + queueManagerName + "] with " + mergedProperties.toString());
 
         // perform connection
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(mergedProperties.getProperty(QUEUE_MANAGER), mergedProperties);
+            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, mergedProperties);
             context.setQueueManager(mqQueueManager);
-
+            console.table("CONNECT", queueManagerName);
             // check connection
             if (mqQueueManager.isConnected()) {
                 LOG.fine("[" + mqQueueManager.getName() + "] connected");
