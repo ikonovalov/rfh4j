@@ -10,6 +10,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
 
+import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -40,7 +42,7 @@ public class MQPutCommand extends QueueCommand {
                 throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD);
             }
 
-            console.table("PUT", getQueueManager().getName(), getDestinationQueueName(), UUID.nameUUIDFromBytes(messageId).toString());
+            console.table("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(messageId));
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());
