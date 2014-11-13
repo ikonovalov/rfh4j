@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.restapi;
 
-import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
@@ -24,15 +23,14 @@ public class MQSerivce extends ContextAwareService {
     @Path("/{qmanager}/{channel}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response mqm(@PathParam("qmanager") String qmName, @PathParam("channel") String channel) throws MissedParameterException, CommandGeneralException {
-        long start = System.currentTimeMillis();
         final ExecutionContext context = getContext()
                 .putOption("qmanager", qmName)
                 .putOption("channel", channel);
         final Command connect = new ConnectCommand(new WMQDefaultConnectionFactory()).setContext(context);
-        final ReturnCode codeConnect = connect.execute();
+        connect.execute();
 
         final Command disconnect = new DisconnectCommand().setContext(context);
-        final ReturnCode disconnectCode = disconnect.execute();
+        disconnect.execute();
         return Response.ok(new Message("hello")).build();
     }
 
