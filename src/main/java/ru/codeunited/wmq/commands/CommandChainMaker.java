@@ -77,12 +77,7 @@ public class CommandChainMaker extends AbstractCommand {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {
-            try {
-                command.execute();
-            } catch (MissedParameterException | CommandGeneralException e) {
-                LOG.severe(e.getMessage());
-                throw e;
-            }
+            command.execute();
 
         }
     }
