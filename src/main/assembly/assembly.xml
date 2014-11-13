@@ -28,6 +28,7 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>rfh4j.sh</include>
+                <include>rfh4jetty.sh</include>
             </includes>
         </fileSet>
         <!-- adds jar package to the root directory of zip package -->
