@@ -28,7 +28,7 @@ public interface MessageProducer {
      * @param options for example MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT
      * @return byte[] of messageId
      */
-    byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException;
+    byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException;
 
     /**
      * Send message with a byte steam payload using default put parameters.
@@ -36,7 +36,7 @@ public interface MessageProducer {
      * @return byte[] of a messageId.
      * @throws IOException
      */
-    byte[] send(FileInputStream fileStream) throws IOException;
+    byte[] send(FileInputStream fileStream) throws IOException, MQException;
 
     /**
      * Send message with a text payload on a board.

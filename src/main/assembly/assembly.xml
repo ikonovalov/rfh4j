@@ -28,6 +28,7 @@
             <outputDirectory></outputDirectory>
             <includes>
                 <include>rfh4j.sh</include>
+                <include>default.properties</include>
                 <include>rfh4jetty.sh</include>
             </includes>
         </fileSet>

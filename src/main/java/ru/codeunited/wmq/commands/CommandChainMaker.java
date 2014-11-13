@@ -23,7 +23,7 @@ public class CommandChainMaker extends AbstractCommand {
         if (selfStateCheckOK()) {
             copyEnvironmentTo(command);
             commandChain.add(index, command);
-            LOG.info("Adding " + command.getClass().getSimpleName() + " to chain...");
+            LOG.fine("Adding " + command.getClass().getSimpleName() + " to chain...");
         } else {
             throw new IllegalStateException("CommandMaker is in invalid state. Some basic parameters are not set.");
         }
@@ -77,23 +77,8 @@ public class CommandChainMaker extends AbstractCommand {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {
-            try {
-                if (command.resolve()) {
-                    command.execute();
-                } else {
-                    LOG.warning("Command skipped! [" + command.getClass().getSimpleName() + "]");
-                }
-            } catch (MissedParameterException | CommandGeneralException e) {
-                LOG.severe(e.getMessage());
-                throw e;
-            }
+            command.execute();
 
         }
-    }
-
-    @Override
-    public boolean resolve() {
-        // always ready for action
-        return true;
     }
 }

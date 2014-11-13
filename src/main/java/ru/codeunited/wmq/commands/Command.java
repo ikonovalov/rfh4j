@@ -31,12 +31,6 @@ public interface Command {
     ReturnCode execute() throws CommandGeneralException, MissedParameterException;
 
     /**
-     * Analize input parameters and current environment and work decision.
-     * @return true if command can be executed and false if not.
-     */
-    boolean resolve();
-
-    /**
      * Get current Command state.
      * @see ru.codeunited.wmq.commands.ReturnCode
      * @return current ru.codeunited.wmq.commands.ReturnCode

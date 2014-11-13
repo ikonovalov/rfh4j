@@ -92,7 +92,7 @@ public abstract class AbstractCommand implements Command {
         if (newState != null && currentState == newState) {
             LOG.warning(implClassName + " perform strange state changing form " + currentState + " to " + newState);
         } else {
-            LOG.info(implClassName + " changing state [" + getState() + "] -> [" + newState + "]");
+            LOG.fine(implClassName + " changing state [" + getState() + "] -> [" + newState + "]");
             this.currentState = newState;
         }
 
