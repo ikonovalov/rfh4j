@@ -20,16 +20,21 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
     }
 
     @Override
-    public CommandChainMaker buildChain() {
+    public CommandChainMaker buildChain() throws MissedParameterException {
         final CommandChainMaker chain = new CommandChainMaker(executionContext);
-        // just a scratch
+
+        // create connect/disconnect commands
         if (executionContext.hasOption('Q') || executionContext.hasOption("config")) { // need to connect to queue manager
             chain
                     .addCommand(new ConnectCommand())
                     .addCommand(new DisconnectCommand());
+        } else {
+            // this is mandatory arguments (one and two)
+            throw new MissedParameterException("qmanager", "config");
         }
 
-        if (executionContext.hasOption("--dstq") && (executionContext.hasAnyOption('t', 'p') )) {
+        // insert PUT command
+        if (executionContext.hasOption("dstq") && (executionContext.hasAnyOption('t', 'p', 's') )) {
             chain.addAfter(new MQPutCommand(), chain.getCommandChain().get(0));
         }
 

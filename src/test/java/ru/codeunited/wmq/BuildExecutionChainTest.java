@@ -37,18 +37,28 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     @Test
     public void hasAnyOptions() throws ParseException {
-        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN -s");
         ExecutionContext context = new CLIExecutionContext(commandLine);
+
+        // check combination
         assertThat(context.hasAnyOption('Q', 'c'), is(true));
         assertThat(context.hasAnyOption('p', 'c'), is(true));
         assertThat(context.hasAnyOption('p', 'Q'), is(true));
         assertThat(context.hasAnyOption('t', 'p', 'Q'), is(true));
         assertThat(context.hasAnyOption('p', 't'), is(false));
+        assertThat(context.hasAnyOption('Q', 's'), is(true));
+
+        // check long name notation
+        assertThat(context.hasOption("stream"), is(true));
+        assertThat(context.hasOption("qmanager"), is(true));
+        assertThat(context.hasOption("channel"), is(true));
+        assertThat(context.hasOption("host"), is(false));
+        assertThat(context.hasOption("help"), is(false));
     }
 
 
     @Test
-    public void ConnectDisconnectContainsAndResolve() throws ParseException {
+    public void ConnectDisconnectContainsAndResolveWithPassedArgs() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
@@ -65,7 +75,30 @@ public class BuildExecutionChainTest extends CLITestSupport {
     }
 
     @Test
-    public void MQPutTextContainsAndResolve() throws ParseException {
+    public void ConnectDisconnectContainsAndResolveWithConfig() throws ParseException, MissedParameterException {
+        final CommandLine commandLine = prepareCommandLine("--config def.props -c JVM.DEF.SVRCONN");
+
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
+
+        final CommandChainMaker chain = executionPlanBuilder.buildChain();
+
+        final List<Command> commands = chain.getCommandChain();
+
+        // check total commands size
+        assertThat("Wrong commands list size", commands.size(), is(2));
+
+        // check that ConnectCommand and DisconnectCommand is a right position and resolve it
+        assertThatCommandInstanceOf(commands, ConnectCommand.class, DisconnectCommand.class);
+    }
+
+    @Test(expected = MissedParameterException.class)
+    public void ConnectFailedWithoutConfig() throws ParseException, MissedParameterException {
+        final CommandLine commandLine = prepareCommandLine("--dstq Q1 -t hello");
+        new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
+    }
+
+    @Test
+    public void MQPutTextContainsAndResolve() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -t Hello");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
@@ -90,7 +123,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
     }
 
     @Test
-    public void MQPutFileContainsAndResolve() throws ParseException {
+    public void MQPutFileContainsAndResolve() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -p /tmp/some.file");
         assertTrue(commandLine.hasOption("dstq"));
 

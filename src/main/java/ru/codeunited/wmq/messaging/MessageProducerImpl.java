@@ -53,7 +53,7 @@ public class MessageProducerImpl implements MessageProducer {
     }
 
     @Override
-    public byte[] send(FileInputStream fileStream) throws IOException, MQException {
+    public byte[] send(InputStream fileStream) throws IOException, MQException {
         return send(fileStream, defaultPutSpec);
     }
 

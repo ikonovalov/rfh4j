@@ -54,7 +54,7 @@ public class CommandChainMaker extends AbstractCommand {
             addCommand(newCommand);
         } else { // insert after
             for (int z = 0; z < commandChain.size(); z++) {
-                if (afterThat == commandChain.get(z)) {
+                if (afterThat == commandChain.get(z)) { // compare instances!
                     addCommand(z + 1, newCommand);
                     break;
                 }

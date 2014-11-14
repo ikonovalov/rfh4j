@@ -25,6 +25,8 @@ public class ConnectCommand extends AbstractCommand {
 
     private static final int DEFAULT_PORT = 1414;
 
+    private static final String DEFAULT_CHANNEL = "SYSTEM.DEF.SVRCONN";
+
     public static final String QUEUE_MANAGER = "qmanager";
 
     public static final String CONFIG_OPTION = "config";
@@ -41,6 +43,7 @@ public class ConnectCommand extends AbstractCommand {
         defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
         defaultProperties.put(CMQC.PORT_PROPERTY, DEFAULT_PORT);
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
+        defaultProperties.put(CHANNEL_PROPERTY, DEFAULT_CHANNEL);
     }
 
     public ConnectCommand() {

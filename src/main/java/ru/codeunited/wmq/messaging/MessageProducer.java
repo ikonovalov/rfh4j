@@ -36,7 +36,7 @@ public interface MessageProducer {
      * @return byte[] of a messageId.
      * @throws IOException
      */
-    byte[] send(FileInputStream fileStream) throws IOException, MQException;
+    byte[] send(InputStream fileStream) throws IOException, MQException;
 
     /**
      * Send message with a text payload on a board.

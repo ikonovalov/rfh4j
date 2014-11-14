@@ -11,6 +11,10 @@ import java.io.PrintWriter;
  */
 public class CLIFactory {
 
+    private static final boolean YES = true;
+
+    private static final boolean NO = false;
+
     private CLIFactory() {
 
     }
@@ -27,7 +31,7 @@ public class CLIFactory {
                 .withArgName("channel")
                 .withDescription("WMQ SVRCON channel name")
                 .withLongOpt("channel")
-                .hasArg(true)
+                .hasArg(YES)
                 .isRequired(false)
                 .create('c');
 
@@ -35,7 +39,7 @@ public class CLIFactory {
                 .withArgName("qmanager")
                 .withDescription("WMQ queue manager name")
                 .withLongOpt("qmanager")
-                .hasArg(true)
+                .hasArg(YES)
                 .isRequired(false)
                 .create('Q');
 
@@ -44,7 +48,7 @@ public class CLIFactory {
                 .withDescription("WMQ QM host name or ip address. localhost is default")
                 .withLongOpt("host")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('H');
 
         final Option port = OptionBuilder
@@ -52,7 +56,7 @@ public class CLIFactory {
                 .withDescription("WMQ QM listener port. 1414 is default.")
                 .withLongOpt("host")
                 .withType(Integer.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('P');
 
         final Option user = OptionBuilder
@@ -60,7 +64,7 @@ public class CLIFactory {
                 .withDescription("WMQ QM user.")
                 .withLongOpt("user")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('u');
 
         final Option destQueue = OptionBuilder
@@ -68,7 +72,7 @@ public class CLIFactory {
                 .withDescription("Destination queue")
                 .withLongOpt("dstq")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create();
 
         final Option config = OptionBuilder
@@ -76,7 +80,7 @@ public class CLIFactory {
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
                 .withLongOpt("config")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create();
 
         // message payload group
@@ -85,16 +89,24 @@ public class CLIFactory {
                 .withArgName("file")
                 .withDescription("file to send")
                 .withLongOpt("payload")
-                .hasArg(true)
+                .hasArg(YES)
                 .create('p');
 
         final Option textMessage = OptionBuilder
                 .withArgName("text")
                 .withDescription("text for message")
                 .withLongOpt("text")
-                .hasArg(true)
+                .hasArg(YES)
                 .create('t');
-        messagePayload.addOption(textMessage).addOption(filePayload);
+
+        final Option redirectedStream = OptionBuilder
+                .withArgName("stream")
+                .withDescription("stream for message")
+                .withLongOpt("stream")
+                .hasArg(NO)
+                .create('s');
+
+        messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 

@@ -53,9 +53,9 @@ public class PutCommandTest extends CLITestSupport {
         try {
             maker.execute();
         } catch (MissedParameterException pe) {
-            final char[] ptParams = {'p','t'};
+            final char[] ptParams = {'p', 's', 't'};
             assertTrue(
-                    "Parameter -t or -p are missed, but we got another error here. [" + pe.getMessage() + "]",
+                    "Parameter -t or -p or -s are missed, but we got another error here. [" + pe.getMessage() + "]",
                     Arrays.equals(pe.getSingleCharName(), ptParams));
             exceptionOccured = true;
         }

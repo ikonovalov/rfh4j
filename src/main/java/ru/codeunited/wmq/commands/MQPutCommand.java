@@ -6,6 +6,8 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.UUID;
@@ -23,6 +25,8 @@ public class MQPutCommand extends QueueCommand {
 
     private static final char TEXT_PAYLOAD = 't';
 
+    private static final char STREAM_PAYLOAD = 's';
+
     @Override
     public void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
@@ -38,8 +42,12 @@ public class MQPutCommand extends QueueCommand {
                 }
             } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
                 messageId = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
+            } else if (ctx.hasOption('s')) {
+                try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
+                    messageId = messageProducer.send(bufferedInputStream);
+                }
             } else {
-                throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD);
+                throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD, STREAM_PAYLOAD);
             }
 
             console.table("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(messageId));
