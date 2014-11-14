@@ -2,6 +2,7 @@ package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
+import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
@@ -26,13 +27,19 @@ public class ConnectCommand extends AbstractCommand {
 
     public static final String QUEUE_MANAGER = "qmanager";
 
+    public static final String CONFIG_OPTION = "config";
+    public static final String CHANNEL_PROPERTY = "channel";
+    public static final String HOST_PROPERTY = "host";
+    public static final String PORT_PROPERTY = "port";
+    public static final String USER_PROPERTY = "user";
+
     private final WMQConnectionFactory connectionFactory;
 
     private final Properties defaultProperties = new Properties();
 
     {
         defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
-        defaultProperties.put(PORT_PROPERTY, DEFAULT_PORT);
+        defaultProperties.put(CMQC.PORT_PROPERTY, DEFAULT_PORT);
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
     }
 
@@ -47,12 +54,12 @@ public class ConnectCommand extends AbstractCommand {
     protected Properties configFileAsProperties() {
         final Properties fileProperties = new Properties();
         final ExecutionContext ctx = getExecutionContext();
-        if (ctx.hasOption("config")) {
-            try (final FileInputStream propertiesStream = new FileInputStream(ctx.getOption("config"))) {
+        if (ctx.hasOption(CONFIG_OPTION)) {
+            try (final FileInputStream propertiesStream = new FileInputStream(ctx.getOption(CONFIG_OPTION))) {
                 fileProperties.load(propertiesStream);
 
             /* fix port issue (String -> Integer) */
-                fileProperties.put(PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(PORT_PROPERTY)));
+                fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
             } catch (IOException e) {
                 LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
             }
@@ -63,16 +70,16 @@ public class ConnectCommand extends AbstractCommand {
     protected Properties passedArgumentsAsProperties() {
         final Properties passedProperties = new Properties();
         final ExecutionContext ctx = getExecutionContext();
-        if (ctx.hasOption("channel"))
-            passedProperties.put(CHANNEL_PROPERTY, ctx.getOption("channel"));
+        if (ctx.hasOption(CHANNEL_PROPERTY))
+            passedProperties.put(CMQC.CHANNEL_PROPERTY, ctx.getOption(CHANNEL_PROPERTY));
         if (ctx.hasOption(QUEUE_MANAGER))
             passedProperties.put(QUEUE_MANAGER, ctx.getOption(QUEUE_MANAGER));
-        if (ctx.hasOption("host"))
-            passedProperties.put(HOST_NAME_PROPERTY, ctx.getOption("host"));
-        if (ctx.hasOption("port"))
-            passedProperties.put(PORT_PROPERTY, Integer.valueOf(ctx.getOption("port")));
-        if (ctx.hasOption("user"))
-            passedProperties.put(USER_ID_PROPERTY, ctx.getOption("user"));
+        if (ctx.hasOption(HOST_PROPERTY))
+            passedProperties.put(HOST_NAME_PROPERTY, ctx.getOption(HOST_PROPERTY));
+        if (ctx.hasOption(PORT_PROPERTY))
+            passedProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(ctx.getOption(PORT_PROPERTY)));
+        if (ctx.hasOption(USER_PROPERTY))
+            passedProperties.put(USER_ID_PROPERTY, ctx.getOption(USER_PROPERTY));
         return passedProperties;
     }
 
