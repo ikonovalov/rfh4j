@@ -8,6 +8,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -34,6 +35,7 @@ public class ConnectCommand extends AbstractCommand {
     public static final String HOST_PROPERTY = "host";
     public static final String PORT_PROPERTY = "port";
     public static final String USER_PROPERTY = "user";
+    public static final String DEFAULT_CONFIG_PATH = "./default.properties";
 
     private final WMQConnectionFactory connectionFactory;
 
@@ -54,20 +56,36 @@ public class ConnectCommand extends AbstractCommand {
         this.connectionFactory = connectionFactory;
     }
 
-    protected Properties configFileAsProperties() {
+    private Properties loadFromFile(String filePath) {
         final Properties fileProperties = new Properties();
-        final ExecutionContext ctx = getExecutionContext();
-        if (ctx.hasOption(CONFIG_OPTION)) {
-            try (final FileInputStream propertiesStream = new FileInputStream(ctx.getOption(CONFIG_OPTION))) {
-                fileProperties.load(propertiesStream);
+        if (filePath == null)
+            return fileProperties;
+
+        try (final FileInputStream propertiesStream = new FileInputStream(filePath)) {
+            fileProperties.load(propertiesStream);
 
             /* fix port issue (String -> Integer) */
-                fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
-            } catch (IOException e) {
-                LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
-            }
+            fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
+        } catch (IOException e) {
+            LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
         }
         return fileProperties;
+    }
+
+    protected Properties configFileAsProperties() {
+        final ExecutionContext ctx = getExecutionContext();
+        String configPath = null;
+        if (ctx.hasOption(CONFIG_OPTION)) {
+            configPath = ctx.getOption(CONFIG_OPTION);
+        } else if (isDefaultConfigAvailable()) {
+            configPath = DEFAULT_CONFIG_PATH;
+        }
+        final Properties configFileProps = loadFromFile(configPath);
+        return configFileProps;
+    }
+
+    public static final boolean isDefaultConfigAvailable() {
+        return new File(DEFAULT_CONFIG_PATH).exists();
     }
 
     protected Properties passedArgumentsAsProperties() {

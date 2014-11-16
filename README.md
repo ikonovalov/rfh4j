@@ -6,7 +6,7 @@ __Examples:__
 
 * ./rfh4j.sh --config default.properties --dstq Q.APPLICATION_OUT -p ~/myfile.xml | awk '{print $4}'
 * ./rfh4j.sh -Q DEFQM -c JVM.DEF.SVRCONN --dstq Q.APPLICATION_OUT -t someText
-
+* ./rfh4j.sh --config default.properties --dstq Q1 -s < ~/developer/projects/MQCluster/src/spring.xml
 <pre><code>
 usage: rfh4j [-c <channel>] [--config <config_file>] [--dstq <queue>] [-H <hostname or IP>] -h | -Q <qmanager> [-P <port>] [-p <file> | -t <text>]   [-u <user>]
 Option description
