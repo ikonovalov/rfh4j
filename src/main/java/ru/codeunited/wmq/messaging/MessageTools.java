@@ -29,6 +29,7 @@ public class MessageTools {
     public static MQMessage createMessage(int charset) {
         final MQMessage message = new MQMessage();
         message.characterSet = charset;
+        message.persistence = MQPER_PERSISTENT;
         return message;
     }
 
