@@ -83,6 +83,7 @@ public class MessageTools {
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
+    // taken from http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
     public static String bytesToHex(byte[] bytes) {
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
