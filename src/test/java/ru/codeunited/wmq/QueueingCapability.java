@@ -1,6 +1,7 @@
 package ru.codeunited.wmq;
 
 import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
@@ -26,7 +27,7 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }
 
-    protected byte[] putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException {
+    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
         final Command cmd1 = new ConnectCommand().setContext(context);
@@ -35,13 +36,14 @@ public abstract class QueueingCapability extends CLITestSupport {
         cmd1.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
         // send first message
-        final byte[] messageID = consumer.send(text);
-        assertThat(messageID, notNullValue());
-        assertThat(messageID.length, is(24));
+        final MQMessage message = consumer.send(text);
+        assertThat(message, notNullValue());
+        assertThat(message.messageId, notNullValue());
+        assertThat(message.messageId.length, is(24));
         LOG.fine("Sent payload [" + text + "]");
 
         cmd2.execute();
-        return messageID;
+        return message;
     }
 
     protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException {

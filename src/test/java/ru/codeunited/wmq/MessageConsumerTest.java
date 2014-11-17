@@ -99,7 +99,7 @@ public class MessageConsumerTest extends QueueingCapability {
     @Test
     public void selectMessageByMessageID() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException {
 
-        final byte[] messageID = putMessages(QUEUE, MESSAGE);
+        final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
@@ -132,7 +132,7 @@ public class MessageConsumerTest extends QueueingCapability {
     @Test(expected = NoMessageAvailableException.class)
     public void selectMessageByMessageIDFail() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException {
 
-        final byte[] messageID = putMessages(QUEUE, MESSAGE);
+        final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
         messageID[10] = 0;
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());

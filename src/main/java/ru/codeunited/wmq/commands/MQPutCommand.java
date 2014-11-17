@@ -36,13 +36,13 @@ public class MQPutCommand extends QueueCommand {
             // handle payload parameters
             if (ctx.hasOption(FILE_PAYLOAD)) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(FILE_PAYLOAD))) {
-                    messageId = messageProducer.send(fileStream);
+                    messageId = messageProducer.send(fileStream).messageId;
                 }
             } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
-                messageId = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
+                messageId = messageProducer.send(ctx.getOption(TEXT_PAYLOAD)).messageId;;
             } else if (ctx.hasOption('s')) {
                 try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
-                    messageId = messageProducer.send(bufferedInputStream);
+                    messageId = messageProducer.send(bufferedInputStream).messageId;;
                 }
             } else {
                 throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD, STREAM_PAYLOAD);

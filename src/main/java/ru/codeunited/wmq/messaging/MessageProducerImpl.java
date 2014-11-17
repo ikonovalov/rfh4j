@@ -33,28 +33,28 @@ public class MessageProducerImpl implements MessageProducer {
     }
 
     @Override
-    public byte[] send(String messageText, MQPutMessageOptions options) throws IOException, MQException {
+    public MQMessage send(String messageText, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStringToMessage(messageText, message);
         putWithOptions(queue, message, options);
-        return message.messageId;
+        return message;
     }
 
     @Override
-    public byte[] send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
+    public MQMessage send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStreamToMessage(stream, message);
         putWithOptions(queue, message, options);
-        return message.messageId;
+        return message;
     }
 
     @Override
-    public byte[] send(InputStream fileStream) throws IOException, MQException {
+    public MQMessage send(InputStream fileStream) throws IOException, MQException {
         return send(fileStream, defaultPutSpec);
     }
 
     @Override
-    public byte[] send(String text) throws IOException, MQException {
+    public MQMessage send(String text) throws IOException, MQException {
         return send(text, defaultPutSpec);
     }
 }
