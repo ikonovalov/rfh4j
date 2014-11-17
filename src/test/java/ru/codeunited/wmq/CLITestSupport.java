@@ -43,7 +43,7 @@ public class CLITestSupport {
     }
 
     protected CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1".split(" ");
+        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1".split(" ");
         return prepareCommandLine(args);
     }
 

@@ -3,7 +3,6 @@ package ru.codeunited.wmq.messaging;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQPutMessageOptions;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -18,7 +17,7 @@ public interface MessageProducer {
      * Send message with a string payload
      * @param message
      * @param options
-     * @return
+     * @return MessageID bytes.
      */
     byte[] send(String message, MQPutMessageOptions options) throws IOException, MQException;
 

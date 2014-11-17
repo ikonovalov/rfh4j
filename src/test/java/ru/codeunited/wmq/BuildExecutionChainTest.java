@@ -93,13 +93,13 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     @Test(expected = MissedParameterException.class)
     public void ConnectFailedWithoutConfig() throws ParseException, MissedParameterException {
-        final CommandLine commandLine = prepareCommandLine("--dstq Q1 -t hello");
+        final CommandLine commandLine = prepareCommandLine("--dstq RFH.QTEST.QGENERAL1 -t hello");
         new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
     }
 
     @Test
     public void MQPutTextContainsAndResolve() throws ParseException, MissedParameterException {
-        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -t Hello");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1 -t Hello");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
@@ -124,7 +124,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     @Test
     public void MQPutFileContainsAndResolve() throws ParseException, MissedParameterException {
-        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq Q1 -p /tmp/some.file");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1 -p /tmp/some.file");
         assertTrue(commandLine.hasOption("dstq"));
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));

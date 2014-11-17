@@ -80,11 +80,10 @@ public class ConnectCommand extends AbstractCommand {
         } else if (isDefaultConfigAvailable()) {
             configPath = DEFAULT_CONFIG_PATH;
         }
-        final Properties configFileProps = loadFromFile(configPath);
-        return configFileProps;
+        return loadFromFile(configPath);
     }
 
-    public static final boolean isDefaultConfigAvailable() {
+    public static boolean isDefaultConfigAvailable() {
         return new File(DEFAULT_CONFIG_PATH).exists();
     }
 

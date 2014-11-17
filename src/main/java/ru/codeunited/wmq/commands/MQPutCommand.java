@@ -7,10 +7,8 @@ import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 

@@ -2,7 +2,6 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.*;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -17,13 +16,10 @@ public class MessageProducerImpl implements MessageProducer {
 
     private final MQQueue queue;
 
-    private final MQQueueManager queueManager;
-
     private final MQPutMessageOptions defaultPutSpec = new MQPutMessageOptions();
 
     public MessageProducerImpl(String queueName, MQQueueManager queueManager) throws MQException {
-        this.queueManager = queueManager;
-        this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT);
+        this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT | MQOO_FAIL_IF_QUIESCING);
         initialize();
     }
 

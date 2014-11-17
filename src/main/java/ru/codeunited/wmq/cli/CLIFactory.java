@@ -162,7 +162,7 @@ public class CLIFactory {
     public static String commandExamples() {
         return  "Usage examples:\n"
                 + "1) Send text message to queue (host, port, channel are default)\n"
-                + "rfh4j.sh -Q DEFQM --dstq Q1 -t hello!";
+                + "rfh4j.sh -Q DEFQM --dstq RFH.QTEST.QGENERAL1 -t hello!";
     }
 
 }
