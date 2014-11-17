@@ -179,7 +179,24 @@ public class MessageConsumerTest extends QueueingCapability {
             assertThat(consumer.depth(), is(0));
         } finally {
             cmd2.execute();
-            // remove putted message
+        }
+    }
+
+    @Test
+    public void discoverMaxDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException {
+        cleanupQueue(QUEUE);
+
+        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+
+        final Command cmd1 = new ConnectCommand().setContext(context);
+        final Command cmd2 = new DisconnectCommand().setContext(context);
+
+        cmd1.execute();
+        final MessageInspector consumer = getMessageInspector(QUEUE, context);
+        try {
+            assertThat(consumer.maxDepth(), is(5000));
+        } finally {
+            cmd2.execute();
         }
     }
 }
