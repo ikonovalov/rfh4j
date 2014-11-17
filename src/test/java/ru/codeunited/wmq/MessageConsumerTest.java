@@ -9,6 +9,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageInspector;
 import ru.codeunited.wmq.messaging.MessageSelector;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
@@ -169,7 +170,7 @@ public class MessageConsumerTest extends QueueingCapability {
         final Command cmd2 = new DisconnectCommand().setContext(context);
 
         cmd1.execute();
-        final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
+        final MessageInspector consumer = getMessageInspector(QUEUE, context);
         try {
             assertThat(consumer.depth(), is(0));
             putMessages(QUEUE, "Some text here");
@@ -179,7 +180,6 @@ public class MessageConsumerTest extends QueueingCapability {
         } finally {
             cmd2.execute();
             // remove putted message
-
         }
     }
 }

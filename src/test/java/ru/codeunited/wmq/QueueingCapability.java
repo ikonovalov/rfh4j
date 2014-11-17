@@ -27,6 +27,10 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }
 
+    protected MessageInspectorImpl getMessageInspector(String queue, ExecutionContext context) throws MQException {
+        return new MessageInspectorImpl(queue, context.getQueueManager());
+    }
+
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 

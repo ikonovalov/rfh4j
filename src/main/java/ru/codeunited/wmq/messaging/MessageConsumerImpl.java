@@ -23,7 +23,7 @@ public class MessageConsumerImpl implements MessageConsumer {
         /** MQOO_INPUT_AS_Q_DEF -- open queue to get message
          *  using queue-define default.
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, MQOO_INPUT_AS_Q_DEF | MQOO_INQUIRE | MQOO_FAIL_IF_QUIESCING);
+        this.queue = queueManager.accessQueue(queueName, MQOO_INPUT_AS_Q_DEF | MQOO_FAIL_IF_QUIESCING);
     }
 
     private MQMessage get(MQMessage message, MQGetMessageOptions getMessageOptions) throws NoMessageAvailableException, MQException {
@@ -71,10 +71,5 @@ public class MessageConsumerImpl implements MessageConsumer {
         final MQMessage message = new MQMessage();
         selector.setup(messageOptions, message);
         return get(message, messageOptions);
-    }
-
-    @Override
-    public int depth() throws MQException {
-        return queue.getCurrentDepth();
     }
 }
