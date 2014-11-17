@@ -34,4 +34,6 @@ public interface MessageConsumer {
     MQMessage get(int waitInterval) throws NoMessageAvailableException, MQException;
 
     MQMessage select(MessageSelector selector) throws NoMessageAvailableException, MQException;
+
+    int depth() throws MQException;
 }
