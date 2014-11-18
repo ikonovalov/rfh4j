@@ -2,7 +2,6 @@ package ru.codeunited.wmq.cli;
 
 import org.apache.commons.cli.CommandLine;
 import ru.codeunited.wmq.ExecutionContext;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * codeunited.ru
@@ -38,6 +37,6 @@ public class CLIExecutionContext extends ExecutionContext {
 
     @Override
     public ExecutionContext putOption(String key, String value) {
-        throw new NotImplementedException();
+        throw new RuntimeException("Pass options via CLI, not set in a program");
     }
 }
