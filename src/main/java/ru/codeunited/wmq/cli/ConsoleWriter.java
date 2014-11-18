@@ -42,6 +42,11 @@ public class ConsoleWriter {
         return this;
     }
 
+    /**
+     * Order of elements: OPERATION_NAME, QMANAGER_NAME, [Q_NAME], [MESSAGE_ID]
+     * @param delimited
+     * @return
+     */
     public ConsoleWriter table(String... delimited) {
         for (int z = 0; z < delimited.length; z++) {
             printf("%-20s", delimited[z]);

@@ -58,6 +58,14 @@ public abstract class ExecutionContext {
         return false;
     }
 
+    public boolean hasAnyOption(String...opts) {
+        for (String s : opts) {
+            if (hasOption(s))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Get single character parameter argument.
      *

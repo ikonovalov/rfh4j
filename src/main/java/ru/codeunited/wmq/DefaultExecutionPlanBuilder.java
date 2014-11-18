@@ -24,7 +24,7 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
         final CommandChainMaker chain = new CommandChainMaker(executionContext);
 
         // create connect/disconnect commands
-        if (executionContext.hasOption('Q') || executionContext.hasOption("config") || ConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
+        if (executionContext.hasOption("qmanager") || executionContext.hasOption("config") || ConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
             chain
                     .addCommand(new ConnectCommand())
                     .addCommand(new DisconnectCommand());
@@ -34,12 +34,12 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
         }
 
         // insert PUT command (if srcq not present) - simple PUT case
-        if (executionContext.hasOption("dstq") && !executionContext.hasOption("srcq") && (executionContext.hasAnyOption('t', 'p', 's') )) {
+        if (executionContext.hasOption("dstq") && !executionContext.hasOption("srcq") && (executionContext.hasAnyOption("text", "payload", "stream") )) {
             chain.addAfter(new MQPutCommand(), chain.getCommandChain().get(0));
         }
 
         // insert GET command (if dstq not present) - simple GET case
-        if (executionContext.hasOption("srcq") && !executionContext.hasOption("dstq") && (executionContext.hasAnyOption('p', 's') )) {
+        if (executionContext.hasOption("srcq") && !executionContext.hasOption("dstq") && (executionContext.hasAnyOption("payload", "stream") )) {
             chain.addAfter(new MQGetCommand(), chain.getCommandChain().get(0));
         }
 

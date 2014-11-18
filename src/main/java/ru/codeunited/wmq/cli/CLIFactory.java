@@ -36,41 +36,41 @@ public class CLIFactory {
                 .create('c');
 
         final Option queueManager = OptionBuilder
+                .withLongOpt("qmanager")
                 .withArgName("qmanager")
                 .withDescription("WMQ queue manager name")
-                .withLongOpt("qmanager")
                 .hasArg(YES)
                 .isRequired(NO)
                 .create('Q');
 
         final Option host = OptionBuilder
+                .withLongOpt("host")
                 .withArgName("hostname or IP")
                 .withDescription("WMQ QM host name or ip address (localhost is default).")
-                .withLongOpt("host")
                 .withType(String.class)
                 .hasArg(YES)
                 .create('H');
 
         final Option port = OptionBuilder
+                .withLongOpt("port")
                 .withArgName("port")
                 .withDescription("WMQ QM listener port (1414 is default).")
-                .withLongOpt("port")
                 .withType(Integer.class)
                 .hasArg(YES)
                 .create('P');
 
         final Option user = OptionBuilder
+                .withLongOpt("user")
                 .withArgName("user")
                 .withDescription("WMQ QM user.")
-                .withLongOpt("user")
                 .withType(String.class)
                 .hasArg(YES)
                 .create('u');
 
         final Option destQueue = OptionBuilder
+                .withLongOpt("dstq")
                 .withArgName("queue")
                 .withDescription("Destination queue")
-                .withLongOpt("dstq")
                 .withType(String.class)
                 .hasArg(YES)
                 .create();
@@ -92,9 +92,9 @@ public class CLIFactory {
                 .create('w');
 
         final Option config = OptionBuilder
+                .withLongOpt("config")
                 .withArgName("config_file")
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
-                .withLongOpt("config")
                 .withType(String.class)
                 .hasArg(YES)
                 .create();
@@ -102,23 +102,23 @@ public class CLIFactory {
         // message payload group
         final OptionGroup messagePayload = new OptionGroup();
         final Option filePayload = OptionBuilder
+                .withLongOpt("payload")
                 .withArgName("file")
                 .withDescription("File to send.")
-                .withLongOpt("payload")
-                .hasArg(YES)
+                .hasOptionalArg()
                 .create('p');
 
         final Option textMessage = OptionBuilder
+                .withLongOpt("text")
                 .withArgName("text")
                 .withDescription("Text for message.")
-                .withLongOpt("text")
                 .hasArg(YES)
                 .create('t');
 
         final Option redirectedStream = OptionBuilder
+                .withLongOpt("stream")
                 .withArgName("stream")
                 .withDescription("Stream for message (std in/out).")
-                .withLongOpt("stream")
                 .hasArg(NO)
                 .create('s');
 
