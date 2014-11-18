@@ -28,11 +28,11 @@ public class CLIFactory {
         final Options options = new Options();
 
         final Option channel = OptionBuilder
+                .withLongOpt("channel")
                 .withArgName("channel")
                 .withDescription("WMQ SVRCON channel name")
-                .withLongOpt("channel")
                 .hasArg(YES)
-                .isRequired(false)
+                .isRequired(NO)
                 .create('c');
 
         final Option queueManager = OptionBuilder
@@ -40,12 +40,12 @@ public class CLIFactory {
                 .withDescription("WMQ queue manager name")
                 .withLongOpt("qmanager")
                 .hasArg(YES)
-                .isRequired(false)
+                .isRequired(NO)
                 .create('Q');
 
         final Option host = OptionBuilder
                 .withArgName("hostname or IP")
-                .withDescription("WMQ QM host name or ip address. localhost is default")
+                .withDescription("WMQ QM host name or ip address (localhost is default).")
                 .withLongOpt("host")
                 .withType(String.class)
                 .hasArg(YES)
@@ -53,8 +53,8 @@ public class CLIFactory {
 
         final Option port = OptionBuilder
                 .withArgName("port")
-                .withDescription("WMQ QM listener port. 1414 is default.")
-                .withLongOpt("host")
+                .withDescription("WMQ QM listener port (1414 is default).")
+                .withLongOpt("port")
                 .withType(Integer.class)
                 .hasArg(YES)
                 .create('P');
@@ -75,6 +75,14 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option srcQueue = OptionBuilder
+                .withArgName("queue")
+                .withDescription("Source queue")
+                .withLongOpt("srcq")
+                .withType(String.class)
+                .hasArg(YES)
+                .create();
+
         final Option config = OptionBuilder
                 .withArgName("config_file")
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
@@ -87,21 +95,21 @@ public class CLIFactory {
         final OptionGroup messagePayload = new OptionGroup();
         final Option filePayload = OptionBuilder
                 .withArgName("file")
-                .withDescription("file to send")
+                .withDescription("File to send.")
                 .withLongOpt("payload")
                 .hasArg(YES)
                 .create('p');
 
         final Option textMessage = OptionBuilder
                 .withArgName("text")
-                .withDescription("text for message")
+                .withDescription("Text for message.")
                 .withLongOpt("text")
                 .hasArg(YES)
                 .create('t');
 
         final Option redirectedStream = OptionBuilder
                 .withArgName("stream")
-                .withDescription("stream for message")
+                .withDescription("Stream for message (std in/out).")
                 .withLongOpt("stream")
                 .hasArg(NO)
                 .create('s');
@@ -119,6 +127,7 @@ public class CLIFactory {
                 .addOption(user)
                 .addOption(config)
                 .addOption(destQueue)
+                .addOption(srcQueue)
                 .addOptionGroup(messagePayload);
 
         return options;

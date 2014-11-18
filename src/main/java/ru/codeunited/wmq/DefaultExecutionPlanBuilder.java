@@ -33,9 +33,14 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
             throw new MissedParameterException("qmanager", "config").withMessage("And default.properties not available also.");
         }
 
-        // insert PUT command
-        if (executionContext.hasOption("dstq") && (executionContext.hasAnyOption('t', 'p', 's') )) {
+        // insert PUT command (if srcq not present) - simple PUT case
+        if (executionContext.hasOption("dstq") && !executionContext.hasOption("srcq") && (executionContext.hasAnyOption('t', 'p', 's') )) {
             chain.addAfter(new MQPutCommand(), chain.getCommandChain().get(0));
+        }
+
+        // insert GET command (if dstq not present) - simple GET case
+        if (executionContext.hasOption("srcq") && !executionContext.hasOption("dstq") && (executionContext.hasAnyOption('p', 's') )) {
+            chain.addAfter(new MQGetCommand(), chain.getCommandChain().get(0));
         }
 
         LOG.fine("Command list: " + chain.getCommandChain().toString());

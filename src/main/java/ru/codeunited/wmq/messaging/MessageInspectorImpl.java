@@ -20,7 +20,7 @@ public class MessageInspectorImpl implements MessageInspector {
     public MessageInspectorImpl(String queueName, MQQueueManager queueManager) throws MQException {
         /** MQOO_INQUIRE -  inquire on a queue
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, MQOO_INQUIRE | MQOO_BROWSE | MQOO_FAIL_IF_QUIESCING);
+        this.queue = queueManager.accessQueue(queueName, MQOO_INQUIRE | MQOO_BROWSE | MQOO_FAIL_IF_QUIESCING); // MQOO_INPUT_SHARED?
     }
 
 

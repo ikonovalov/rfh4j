@@ -1,5 +1,8 @@
 package ru.codeunited.wmq.cli;
 
+import com.ibm.mq.MQMessage;
+
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
@@ -18,6 +21,8 @@ public class ConsoleWriter {
 
     private static final char TAB = '\t';
 
+    private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
+
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
         this.normalWriter = new PrintWriter(printWriter);
@@ -32,9 +37,14 @@ public class ConsoleWriter {
         this(printWriter, printWriter);
     }
 
+    public ConsoleWriter head() {
+        table("[command]", "[queue manager]", "[queue]", "[messageId]");
+        return this;
+    }
+
     public ConsoleWriter table(String... delimited) {
         for (int z = 0; z < delimited.length; z++) {
-            printf("%-12s", delimited[z]);
+            printf("%-20s", delimited[z]);
             if (z < delimited.length)
                 write(TAB);
         }
@@ -68,6 +78,13 @@ public class ConsoleWriter {
 
     public ConsoleWriter writeln(String string) {
         return write(string).end();
+    }
+
+    public ConsoleWriter write(MQMessage message) throws IOException {
+        writeln(BORDER);
+        writeln(message.readStringOfByteLength(message.getDataLength()));
+        writeln(BORDER);
+        return this;
     }
 
     public ConsoleWriter error(String string) {

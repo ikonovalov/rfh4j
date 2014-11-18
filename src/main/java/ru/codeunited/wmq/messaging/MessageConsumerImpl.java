@@ -13,6 +13,10 @@ public class MessageConsumerImpl implements MessageConsumer {
 
     private final MQQueue queue;
 
+    private final int DEFAILT_OPEN_OPTIONS = MQOO_FAIL_IF_QUIESCING | MQOO_INPUT_AS_Q_DEF;
+
+    private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_SYNCPOINT;
+
     /**
      * Create message consumer for a MQ queue.
      * @param queueName - name of a queue
@@ -23,7 +27,7 @@ public class MessageConsumerImpl implements MessageConsumer {
         /** MQOO_INPUT_AS_Q_DEF -- open queue to get message
          *  using queue-define default.
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, MQOO_INPUT_AS_Q_DEF | MQOO_FAIL_IF_QUIESCING);
+        this.queue = queueManager.accessQueue(queueName, DEFAILT_OPEN_OPTIONS);
     }
 
     private MQMessage get(MQMessage message, MQGetMessageOptions getMessageOptions) throws NoMessageAvailableException, MQException {
@@ -48,7 +52,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     public MQMessage get() throws NoMessageAvailableException, MQException {
         final MQGetMessageOptions messageOptions = new MQGetMessageOptions();
-        messageOptions.options = MQGMO_FAIL_IF_QUIESCING | MQGMO_NO_WAIT;
+        messageOptions.options = DEFAULT_GET_OPTIONS| MQGMO_NO_WAIT;
         //gmo.waitInterval = MQC.MQWI_UNLIMITED;
         return get(messageOptions);
     }
@@ -56,7 +60,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     public MQMessage get(int waitInterval) throws NoMessageAvailableException, MQException {
         final MQGetMessageOptions messageOptions = new MQGetMessageOptions();
-        messageOptions.options = MQGMO_FAIL_IF_QUIESCING | MQGMO_WAIT;
+        messageOptions.options = DEFAULT_GET_OPTIONS | MQGMO_WAIT;
         if (waitInterval < 0)
             messageOptions.waitInterval = MQWI_UNLIMITED;
         else
@@ -67,7 +71,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     public MQMessage select(MessageSelector selector) throws NoMessageAvailableException, MQException {
         final MQGetMessageOptions messageOptions = new MQGetMessageOptions();
-        messageOptions.options = messageOptions.options | MQGMO_FAIL_IF_QUIESCING | MQGMO_NO_WAIT;
+        messageOptions.options = DEFAULT_GET_OPTIONS | MQGMO_NO_WAIT;
         final MQMessage message = new MQMessage();
         selector.setup(messageOptions, message);
         return get(message, messageOptions);
