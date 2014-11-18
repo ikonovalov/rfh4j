@@ -23,11 +23,6 @@ public class ConsoleWriter {
         this.normalWriter = new PrintWriter(printWriter);
     }
 
-    public ConsoleWriter(PrintWriter printWriter, PrintWriter errorWriter) {
-        this.normalWriter = printWriter;
-        this.errorWriter = errorWriter;
-    }
-
     /**
      * Use same stream for normal output and errors.
      *
