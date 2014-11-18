@@ -52,6 +52,7 @@ public class ConsoleWriter {
         return this;
     }
 
+    @Deprecated
     public ConsoleWriter table(String string) {
         return table(string.split("|"));
     }

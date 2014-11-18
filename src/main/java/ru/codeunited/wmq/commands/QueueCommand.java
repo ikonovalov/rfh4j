@@ -34,6 +34,18 @@ public abstract class QueueCommand extends AbstractCommand {
         }
     }
 
+    public boolean shouldWait() {
+        return getExecutionContext().hasOption("wait");
+    }
+
+    public int waitTime() {
+        if (getExecutionContext().getOption("wait") == null) {
+            return -1;
+        } else {
+            return Integer.valueOf(getExecutionContext().getOption("wait"));
+        }
+    }
+
     public String getSourceQueueName() throws MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
         if (ctx.hasOption("srcq")) {

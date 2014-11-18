@@ -76,12 +76,20 @@ public class CLIFactory {
                 .create();
 
         final Option srcQueue = OptionBuilder
+                .withLongOpt("srcq")
                 .withArgName("queue")
                 .withDescription("Source queue")
-                .withLongOpt("srcq")
                 .withType(String.class)
                 .hasArg(YES)
                 .create();
+
+        final Option wait = OptionBuilder
+                .withLongOpt("wait")
+                .withArgName("milliseconds")
+                .withDescription("Wait specified amount of time.")
+                .withType(Integer.class)
+                .hasOptionalArg()
+                .create('w');
 
         final Option config = OptionBuilder
                 .withArgName("config_file")
@@ -128,6 +136,7 @@ public class CLIFactory {
                 .addOption(config)
                 .addOption(destQueue)
                 .addOption(srcQueue)
+                .addOption(wait)
                 .addOptionGroup(messagePayload);
 
         return options;

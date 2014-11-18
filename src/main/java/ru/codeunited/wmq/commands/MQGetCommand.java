@@ -19,6 +19,8 @@ import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
  */
 public class MQGetCommand extends QueueCommand {
 
+    public static final String GET_OPERATION_NAME = "GET";
+
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
@@ -28,12 +30,12 @@ public class MQGetCommand extends QueueCommand {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
             if (ctx.hasOption('s')) {
                 try {
-                    final MQMessage message = messageConsumer.get();
+                    final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
 
-                    console.table("GET", getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
+                    console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
                     console.write(message);
                 } catch (NoMessageAvailableException e) {
-                    console.table("GET", getQueueManager().getName(), sourceQueueName, "[EMPTY]");
+                    console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY]");
                 }
             }
         } catch (MQException | IOException e) {
