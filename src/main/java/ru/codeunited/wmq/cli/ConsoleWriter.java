@@ -2,6 +2,7 @@ package ru.codeunited.wmq.cli;
 
 import com.ibm.mq.MQMessage;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -11,7 +12,7 @@ import java.io.PrintWriter;
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class ConsoleWriter {
+public class ConsoleWriter implements Closeable {
 
     private final PrintWriter normalWriter;
 
@@ -106,5 +107,12 @@ public class ConsoleWriter {
 
     public ConsoleWriter errorln(String message) {
         return error(message).end();
+    }
+
+    @Override
+    public void close() throws IOException {
+        flush();
+        this.errorWriter.close();
+        this.normalWriter.close();
     }
 }

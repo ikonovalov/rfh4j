@@ -34,11 +34,19 @@ public abstract class QueueCommand extends AbstractCommand {
         }
     }
 
-    public boolean shouldWait() {
+    /**
+     * If passed --wait parameter.
+     * @return true if context has 'wait' option.
+     */
+    protected boolean shouldWait() {
         return getExecutionContext().hasOption("wait");
     }
 
-    public int waitTime() {
+    /**
+     * Return 'wait' parameter value.
+     * @return value or -1 if 'wait' passed without argument.
+     */
+    protected int waitTime() {
         if (getExecutionContext().getOption("wait") == null) {
             return -1;
         } else {

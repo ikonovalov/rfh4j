@@ -28,15 +28,15 @@ public class MQGetCommand extends QueueCommand {
         final String sourceQueueName = getSourceQueueName();
         try {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
-            if (ctx.hasOption('s')) {
-                try {
-                    final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
-
-                    console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
-                    console.write(message);
-                } catch (NoMessageAvailableException e) {
-                    console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY]");
+            try {
+                final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
+                if (ctx.hasOption('s')) { // standard output to std.out
+                    console
+                            .table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId))
+                            .write(message);
                 }
+            } catch (NoMessageAvailableException e) {
+                console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
             }
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());
