@@ -23,6 +23,34 @@ public abstract class QueueingCapability extends CLITestSupport {
 
     private static final Logger LOG = Logger.getLogger(QueueingCapability.class.getName());
 
+    protected static final int MESSAGE_ID_LENGTH = 24;
+
+    public static interface QueueWork {
+        public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
+    }
+
+    /**
+     * Wrap QueueWork.work in connection and disconnection boundaries.
+     * @param work
+     * @throws Exception
+     */
+    public void communication(QueueWork work) throws Exception {
+        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+
+        final Command cmd1 = new ConnectCommand().setContext(context);
+        final Command cmd2 = new DisconnectCommand().setContext(context);
+
+        cmd1.execute();
+        try {
+            work.work(context);
+        } catch (RuntimeException rte){
+            context.getQueueManager().backout();
+            throw rte;
+        } finally {
+            cmd2.execute();
+        }
+    }
+
     protected MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }

@@ -23,7 +23,7 @@ public class MessageProducerImpl implements MessageProducer {
         initialize();
     }
 
-    private void initialize() {
+    protected void initialize() {
         defaultPutSpec.options = defaultPutSpec.options | MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
     }
 
