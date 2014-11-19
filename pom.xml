@@ -61,6 +61,13 @@
             <systemPath>${mq.java.lib}/com.ibm.mq.jmqi.jar</systemPath>
         </dependency>
         <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>pcf</artifactId>
+            <version>${mq.version}</version>
+            <scope>system</scope>
+            <systemPath>${mq.java.lib}/com.ibm.mq.pcf.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>javax.resource</groupId>
             <artifactId>connector</artifactId>
             <version>${mq.version}</version>

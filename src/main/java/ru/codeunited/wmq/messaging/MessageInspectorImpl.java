@@ -4,9 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
 
-import static com.ibm.mq.constants.CMQC.MQOO_BROWSE;
-import static com.ibm.mq.constants.CMQC.MQOO_FAIL_IF_QUIESCING;
-import static com.ibm.mq.constants.CMQC.MQOO_INQUIRE;
+import static com.ibm.mq.constants.CMQC.*;
 
 /**
  * codeunited.ru

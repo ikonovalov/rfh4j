@@ -56,6 +56,27 @@ public class MessageProducerTest extends QueueingCapability {
         });
     }
 
+    @Test(timeout = 5000)
+    public void put100() throws Exception {
+        communication(new QueueWork() {
+
+            final int messageCount = 100;
+
+            @Override
+            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+                final MessageProducer producer = new MessageProducerImpl(QUEUE, context.getQueueManager());
+                int limit = messageCount;
+                while (limit-->0)
+                    producer.send("MSG");
+
+                final MessageInspector inspector = new MessageInspectorImpl(QUEUE, context.getQueueManager());
+                assertThat(inspector.depth(), is(messageCount));
+            }
+        });
+
+        cleanUp();
+    }
+
     @After
     @Before
     public void cleanUp() throws MissedParameterException, CommandGeneralException, MQException, ParseException {
