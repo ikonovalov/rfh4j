@@ -5,6 +5,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +26,29 @@ public class ManagerInspectorTest extends QueueingCapability {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
                 final ManagerInspector inspector = new ManagerInspectorImpl(context.getQueueManager());
-                final List<String> allQueues = inspector.listLocalQueues();
+                final List<Queue> allQueues = inspector.listLocalQueues();
                 assertThat(allQueues, notNullValue());
                 assertThat(allQueues.isEmpty(), not(true));
+            }
+        });
+    }
+
+    @Test
+    public void searchRFHQueues() throws Exception {
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+                final ManagerInspector inspector = new ManagerInspectorImpl(context.getQueueManager());
+                final List<Queue> rfhQueues = inspector.selectLocalQueues("RFH.*");
+                boolean notRFHQueue = false;
+                for (Queue queue : rfhQueues) {
+                    System.out.println(queue);
+                    if (!queue.getName().startsWith("RFH.")) {
+                        notRFHQueue = true;
+                        break;
+                    }
+                }
+                assertThat("Not RFH queue encountered at the search", notRFHQueue, not(true));
             }
         });
     }

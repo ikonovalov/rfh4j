@@ -4,10 +4,11 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFMessageAgent;
+import ru.codeunited.wmq.messaging.pcf.Filter;
+import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.ibm.mq.constants.CMQCFC.*;
@@ -21,13 +22,16 @@ public class ManagerInspectorImpl implements ManagerInspector {
 
     private final PCFMessageAgent pcfAgent;
 
+    private final MQQueueManager queueManager;
+
     public ManagerInspectorImpl(MQQueueManager queueManager) throws MQException {
         this.pcfAgent = new PCFMessageAgent(queueManager);
+        this.queueManager = queueManager;
     }
 
     @Override
-    public List<String> listLocalQueues() throws MQException, IOException {
-        return listLocalQueues("*");
+    public List<Queue> listLocalQueues() throws MQException, IOException {
+        return selectLocalQueues("*");
     }
 
     private PCFMessage[] query(PCFMessage request) throws MQException, IOException {
@@ -35,14 +39,22 @@ public class ManagerInspectorImpl implements ManagerInspector {
     }
 
     @Override
-    public List<String> listLocalQueues(String filter) throws MQException, IOException {
-        final PCFMessage request = new PCFMessage (MQCMD_INQUIRE_Q_NAMES);
+    public List<Queue> selectLocalQueues(String filter) throws MQException, IOException {
+        final PCFMessage request = new PCFMessage (Filter.QUEUE.object());
 
-        request.addParameter(MQCA_Q_NAME, "*");
+        request.addParameter(MQCA_Q_NAME, filter);
         request.addParameter(MQIA_Q_TYPE, MQQT_LOCAL);
 
         final PCFMessage[] responses = query(request);
         final String[] names = (String[]) responses[0].getParameterValue(MQCACF_Q_NAMES);
-        return Collections.unmodifiableList(Arrays.asList(names));
+        final List<Queue> queues = new ArrayList<>(names.length);
+        for (String queueName : names) {
+            final Queue queue = new Queue(queueName);
+            final MessageInspector inspector = new MessageInspectorImpl(queueName, queueManager);
+            queue.setDepth(inspector.depth());
+            queue.setMaxDepth(inspector.maxDepth());
+            queues.add(queue);
+        }
+        return queues;
     }
 }

@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
+import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,8 +13,8 @@ import java.util.List;
  */
 public interface ManagerInspector {
 
-    List<String> listLocalQueues() throws MQException, IOException;
+    List<Queue> listLocalQueues() throws MQException, IOException;
 
-    List<String> listLocalQueues(String filter) throws MQException, IOException;
+    List<Queue> selectLocalQueues(String filter) throws MQException, IOException;
 
 }
