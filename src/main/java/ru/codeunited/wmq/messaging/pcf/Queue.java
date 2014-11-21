@@ -13,12 +13,32 @@ public class Queue {
 
     private int maxDepth = -1;
 
+    private int inputCount = 0;
+
+    private int outputCount = 0;
+
     public Queue(String name) {
         this.name = name.trim();
     }
 
     public int getDepth() {
         return depth;
+    }
+
+    public int getInputCount() {
+        return inputCount;
+    }
+
+    public void setInputCount(int inputCount) {
+        this.inputCount = inputCount;
+    }
+
+    public int getOutputCount() {
+        return outputCount;
+    }
+
+    public void setOutputCount(int outputCount) {
+        this.outputCount = outputCount;
     }
 
     public String getName() {

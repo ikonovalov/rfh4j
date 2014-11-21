@@ -53,6 +53,8 @@ public class ManagerInspectorImpl implements ManagerInspector {
             final MessageInspector inspector = new MessageInspectorImpl(queueName, queueManager);
             queue.setDepth(inspector.depth());
             queue.setMaxDepth(inspector.maxDepth());
+            queue.setInputCount(inspector.openInputCount());
+            queue.setOutputCount(inspector.opentOutputCount());
             queues.add(queue);
         }
         return queues;

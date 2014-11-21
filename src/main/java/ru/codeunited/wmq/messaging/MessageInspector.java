@@ -13,4 +13,7 @@ public interface MessageInspector {
 
     int maxDepth() throws MQException;
 
+    int openInputCount() throws MQException;
+
+    int opentOutputCount() throws MQException;
 }

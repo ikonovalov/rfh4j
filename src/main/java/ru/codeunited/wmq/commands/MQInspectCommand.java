@@ -24,15 +24,19 @@ public class MQInspectCommand extends QueueCommand {
         final ConsoleWriter console = getConsoleWriter();
         final ExecutionContext ctx = getExecutionContext();
         try {
-            final String queueManagerName = getQueueManager().getName();
             final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
             if (ctx.hasOption("lslq")) {
-                console.head(TableName.QUEUE, TableName.CAPACITY);
+                console.head(TableName.QUEUE, TableName.CAPACITY, TableName.OPEN_INPUT, TableName.OPEN_OUTPUT);
                 final String filter = ctx.getOption("lslq", "*");
                 final List<Queue> queues = managerInspector.selectLocalQueues(filter);
                 for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
                     Queue next = iterator.next();
-                    console.table(next.getName(), next.getDepth() + "/" + next.getMaxDepth());
+                    console.table(
+                            next.getName(),
+                            next.getDepth() + "/" + next.getMaxDepth(),
+                            String.valueOf(next.getInputCount()),
+                            String.valueOf(next.getOutputCount())
+                    );
                 }
             }
             console.printTable();

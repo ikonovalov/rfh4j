@@ -31,4 +31,14 @@ public class MessageInspectorImpl implements MessageInspector {
     public int maxDepth() throws MQException {
         return queue.getMaximumDepth();
     }
+
+    @Override
+    public int openInputCount() throws MQException {
+        return queue.getOpenInputCount();
+    }
+
+    @Override
+    public int opentOutputCount() throws MQException {
+        return queue.getOpenOutputCount();
+    }
 }
