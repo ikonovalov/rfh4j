@@ -44,8 +44,6 @@ public class Queue {
 
         Queue queue = (Queue) o;
 
-        if (depth != queue.depth) return false;
-        if (maxDepth != queue.maxDepth) return false;
         if (!name.equals(queue.name)) return false;
 
         return true;
@@ -54,8 +52,6 @@ public class Queue {
     @Override
     public int hashCode() {
         int result = name.hashCode();
-        result = 31 * result + depth;
-        result = 31 * result + maxDepth;
         return result;
     }
 
