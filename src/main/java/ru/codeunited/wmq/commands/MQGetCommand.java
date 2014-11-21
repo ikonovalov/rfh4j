@@ -6,11 +6,15 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
+import ru.codeunited.wmq.messaging.MessageTools;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
+import java.io.File;
 import java.io.IOException;
 
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
+import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
+import static ru.codeunited.wmq.messaging.MessageTools.messageIdAsString;
 
 /**
  * codeunited.ru
@@ -30,10 +34,23 @@ public class MQGetCommand extends QueueCommand {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
             try {
                 final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
-                if (ctx.hasOption('s')) { // standard output to std.out
+                // print to std output (console)
+                if (ctx.hasOption("stream")) { // standard output to std.out
                     console
                             .table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId))
                             .write(message);
+                }
+                // print to a file (can used with conjunction with --stream)
+                if (ctx.hasOption("payload")) {
+                    File destination = new File(ctx.getOption("payload", fileNameForMessage(message)));
+
+                    // if payload specified as folder, then we need to append file name
+                    if (destination.exists() && destination.isDirectory()) {
+                        destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
+                    }
+
+                    MessageTools.writeMessageBodyToFile(message, destination);
+                    console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, messageIdAsString(message), "->", destination.getAbsolutePath());
                 }
             } catch (NoMessageAvailableException e) {
                 console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
