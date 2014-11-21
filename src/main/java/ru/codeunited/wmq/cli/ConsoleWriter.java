@@ -6,6 +6,13 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
+import static java.util.Arrays.copyOf;
+import static java.util.Arrays.fill;
 
 /**
  * codeunited.ru
@@ -24,6 +31,10 @@ public class ConsoleWriter implements Closeable {
 
     private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
 
+    private List<String[]> table = new ArrayList<>();
+
+    private TableName[] head;
+
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
         this.normalWriter = new PrintWriter(printWriter);
@@ -38,24 +49,113 @@ public class ConsoleWriter implements Closeable {
         this(printWriter, printWriter);
     }
 
-    public ConsoleWriter head() {
-        table("[command]", "[queue manager]", "[queue]", "[messageId]");
-        return this;
-    }
-
     /**
      * Order of elements: OPERATION_NAME, QMANAGER_NAME, [Q_NAME], [MESSAGE_ID]
      * @param delimited
      * @return
      */
     public ConsoleWriter table(String... delimited) {
-        for (int z = 0; z < delimited.length; z++) {
+        table.add(delimited);
+        /*for (int z = 0; z < delimited.length; z++) {
             printf("%-20s", delimited[z]);
             if (z < delimited.length)
                 write(TAB);
         }
+        end();*/
+        return this;
+    }
+
+    public ConsoleWriter head(TableName... head) {
+        this.head = head;
+        return this;
+    }
+
+    public ConsoleWriter printTable() {
+        final List<String[]> printableTable = new ArrayList<>(table.size() + 1);
+
+        // transform head to string array
+        if (head != null) {
+            String[] headNames = new String[head.length];
+            for (int i = 0; i < head.length; i++) {
+                TableName tableName = head[i];
+                headNames[i] = tableName.name();
+            }
+            printableTable.add(headNames);
+        }
+
+        // move all records to dedicated table
+        printableTable.addAll(table);
+
+        // determinate max width of a table
+        int maxTabelWidth = 0;
+        for (String[] row : printableTable) {
+            if (row.length > maxTabelWidth)
+                maxTabelWidth = row.length;
+        }
+
+        // arrange column width for max
+        final int[] columnsMaxWidth = new int[maxTabelWidth];
+        for (String[] row : printableTable) {
+            for (int i = 0; i < row.length; i++) {
+                String s = row[i];
+                if (s.length() > columnsMaxWidth[i])
+                    columnsMaxWidth[i] = s.length();
+            }
+        }
+
+        // create horizontal boarder
+        final String boarderH = createHorizontalBoarder(columnsMaxWidth, 2); // 2 means  ->|_string_|<-
+
+        // print header
+        //writef("+-----------------+------+%n");
+        //writef("| Column name     | ID   |%n");
+        //writef("+-----------------+------+%n");
+
+        // create format
+        String leftAlignFormat = "|";
+        for (int z = 0; z < maxTabelWidth; z++) {
+            leftAlignFormat += " %-" +(columnsMaxWidth[z])+ "s |";
+        }
+        leftAlignFormat += "%n";
+
+        // write top boarder
+        writef(boarderH);
+
+        // refill and print
+        boolean headerPrinted = false;
+        for (ListIterator<String[]> iterator = printableTable.listIterator(); iterator.hasNext(); ) {
+            final String[] row =  iterator.next();
+            final String[] rowResize = copyOf(row, maxTabelWidth);
+            fill(rowResize, row.length, maxTabelWidth, "");
+            writef(leftAlignFormat, rowResize);
+            if (!headerPrinted && head != null && iterator.nextIndex() == 1) {
+                writef(boarderH);
+                headerPrinted = true;
+            }
+        }
+
+        writef(boarderH);
+
+        // clear data
+        table.clear();
+        head = null;
         end();
         return this;
+    }
+
+    private String createHorizontalBoarder(int[] columnsMaxWidth, int additionalWidth) {
+        String boarderH = "";
+        for (int columnMaxWidth : columnsMaxWidth) {
+            char[] clnmHorizont = new char[columnMaxWidth + additionalWidth];
+            fill(clnmHorizont, '-');
+            boarderH += "+" + new String(clnmHorizont);
+        }
+        boarderH += "+%n";
+        return boarderH;
+    }
+
+    private void writef(String leftAlignFormat, String...rowResized) {
+        write(String.format(leftAlignFormat, rowResized));
     }
 
     @Deprecated

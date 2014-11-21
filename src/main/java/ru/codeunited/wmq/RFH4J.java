@@ -27,7 +27,6 @@ public class RFH4J {
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
                 context.setConsoleWriter(consoleWriter);
-                consoleWriter.head();
                 final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context);
                 final CommandChainMaker commandMaker = executionPlanBuilder.buildChain();
                 commandMaker.execute();
