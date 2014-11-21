@@ -43,6 +43,10 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
             chain.addAfter(new MQGetCommand(), chain.getCommandChain().get(0));
         }
 
+        if (executionContext.hasOption("lslq") && executionContext.hasntOption("srcq", "dstq")) {
+            chain.addAfter(new MQInspectCommand(), chain.getCommandChain().get(0));
+        }
+
         LOG.fine("Command list: " + chain.getCommandChain().toString());
 
         return chain;

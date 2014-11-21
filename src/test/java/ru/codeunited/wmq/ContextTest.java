@@ -1,5 +1,7 @@
 package ru.codeunited.wmq;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
@@ -12,7 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 15.11.14.
  */
-public class ContextTest {
+public class ContextTest extends CLITestSupport{
 
     @Test
     public void shouldHaveDefaultConsoleWriter() {
@@ -64,5 +66,19 @@ public class ContextTest {
         ctx.setConsoleWriter(cw);
         assertThat(ctx.getConsoleWriter(), notNullValue());
         assertThat(ctx.getConsoleWriter(), equalTo(cw));
+    }
+
+    @Test
+    public void testMultiOptsOperationsInContext() throws ParseException {
+        final CommandLine cli = prepareCommandLine("--config some.file --srcq Q1 --dstq --Q1 --lslq");
+        final ExecutionContext ctx = new CLIExecutionContext(cli);
+
+        assertThat(ctx.hasOption("lslq"), is(true));
+        assertThat(ctx.hasAnyOption("--wait", "--lslq"), is(true));
+        assertThat(ctx.hasAnyOption("wait", "lslq", "port"), is(true));
+        assertThat(ctx.hasntOption("--wait"), is(true));
+        assertThat(ctx.hasntOption("--wait", "port"), is(true));
+        assertThat(ctx.hasntOption("lslq", "port", "stream"), is(false));
+        assertThat(ctx.hasntOption("port", "stream"), is(true));
     }
 }

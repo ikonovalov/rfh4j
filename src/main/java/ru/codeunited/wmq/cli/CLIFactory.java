@@ -83,6 +83,14 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option lsLocalQueues = OptionBuilder
+                .withLongOpt("lslq")
+                .withArgName("pattern")
+                .withDescription("List localqueues with filter. Default value is * (means all).")
+                .withType(String.class)
+                .hasOptionalArg()
+                .create();
+
         final Option wait = OptionBuilder
                 .withLongOpt("wait")
                 .withArgName("milliseconds")
@@ -137,6 +145,7 @@ public class CLIFactory {
                 .addOption(destQueue)
                 .addOption(srcQueue)
                 .addOption(wait)
+                .addOption(lsLocalQueues)
                 .addOptionGroup(messagePayload);
 
         return options;

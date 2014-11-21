@@ -58,6 +58,10 @@ public abstract class ExecutionContext {
         return false;
     }
 
+    public boolean hasntOption(String...opts) {
+       return !hasAnyOption(opts);
+    }
+
     public boolean hasAnyOption(String...opts) {
         for (String s : opts) {
             if (hasOption(s))
@@ -96,7 +100,7 @@ public abstract class ExecutionContext {
     /**
      * Return option with default. If option exists in a context it returns value, if value is not present - return default.
      * @param option option key.
-     * @param defaultValue default value if option doesn't exists.
+     * @param defaultValue default value if option doesn't exists or passed without argument.
      * @return option value or default.
      */
     public String getOption(String option, String defaultValue) {
