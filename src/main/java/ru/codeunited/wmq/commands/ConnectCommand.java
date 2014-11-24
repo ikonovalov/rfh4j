@@ -5,7 +5,7 @@ import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.TableName;
+import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
@@ -122,7 +122,6 @@ public class ConnectCommand extends AbstractCommand {
     @Override
     protected void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
-        final ConsoleWriter console = getConsoleWriter();
         // TODO SHOULD BE MOVED TO SEPARATED METHODS AND HEAVY TESTED
         // merged properties
         final Properties mergedProperties = mergeArguments();
@@ -133,17 +132,8 @@ public class ConnectCommand extends AbstractCommand {
 
         // perform connection
         try {
-            long start = System.currentTimeMillis();
             final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, mergedProperties);
             context.setQueueManager(mqQueueManager);
-            console.head(TableName.ACTION, TableName.QMANAGER, TableName.DESCRIPTION, TableName.CHANNEL, TableName.TIME);
-            console.table(
-                    "CONNECT",
-                    queueManagerName,
-                    mqQueueManager.getDescription().trim(),
-                    mergedProperties.getProperty(CHANNEL_PROPERTY),
-                    String.valueOf(System.currentTimeMillis() - start) + "ms"
-            );
             // check connection
             if (mqQueueManager.isConnected()) {
                 LOG.fine("[" + mqQueueManager.getName() + "] connected");
@@ -153,6 +143,5 @@ public class ConnectCommand extends AbstractCommand {
         } catch (MQException e) {
             throw new CommandGeneralException(e);
         }
-        console.printTable();
     }
 }

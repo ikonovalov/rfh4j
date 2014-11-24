@@ -107,6 +107,12 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option verbose = OptionBuilder
+                .withLongOpt("verbose")
+                .withDescription("Print additional output")
+                .hasOptionalArg()
+                .create('v');
+
         // message payload group
         final OptionGroup messagePayload = new OptionGroup();
         final Option filePayload = OptionBuilder

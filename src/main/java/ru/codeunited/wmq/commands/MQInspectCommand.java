@@ -3,7 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.TableName;
+import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.pcf.Queue;
@@ -26,7 +26,7 @@ public class MQInspectCommand extends QueueCommand {
         try {
             final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
             if (ctx.hasOption("lslq")) {
-                console.head(TableName.QUEUE, TableName.CAPACITY, TableName.OPEN_INPUT, TableName.OPEN_OUTPUT);
+                console.head(TableColumnName.QUEUE, TableColumnName.CAPACITY, TableColumnName.OPEN_INPUT, TableColumnName.OPEN_OUTPUT);
                 final String filter = ctx.getOption("lslq", "*");
                 final List<Queue> queues = managerInspector.selectLocalQueues(filter);
                 for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {

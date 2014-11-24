@@ -1,8 +1,10 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
 
@@ -30,25 +32,29 @@ public class MQPutCommand extends QueueCommand {
         final ConsoleWriter console = getConsoleWriter();
         final ExecutionContext ctx = getExecutionContext();
         try {
+            console.head(TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.MSG_SIZE);
 
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
-            byte[] messageId;
+            MQMessage sentMessage = null;
             // handle payload parameters
             if (ctx.hasOption(FILE_PAYLOAD)) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(FILE_PAYLOAD))) {
-                    messageId = messageProducer.send(fileStream).messageId;
+                    sentMessage = messageProducer.send(fileStream);
                 }
             } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
-                messageId = messageProducer.send(ctx.getOption(TEXT_PAYLOAD)).messageId;;
+                sentMessage = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
             } else if (ctx.hasOption('s')) {
                 try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
-                    messageId = messageProducer.send(bufferedInputStream).messageId;;
+                    sentMessage = messageProducer.send(bufferedInputStream);
                 }
             } else {
                 throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD, STREAM_PAYLOAD);
             }
 
-            console.table("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(messageId));
+            console
+                    .table("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(sentMessage.messageId), sentMessage.getMessageLength() + "b")
+                    .printTable();
+
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());

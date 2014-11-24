@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -33,7 +33,7 @@ public class ConsoleWriter implements Closeable {
 
     private List<String[]> table = new ArrayList<>();
 
-    private TableName[] head;
+    private TableColumnName[] head;
 
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
@@ -65,7 +65,27 @@ public class ConsoleWriter implements Closeable {
         return this;
     }
 
-    public ConsoleWriter head(TableName... head) {
+    public ConsoleWriter tableAppendToLastRow(String...args) {
+        final int lastElementIndex = table.size() - 1;
+        final String[] oldRow = table.get(lastElementIndex);
+        String[] resultArray = concatArrays(oldRow, args);
+        table.set(lastElementIndex, resultArray);
+        return this;
+    }
+
+    protected String[] concatArrays(String[] oldRow, String[] args) {
+        final int oldRowLen = oldRow.length;
+        final String[] result = new String[oldRowLen + args.length];
+        for (int z = 0; z < oldRowLen; z++) {
+            result[z] = oldRow[z];
+        }
+        for (int z = oldRowLen; z < result.length; z++) {
+            result[z] = args[z - oldRowLen];
+        }
+        return result;
+    }
+
+    public ConsoleWriter head(TableColumnName... head) {
         this.head = head;
         return this;
     }
@@ -77,8 +97,8 @@ public class ConsoleWriter implements Closeable {
         if (head != null) {
             String[] headNames = new String[head.length];
             for (int i = 0; i < head.length; i++) {
-                TableName tableName = head[i];
-                headNames[i] = tableName.name();
+                TableColumnName tableColumnName = head[i];
+                headNames[i] = tableColumnName.name();
             }
             printableTable.add(headNames);
         }
@@ -191,6 +211,7 @@ public class ConsoleWriter implements Closeable {
         writeln(BORDER);
         writeln(message.readStringOfByteLength(message.getDataLength()));
         writeln(BORDER);
+        end();
         return this;
     }
 
