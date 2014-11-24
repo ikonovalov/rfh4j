@@ -5,7 +5,6 @@ import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.restapi.RestExecutionContext;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -52,13 +51,6 @@ public class ContextTest extends CLITestSupport{
     public void setConsoleWriterInCLIContext() {
         final ExecutionContext ctx = new CLIExecutionContext(null);
         final ConsoleWriter cw = new ConsoleWriter(System.out);
-        validateConsoleWriter(ctx, cw);
-    }
-
-    @Test
-    public void setConsoleWriterInRestContext() {
-        final ExecutionContext ctx = new RestExecutionContext(null);
-        final ConsoleWriter cw = new ConsoleWriter(System.err);
         validateConsoleWriter(ctx, cw);
     }
 
