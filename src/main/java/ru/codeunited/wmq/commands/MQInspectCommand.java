@@ -2,6 +2,7 @@ package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.ManagerInspector;
@@ -22,16 +23,17 @@ public class MQInspectCommand extends QueueCommand {
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
+        final ConsoleTable table = console.createTable(TableColumnName.QUEUE, TableColumnName.CAPACITY, TableColumnName.OPEN_INPUT, TableColumnName.OPEN_OUTPUT);
+
         final ExecutionContext ctx = getExecutionContext();
         try {
             final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
             if (ctx.hasOption("lslq")) {
-                console.head(TableColumnName.QUEUE, TableColumnName.CAPACITY, TableColumnName.OPEN_INPUT, TableColumnName.OPEN_OUTPUT);
                 final String filter = ctx.getOption("lslq", "*");
                 final List<Queue> queues = managerInspector.selectLocalQueues(filter);
                 for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
                     Queue next = iterator.next();
-                    console.table(
+                    table.append(
                             next.getName(),
                             next.getDepth() + "/" + next.getMaxDepth(),
                             String.valueOf(next.getInputCount()),
@@ -39,7 +41,7 @@ public class MQInspectCommand extends QueueCommand {
                     );
                 }
             }
-            console.printTable();
+            table.flash();
 
         } catch (IOException| MQException e) {
         LOG.severe(e.getMessage());

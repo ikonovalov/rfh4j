@@ -3,6 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageConsumer;
@@ -15,7 +16,6 @@ import java.io.IOException;
 
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
-import static ru.codeunited.wmq.messaging.MessageTools.messageIdAsString;
 
 /**
  * codeunited.ru
@@ -29,21 +29,23 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
+        final ConsoleTable table = console.createTable(
+                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.OUTPUT);
+
         final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
+
         try {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
             try {
                 final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
-                console.head(TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.OUTPUT);
-                console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
+
+                table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
 
                 // print to std output (console)
                 if (ctx.hasOption("stream")) { // standard output to std.out
-                    console
-                            .tableAppendToLastRow("<stream>")
-                            .printTable()
-                            .write(message);
+                    table.appendToLastRow("<stream>").flash();
+                    console.write(message);
                 }
                 
                 // print to a file (can used with conjunction with --stream)
@@ -55,12 +57,10 @@ public class MQGetCommand extends QueueCommand {
                         destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
                     }
                     MessageTools.writeMessageBodyToFile(message, destination);
-                    console
-                            .tableAppendToLastRow(destination.getAbsolutePath())
-                            .printTable();
+                    table.appendToLastRow(destination.getAbsolutePath()).flash();
                 }
             } catch (NoMessageAvailableException e) {
-                console.table(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
+                table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]").flash();
             }
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());

@@ -3,6 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageProducer;
@@ -30,10 +31,10 @@ public class MQPutCommand extends QueueCommand {
     @Override
     public void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
+        final ConsoleTable table = console.createTable(
+                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.MSG_SIZE);
         final ExecutionContext ctx = getExecutionContext();
         try {
-            console.head(TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.MSG_SIZE);
-
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
             MQMessage sentMessage = null;
             // handle payload parameters
@@ -51,9 +52,9 @@ public class MQPutCommand extends QueueCommand {
                 throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD, STREAM_PAYLOAD);
             }
 
-            console
-                    .table("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(sentMessage.messageId), sentMessage.getMessageLength() + "b")
-                    .printTable();
+            table
+                    .append("PUT", getQueueManager().getName(), getDestinationQueueName(), bytesToHex(sentMessage.messageId), sentMessage.getMessageLength() + "b")
+                    .flash();
 
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());

@@ -1,13 +1,13 @@
 package ru.codeunited.wmq;
 
 import org.junit.Test;
+import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
-import java.io.PrintStream;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.junit.Assert.assertThat;
 
 /**
  * codeunited.ru
@@ -18,10 +18,11 @@ public class ConsoleWriterTest {
 
     @Test
     public void concatArraysTest() {
-        class NCW extends ConsoleWriter {
+        class NCW extends ConsoleTable {
 
-            public NCW(PrintStream printWriter) {
-                super(printWriter);
+
+            protected NCW(ConsoleWriter console) {
+                super(console);
             }
 
             @Override
@@ -29,7 +30,7 @@ public class ConsoleWriterTest {
                 return super.concatArrays(oldRow, args);
             }
         }
-        final NCW cw = new NCW(System.out);
+        final NCW cw = new NCW(new ConsoleWriter(System.out));
         final String[] array1 = {"A", "B"};
         final String[] array2 = {"C", "D", "E"};
         final String[] concatenatedArray = cw.concatArrays(array1, array2);
