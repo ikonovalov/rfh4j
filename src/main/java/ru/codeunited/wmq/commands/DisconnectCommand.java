@@ -4,6 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.cli.TableColumnName;
 
 /**
  * codeunited.ru
@@ -16,20 +17,20 @@ public class DisconnectCommand extends AbstractCommand {
     public void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
         final MQQueueManager mqQueueManager = context.getQueueManager();
-        final ConsoleWriter console = getConsoleWriter();
 
         if (mqQueueManager != null && mqQueueManager.isConnected()) {
             try {
                 mqQueueManager.disconnect();
-                console.table("DISCONNECT", mqQueueManager.getName());
+
                 // check disconnection
                 if (mqQueueManager.isConnected()) {
                     throw new CommandGeneralException(mqQueueManager.getName() + " still connected but was performed disconnect.");
                 }
                 LOG.fine("[" + mqQueueManager.getName() + "] disconnected");
+
             } catch (MQException e) {
                 LOG.severe(e.getMessage());
-                console.errorln(e.getMessage());
+                getConsoleWriter().errorln(e.getMessage());
                 throw new CommandGeneralException(e);
             }
         }

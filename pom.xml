@@ -6,7 +6,7 @@
 
     <groupId>ru.codeunited.wmq</groupId>
     <artifactId>rfh4j</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -59,6 +59,13 @@
             <version>${mq.version}</version>
             <scope>system</scope>
             <systemPath>${mq.java.lib}/com.ibm.mq.jmqi.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>pcf</artifactId>
+            <version>${mq.version}</version>
+            <scope>system</scope>
+            <systemPath>${mq.java.lib}/com.ibm.mq.pcf.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>javax.resource</groupId>

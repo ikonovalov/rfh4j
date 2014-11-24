@@ -20,7 +20,7 @@ public abstract class QueueCommand extends AbstractCommand {
      * @return String - destination queue name.
      * @throws MQException
      */
-    public String getDestinationQueueName() throws MQException, MissedParameterException {
+    public String getDestinationQueueName() throws MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
         if (ctx.hasOption("dstq")) {
             final String queueName = ctx.getOption("dstq");
@@ -31,6 +31,40 @@ public abstract class QueueCommand extends AbstractCommand {
             }
         } else {
             throw new MissedParameterException("dstq");
+        }
+    }
+
+    /**
+     * If passed --wait parameter.
+     * @return true if context has 'wait' option.
+     */
+    protected boolean shouldWait() {
+        return getExecutionContext().hasOption("wait");
+    }
+
+    /**
+     * Return 'wait' parameter value.
+     * @return value or -1 if 'wait' passed without argument.
+     */
+    protected int waitTime() {
+        if (getExecutionContext().getOption("wait") == null) {
+            return -1;
+        } else {
+            return Integer.valueOf(getExecutionContext().getOption("wait"));
+        }
+    }
+
+    public String getSourceQueueName() throws MissedParameterException {
+        final ExecutionContext ctx = getExecutionContext();
+        if (ctx.hasOption("srcq")) {
+            final String queueName = ctx.getOption("srcq");
+            if (queueName.length() > 0) {
+                return queueName;
+            } else {
+                throw new MissedParameterException("srcq").withMessage("Parameter srcq has wrong argument [" + queueName +"]");
+            }
+        } else {
+            throw new MissedParameterException("srcq");
         }
     }
 

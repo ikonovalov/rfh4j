@@ -11,6 +11,10 @@ import java.io.PrintWriter;
  */
 public class CLIFactory {
 
+    private static final boolean YES = true;
+
+    private static final boolean NO = false;
+
     private CLIFactory() {
 
     }
@@ -24,77 +28,115 @@ public class CLIFactory {
         final Options options = new Options();
 
         final Option channel = OptionBuilder
+                .withLongOpt("channel")
                 .withArgName("channel")
                 .withDescription("WMQ SVRCON channel name")
-                .withLongOpt("channel")
-                .hasArg(true)
-                .isRequired(false)
+                .hasArg(YES)
+                .isRequired(NO)
                 .create('c');
 
         final Option queueManager = OptionBuilder
+                .withLongOpt("qmanager")
                 .withArgName("qmanager")
                 .withDescription("WMQ queue manager name")
-                .withLongOpt("qmanager")
-                .hasArg(true)
-                .isRequired(false)
+                .hasArg(YES)
+                .isRequired(NO)
                 .create('Q');
 
         final Option host = OptionBuilder
-                .withArgName("hostname or IP")
-                .withDescription("WMQ QM host name or ip address. localhost is default")
                 .withLongOpt("host")
+                .withArgName("hostname or IP")
+                .withDescription("WMQ QM host name or ip address (localhost is default).")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('H');
 
         final Option port = OptionBuilder
+                .withLongOpt("port")
                 .withArgName("port")
-                .withDescription("WMQ QM listener port. 1414 is default.")
-                .withLongOpt("host")
+                .withDescription("WMQ QM listener port (1414 is default).")
                 .withType(Integer.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('P');
 
         final Option user = OptionBuilder
+                .withLongOpt("user")
                 .withArgName("user")
                 .withDescription("WMQ QM user.")
-                .withLongOpt("user")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create('u');
 
         final Option destQueue = OptionBuilder
+                .withLongOpt("dstq")
                 .withArgName("queue")
                 .withDescription("Destination queue")
-                .withLongOpt("dstq")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create();
 
+        final Option srcQueue = OptionBuilder
+                .withLongOpt("srcq")
+                .withArgName("queue")
+                .withDescription("Source queue")
+                .withType(String.class)
+                .hasArg(YES)
+                .create();
+
+        final Option lsLocalQueues = OptionBuilder
+                .withLongOpt("lslq")
+                .withArgName("pattern")
+                .withDescription("List localqueues with filter. Default value is * (means all).")
+                .withType(String.class)
+                .hasOptionalArg()
+                .create();
+
+        final Option wait = OptionBuilder
+                .withLongOpt("wait")
+                .withArgName("milliseconds")
+                .withDescription("Wait specified amount of time.")
+                .withType(Integer.class)
+                .hasOptionalArg()
+                .create('w');
+
         final Option config = OptionBuilder
+                .withLongOpt("config")
                 .withArgName("config_file")
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
-                .withLongOpt("config")
                 .withType(String.class)
-                .hasArg(true)
+                .hasArg(YES)
                 .create();
+
+        final Option verbose = OptionBuilder
+                .withLongOpt("verbose")
+                .withDescription("Print additional output")
+                .hasOptionalArg()
+                .create('v');
 
         // message payload group
         final OptionGroup messagePayload = new OptionGroup();
         final Option filePayload = OptionBuilder
-                .withArgName("file")
-                .withDescription("file to send")
                 .withLongOpt("payload")
-                .hasArg(true)
+                .withArgName("file")
+                .withDescription("File to send.")
+                .hasOptionalArg()
                 .create('p');
 
         final Option textMessage = OptionBuilder
-                .withArgName("text")
-                .withDescription("text for message")
                 .withLongOpt("text")
-                .hasArg(true)
+                .withArgName("text")
+                .withDescription("Text for message.")
+                .hasArg(YES)
                 .create('t');
-        messagePayload.addOption(textMessage).addOption(filePayload);
+
+        final Option redirectedStream = OptionBuilder
+                .withLongOpt("stream")
+                .withArgName("stream")
+                .withDescription("Stream for message (std in/out).")
+                .hasArg(NO)
+                .create('s');
+
+        messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
@@ -107,6 +149,9 @@ public class CLIFactory {
                 .addOption(user)
                 .addOption(config)
                 .addOption(destQueue)
+                .addOption(srcQueue)
+                .addOption(wait)
+                .addOption(lsLocalQueues)
                 .addOptionGroup(messagePayload);
 
         return options;
@@ -150,7 +195,7 @@ public class CLIFactory {
     public static String commandExamples() {
         return  "Usage examples:\n"
                 + "1) Send text message to queue (host, port, channel are default)\n"
-                + "rfh4j.sh -Q DEFQM --dstq Q1 -t hello!";
+                + "rfh4j.sh -Q DEFQM --dstq RFH.QTEST.QGENERAL1 -t hello!";
     }
 
 }

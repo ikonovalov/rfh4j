@@ -58,6 +58,18 @@ public abstract class ExecutionContext {
         return false;
     }
 
+    public boolean hasntOption(String...opts) {
+       return !hasAnyOption(opts);
+    }
+
+    public boolean hasAnyOption(String...opts) {
+        for (String s : opts) {
+            if (hasOption(s))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * Get single character parameter argument.
      *
@@ -67,12 +79,45 @@ public abstract class ExecutionContext {
     public abstract String getOption(char option);
 
     /**
+     * Return option with default. If option exists in a context it returns value, if value is not present - return default.
+     * @param option option key.
+     * @param defaultValue default value if option doesn't exists.
+     * @return option value or default.
+     */
+    public String getOption(char option, String defaultValue) {
+        final String retValue = getOption(option);
+        return retValue == null ? defaultValue : retValue;
+    }
+
+    /**
      * Get value of long named parameter argument.
      *
      * @param option long option name.
      * @return String value of option if passed, null otherwise.
      */
     public abstract String getOption(String option);
+
+    /**
+     * Return option with default. If option exists in a context it returns value, if value is not present - return default.
+     * @param option option key.
+     * @param defaultValue default value if option doesn't exists or passed without argument.
+     * @return option value or default.
+     */
+    public String getOption(String option, String defaultValue) {
+        final String retValue = getOption(option);
+        return retValue == null ? defaultValue : retValue;
+    }
+
+    /**
+     * Monster construction method.
+     * @param option
+     * @param defaultValue
+     * @return
+     */
+    public Object getOption(String option, Object defaultValue) {
+        final String retValue = getOption(option);
+        return retValue == null ? defaultValue : retValue;
+    }
 
     public abstract ExecutionContext putOption(String key, String value);
 }

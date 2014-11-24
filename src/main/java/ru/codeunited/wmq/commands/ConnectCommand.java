@@ -5,9 +5,11 @@ import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -25,6 +27,8 @@ public class ConnectCommand extends AbstractCommand {
 
     private static final int DEFAULT_PORT = 1414;
 
+    private static final String DEFAULT_CHANNEL = "SYSTEM.DEF.SVRCONN";
+
     public static final String QUEUE_MANAGER = "qmanager";
 
     public static final String CONFIG_OPTION = "config";
@@ -32,6 +36,7 @@ public class ConnectCommand extends AbstractCommand {
     public static final String HOST_PROPERTY = "host";
     public static final String PORT_PROPERTY = "port";
     public static final String USER_PROPERTY = "user";
+    public static final String DEFAULT_CONFIG_PATH = "./default.properties";
 
     private final WMQConnectionFactory connectionFactory;
 
@@ -41,6 +46,7 @@ public class ConnectCommand extends AbstractCommand {
         defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
         defaultProperties.put(CMQC.PORT_PROPERTY, DEFAULT_PORT);
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
+        defaultProperties.put(CHANNEL_PROPERTY, DEFAULT_CHANNEL);
     }
 
     public ConnectCommand() {
@@ -51,20 +57,35 @@ public class ConnectCommand extends AbstractCommand {
         this.connectionFactory = connectionFactory;
     }
 
-    protected Properties configFileAsProperties() {
+    private Properties loadFromFile(String filePath) {
         final Properties fileProperties = new Properties();
-        final ExecutionContext ctx = getExecutionContext();
-        if (ctx.hasOption(CONFIG_OPTION)) {
-            try (final FileInputStream propertiesStream = new FileInputStream(ctx.getOption(CONFIG_OPTION))) {
-                fileProperties.load(propertiesStream);
+        if (filePath == null)
+            return fileProperties;
+
+        try (final FileInputStream propertiesStream = new FileInputStream(filePath)) {
+            fileProperties.load(propertiesStream);
 
             /* fix port issue (String -> Integer) */
-                fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
-            } catch (IOException e) {
-                LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
-            }
+            fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
+        } catch (IOException e) {
+            LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
         }
         return fileProperties;
+    }
+
+    protected Properties configFileAsProperties() {
+        final ExecutionContext ctx = getExecutionContext();
+        String configPath = null;
+        if (ctx.hasOption(CONFIG_OPTION)) {
+            configPath = ctx.getOption(CONFIG_OPTION);
+        } else if (isDefaultConfigAvailable()) {
+            configPath = DEFAULT_CONFIG_PATH;
+        }
+        return loadFromFile(configPath);
+    }
+
+    public static boolean isDefaultConfigAvailable() {
+        return new File(DEFAULT_CONFIG_PATH).exists();
     }
 
     protected Properties passedArgumentsAsProperties() {
@@ -101,7 +122,6 @@ public class ConnectCommand extends AbstractCommand {
     @Override
     protected void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
-        final ConsoleWriter console = getConsoleWriter();
         // TODO SHOULD BE MOVED TO SEPARATED METHODS AND HEAVY TESTED
         // merged properties
         final Properties mergedProperties = mergeArguments();
@@ -114,7 +134,6 @@ public class ConnectCommand extends AbstractCommand {
         try {
             final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, mergedProperties);
             context.setQueueManager(mqQueueManager);
-            console.table("CONNECT", queueManagerName);
             // check connection
             if (mqQueueManager.isConnected()) {
                 LOG.fine("[" + mqQueueManager.getName() + "] connected");

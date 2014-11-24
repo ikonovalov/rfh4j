@@ -2,6 +2,7 @@ package ru.codeunited.wmq;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
+import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
@@ -31,7 +32,8 @@ public class ConnectToQMTest implements TestEnvironmentSetting {
     @Test
     public void doConnect() throws MQException {
         final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory();
-        MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(QMGR_NAME, properties);
+        final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(QMGR_NAME, properties);
+        assertThat(mqQueueManager, notNullValue());
         assertTrue("Connection lost.", mqQueueManager.isConnected());
         LOG.info("Connected to " + QMGR_NAME);
         mqQueueManager.disconnect();

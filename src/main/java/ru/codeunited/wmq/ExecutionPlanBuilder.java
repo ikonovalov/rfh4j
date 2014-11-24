@@ -1,6 +1,7 @@
 package ru.codeunited.wmq;
 
 import ru.codeunited.wmq.commands.CommandChainMaker;
+import ru.codeunited.wmq.commands.MissedParameterException;
 
 /**
  * codeunited.ru
@@ -9,5 +10,5 @@ import ru.codeunited.wmq.commands.CommandChainMaker;
  */
 public interface ExecutionPlanBuilder {
 
-    public CommandChainMaker buildChain();
+    public CommandChainMaker buildChain() throws MissedParameterException;
 }

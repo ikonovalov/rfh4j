@@ -1,14 +1,25 @@
 package ru.codeunited.wmq.cli;
 
+import com.ibm.mq.MQMessage;
+
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ListIterator;
+
+import static java.util.Arrays.copyOf;
+import static java.util.Arrays.fill;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class ConsoleWriter {
+public class ConsoleWriter implements Closeable {
 
     private final PrintWriter normalWriter;
 
@@ -18,14 +29,24 @@ public class ConsoleWriter {
 
     private static final char TAB = '\t';
 
+    private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
+
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
         this.normalWriter = new PrintWriter(printWriter);
     }
 
-    public ConsoleWriter(PrintWriter printWriter, PrintWriter errorWriter) {
-        this.normalWriter = printWriter;
-        this.errorWriter = errorWriter;
+    public ConsoleTable createTable() {
+        return new ConsoleTable(this);
+    }
+
+    /**
+     * Create console table with header.
+     * @param head
+     * @return
+     */
+    public ConsoleTable createTable(TableColumnName...head) {
+        return createTable().head(head);
     }
 
     /**
@@ -37,18 +58,8 @@ public class ConsoleWriter {
         this(printWriter, printWriter);
     }
 
-    public ConsoleWriter table(String... delimited) {
-        for (int z = 0; z < delimited.length; z++) {
-            printf("%-12s", delimited[z]);
-            if (z < delimited.length)
-                write(TAB);
-        }
-        end();
-        return this;
-    }
-
-    public ConsoleWriter table(String string) {
-        return table(string.split("|"));
+    public void writef(String leftAlignFormat, String...rowResized) {
+        write(String.format(leftAlignFormat, rowResized));
     }
 
     public ConsoleWriter printf(String format, String string) {
@@ -75,6 +86,14 @@ public class ConsoleWriter {
         return write(string).end();
     }
 
+    public ConsoleWriter write(MQMessage message) throws IOException {
+        writeln(BORDER);
+        writeln(message.readStringOfByteLength(message.getDataLength()));
+        writeln(BORDER);
+        end();
+        return this;
+    }
+
     public ConsoleWriter error(String string) {
         errorWriter.write(string);
         return this;
@@ -88,5 +107,12 @@ public class ConsoleWriter {
 
     public ConsoleWriter errorln(String message) {
         return error(message).end();
+    }
+
+    @Override
+    public void close() throws IOException {
+        flush();
+        this.errorWriter.close();
+        this.normalWriter.close();
     }
 }

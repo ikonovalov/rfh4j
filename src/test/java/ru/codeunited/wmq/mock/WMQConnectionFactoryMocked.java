@@ -25,6 +25,8 @@ public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
         // first - for check "is connected", second - for "is disconnected"
         when(manager.isConnected()).thenReturn(true, false);
 
+        when(manager.getDescription()).thenReturn("Mocked manager");
+
         return manager;
     }
 }
