@@ -50,7 +50,7 @@ public class ManagerInspectorImpl implements ManagerInspector {
         final List<Queue> queues = new ArrayList<>(names.length);
         for (String queueName : names) {
             final Queue queue = new Queue(queueName);
-            final MessageInspector inspector = new MessageInspectorImpl(queueName, queueManager);
+            final QueueInspector inspector = new QueueInspectorImpl(queueName, queueManager);
             queue.setDepth(inspector.depth());
             queue.setMaxDepth(inspector.maxDepth());
             queue.setInputCount(inspector.openInputCount());

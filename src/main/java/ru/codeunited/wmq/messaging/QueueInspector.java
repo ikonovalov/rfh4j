@@ -7,7 +7,7 @@ import com.ibm.mq.MQException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public interface MessageInspector {
+public interface QueueInspector {
 
     int depth() throws MQException;
 

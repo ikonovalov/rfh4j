@@ -9,7 +9,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.messaging.MessageConsumer;
-import ru.codeunited.wmq.messaging.MessageInspector;
+import ru.codeunited.wmq.messaging.QueueInspector;
 import ru.codeunited.wmq.messaging.MessageSelector;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
@@ -170,7 +170,7 @@ public class MessageConsumerTest extends QueueingCapability {
         final Command cmd2 = new DisconnectCommand().setContext(context);
 
         cmd1.execute();
-        final MessageInspector consumer = getMessageInspector(QUEUE, context);
+        final QueueInspector consumer = getMessageInspector(QUEUE, context);
         try {
             assertThat(consumer.depth(), is(0));
             putMessages(QUEUE, "Some text here");
@@ -192,7 +192,7 @@ public class MessageConsumerTest extends QueueingCapability {
         final Command cmd2 = new DisconnectCommand().setContext(context);
 
         cmd1.execute();
-        final MessageInspector consumer = getMessageInspector(QUEUE, context);
+        final QueueInspector consumer = getMessageInspector(QUEUE, context);
         try {
             assertThat(consumer.maxDepth(), is(5000));
         } finally {

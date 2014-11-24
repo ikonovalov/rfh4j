@@ -33,7 +33,7 @@ public class MessageProducerTest extends QueueingCapability {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
                 final MessageProducer producer = new MessageProducerImpl(QUEUE, context.getQueueManager());
-                final MessageInspector inspector = new MessageInspectorImpl(QUEUE, context.getQueueManager());
+                final QueueInspector inspector = new QueueInspectorImpl(QUEUE, context.getQueueManager());
                 final MessageConsumer consumer = new MessageConsumerImpl(QUEUE, context.getQueueManager());
 
                 final byte[] putMessageID = producer.send("Hello " + System.currentTimeMillis()).messageId;
@@ -69,7 +69,7 @@ public class MessageProducerTest extends QueueingCapability {
                 while (limit-->0)
                     producer.send("MSG");
 
-                final MessageInspector inspector = new MessageInspectorImpl(QUEUE, context.getQueueManager());
+                final QueueInspector inspector = new QueueInspectorImpl(QUEUE, context.getQueueManager());
                 assertThat(inspector.depth(), is(messageCount));
             }
         });

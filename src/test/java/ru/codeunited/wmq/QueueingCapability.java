@@ -55,8 +55,8 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }
 
-    protected MessageInspectorImpl getMessageInspector(String queue, ExecutionContext context) throws MQException {
-        return new MessageInspectorImpl(queue, context.getQueueManager());
+    protected QueueInspectorImpl getMessageInspector(String queue, ExecutionContext context) throws MQException {
+        return new QueueInspectorImpl(queue, context.getQueueManager());
     }
 
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException {
