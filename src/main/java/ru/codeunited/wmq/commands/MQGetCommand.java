@@ -30,7 +30,7 @@ public class MQGetCommand extends QueueCommand {
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
         final ConsoleTable table = console.createTable(
-                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.OUTPUT);
+                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.CORREL_ID, TableColumnName.OUTPUT);
 
         final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
@@ -40,7 +40,7 @@ public class MQGetCommand extends QueueCommand {
             try {
                 final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
 
-                table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId));
+                table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                 // print to std output (console)
                 if (ctx.hasOption("stream")) { // standard output to std.out

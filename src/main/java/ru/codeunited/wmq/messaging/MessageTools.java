@@ -108,6 +108,8 @@ public class MessageTools {
 
     // taken from http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
     public static String bytesToHex(byte[] bytes) {
+        if (bytes == null || bytes.length == 0)
+            return "";
         char[] hexChars = new char[bytes.length * 2];
         for ( int j = 0; j < bytes.length; j++ ) {
             int v = bytes[j] & 0xFF;
