@@ -34,10 +34,10 @@ public class MQInspectCommand extends QueueCommand {
                 for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
                     Queue next = iterator.next();
                     table.append(
-                            next.getName(),
-                            next.getDepth() + "/" + next.getMaxDepth(),
-                            String.valueOf(next.getInputCount()),
-                            String.valueOf(next.getOutputCount())
+                            next.getName(),                                 // queue name
+                            next.getDepth() + "/" + next.getMaxDepth(),     // current depth / max depth
+                            String.valueOf(next.getInputCount()),           // opened input count
+                            String.valueOf(next.getOutputCount())           // opened output count
                     );
                 }
             }

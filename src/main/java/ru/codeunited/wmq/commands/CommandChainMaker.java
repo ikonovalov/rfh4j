@@ -78,7 +78,6 @@ public class CommandChainMaker extends AbstractCommand {
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {
             command.execute();
-
         }
     }
 }

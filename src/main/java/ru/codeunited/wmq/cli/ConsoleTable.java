@@ -45,12 +45,8 @@ public class ConsoleTable {
     protected String[] concatArrays(String[] oldRow, String[] args) {
         final int oldRowLen = oldRow.length;
         final String[] result = new String[oldRowLen + args.length];
-        for (int z = 0; z < oldRowLen; z++) {
-            result[z] = oldRow[z];
-        }
-        for (int z = oldRowLen; z < result.length; z++) {
-            result[z] = args[z - oldRowLen];
-        }
+        System.arraycopy(oldRow, 0, result, 0, oldRowLen);
+        System.arraycopy(args, 0, result, oldRowLen, result.length - oldRowLen);
         return result;
     }
 
@@ -61,10 +57,10 @@ public class ConsoleTable {
         return this;
     }
 
-    private String createHorizontalBoarder(int[] columnsMaxWidth, int additionalWidth) {
+    private String createHorizontalBoarder(int[] columnsMaxWidth) {
         String boarderH = "";
         for (int columnMaxWidth : columnsMaxWidth) {
-            char[] clnmHorizont = new char[columnMaxWidth + additionalWidth];
+            char[] clnmHorizont = new char[columnMaxWidth + 2];
             fill(clnmHorizont, '-');
             boarderH += "+" + new String(clnmHorizont);
         }
@@ -101,7 +97,7 @@ public class ConsoleTable {
         }
 
         // create horizontal boarder
-        final String boarderH = createHorizontalBoarder(columnsMaxWidth, 2); // 2 means  ->|_string_|<-
+        final String boarderH = createHorizontalBoarder(columnsMaxWidth); // 2 means  ->|_string_|<-
 
         // create format
         String rowFormat = "|";

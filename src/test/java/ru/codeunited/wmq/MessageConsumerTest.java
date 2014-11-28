@@ -113,16 +113,13 @@ public class MessageConsumerTest extends QueueingCapability {
         try {
             final MQMessage selectedMessage = consumer.select(new MessageSelector() {
                 @Override
-                public MessageSelector setup(MQGetMessageOptions messageOptions, MQMessage message) {
+                public void setup(MQGetMessageOptions messageOptions, MQMessage message) {
                     messageOptions.matchOptions = MQMO_MATCH_MSG_ID;
                     message.messageId = messageID;
-                    return this;
                 }
             });
             assertThat(selectedMessage.messageId, equalTo(messageID));
 
-        } catch (NoMessageAvailableException noMessages) {
-            throw  noMessages;
         } finally {
             final ReturnCode disconnectReturn = disconnectCommand.execute();
             assertThat(disconnectReturn, sameInstance(ReturnCode.SUCCESS));
@@ -146,10 +143,9 @@ public class MessageConsumerTest extends QueueingCapability {
         try {
             consumer.select(new MessageSelector() {
                 @Override
-                public MessageSelector setup(MQGetMessageOptions messageOptions, MQMessage message) {
+                public void setup(MQGetMessageOptions messageOptions, MQMessage message) {
                     messageOptions.matchOptions = MQMO_MATCH_MSG_ID;
                     message.messageId = messageID;
-                    return this;
                 }
             });
 

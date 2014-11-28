@@ -16,13 +16,6 @@ public interface Command {
     AbstractCommand setContext(ExecutionContext context);
 
     /**
-     * Copy current command environment to another command.
-     * From this -> another
-     * @param anotherCommand - target Command
-     */
-    void copyEnvironmentTo(Command anotherCommand);
-
-    /**
      * Execute this command.
      * @return - command execution result
      * @see ru.codeunited.wmq.commands.ReturnCode

@@ -4,8 +4,6 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 

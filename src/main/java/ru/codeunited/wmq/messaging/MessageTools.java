@@ -78,7 +78,7 @@ public class MessageTools {
         return bytesToHex(message.messageId) + ".message";
     }
 
-    public static MQMessage writeStreamToMessage(InputStream stream, MQMessage message) throws IOException {
+    public static void writeStreamToMessage(InputStream stream, MQMessage message) throws IOException {
         final byte[] buffer = new byte[STREAM_BUFFER_SZ];
         int readCount;
         long totalBytes = 0; // total message bytes counter
@@ -88,7 +88,6 @@ public class MessageTools {
         }
 
         LOG.fine("File with size " + totalBytes + "b stored in a message.");
-        return message;
     }
 
     public static byte[] readMessageToBytes(MQMessage message) throws IOException {
@@ -97,11 +96,10 @@ public class MessageTools {
         return buffer;
     }
 
-    public static File writeMessageBodyToFile(MQMessage message, File destination) throws IOException {
+    public static void writeMessageBodyToFile(MQMessage message, File destination) throws IOException {
         try(final FileOutputStream fos = new FileOutputStream(destination)) {
             fos.write(MessageTools.readMessageToBytes(message));
         }
-        return destination;
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();

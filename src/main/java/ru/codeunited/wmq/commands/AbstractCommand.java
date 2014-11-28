@@ -39,7 +39,6 @@ public abstract class AbstractCommand implements Command {
         return getState();
     }
 
-    @Override
     public void copyEnvironmentTo(Command anotherCommand) {
         anotherCommand.setContext(getExecutionContext());
     }

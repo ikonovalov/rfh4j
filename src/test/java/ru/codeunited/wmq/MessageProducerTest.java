@@ -43,10 +43,9 @@ public class MessageProducerTest extends QueueingCapability {
 
                 final byte[] selectedMessageID = consumer.select(new MessageSelector() {
                     @Override
-                    public MessageSelector setup(MQGetMessageOptions messageOptions, MQMessage message) {
+                    public void setup(MQGetMessageOptions messageOptions, MQMessage message) {
                         messageOptions.matchOptions = MQMO_MATCH_MSG_ID;
                         message.messageId = putMessageID;
-                        return this;
                     }
                 }).messageId;
 

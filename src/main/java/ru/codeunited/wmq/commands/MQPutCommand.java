@@ -36,7 +36,7 @@ public class MQPutCommand extends QueueCommand {
         final ExecutionContext ctx = getExecutionContext();
         try {
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
-            MQMessage sentMessage = null;
+            MQMessage sentMessage;
             // handle payload parameters
             if (ctx.hasOption(FILE_PAYLOAD)) { // file payload
                 try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(FILE_PAYLOAD))) {

@@ -64,15 +64,13 @@ public class Queue {
 
         Queue queue = (Queue) o;
 
-        if (!name.equals(queue.name)) return false;
+        return name.equals(queue.name);
 
-        return true;
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        return result;
+        return name.hashCode();
     }
 
     @Override

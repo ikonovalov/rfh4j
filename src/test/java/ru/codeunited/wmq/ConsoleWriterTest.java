@@ -34,7 +34,7 @@ public class ConsoleWriterTest {
         final String[] array1 = {"A", "B"};
         final String[] array2 = {"C", "D", "E"};
         final String[] concatenatedArray = cw.concatArrays(array1, array2);
-        assertThat(Arrays.asList(concatenatedArray), hasItems(new String[]{"A", "B", "C", "D", "E"}));
+        assertThat(Arrays.asList(concatenatedArray), hasItems("A", "B", "C", "D", "E"));
 
     }
 }

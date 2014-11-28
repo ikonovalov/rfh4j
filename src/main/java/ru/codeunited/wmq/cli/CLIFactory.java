@@ -142,6 +142,7 @@ public class CLIFactory {
 
         options
                 .addOption(help)
+                .addOption(verbose)
                 .addOption(host)
                 .addOption(port)
                 .addOption(queueManager)
