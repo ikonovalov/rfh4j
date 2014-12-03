@@ -73,7 +73,7 @@ public class CommandChainMaker extends AbstractCommand {
     }
 
     @Override
-    protected void work() throws CommandGeneralException, MissedParameterException {
+    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {

@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.commands.CommandGeneralException;
+import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
 import ru.codeunited.wmq.messaging.*;
 
@@ -78,7 +79,7 @@ public class MessageProducerTest extends QueueingCapability {
 
     @After
     @Before
-    public void cleanUp() throws MissedParameterException, CommandGeneralException, MQException, ParseException {
+    public void cleanUp() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IncompatibleOptionsException {
         cleanupQueue(QUEUE);
     }
 }

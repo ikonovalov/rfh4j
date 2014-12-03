@@ -23,10 +23,10 @@ public abstract class AbstractCommand implements Command {
      *
      * @throws CommandGeneralException if something goes wrong.
      */
-    protected abstract void work() throws CommandGeneralException, MissedParameterException;
+    protected abstract void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException;
 
     @Override
-    public final ReturnCode execute() throws CommandGeneralException, MissedParameterException {
+    public final ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             work();

@@ -32,7 +32,7 @@ public class RFH4J {
                 commandMaker.execute();
             }
 
-        } catch (MissedParameterException | ParseException | CommandGeneralException e) {
+        } catch (MissedParameterException | ParseException | CommandGeneralException | IncompatibleOptionsException e) {
             consoleWriter.errorln(e.getMessage());
             consoleWriter.end().flush();
             CLIFactory.showHelp();

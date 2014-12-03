@@ -21,7 +21,7 @@ public class PutCommandTest extends CLITestSupport {
     /**
      * --dstq was missed.
      */
-    public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException {
+    public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
         final MQPutCommand putCommand = new MQPutCommand();
@@ -45,7 +45,7 @@ public class PutCommandTest extends CLITestSupport {
     /**
      * -t or -p was missed.
      */
-    public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException {
+    public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException {
         final CommandLine commandLine = getCommandLine_With_Qc_dstq();
         final MQPutCommand putCommand = new MQPutCommand();
         final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);

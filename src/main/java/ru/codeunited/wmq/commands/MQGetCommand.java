@@ -8,14 +8,12 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
-import ru.codeunited.wmq.messaging.MessageTools;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
 import java.io.File;
 import java.io.IOException;
 
-import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
-import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
+import static ru.codeunited.wmq.messaging.MessageTools.*;
 
 /**
  * codeunited.ru
@@ -26,8 +24,20 @@ public class MQGetCommand extends QueueCommand {
 
     public static final String GET_OPERATION_NAME = "GET";
 
+    /**
+     * Check input context options and raise IncompatibleOptionsException if something wrong.
+     * @throws IncompatibleOptionsException
+     */
+    protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
+        ExecutionContext ctx = getExecutionContext();
+        if (ctx.hasOption("stream") && ctx.hasOption("all")) {
+            throw new IncompatibleOptionsException("Options --stream and --all can't run together.");
+        }
+    }
+
     @Override
-    protected void work() throws CommandGeneralException, MissedParameterException {
+    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+        validateOptions();
         final ConsoleWriter console = getConsoleWriter();
         final ConsoleTable table = console.createTable(
                         TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.CORREL_ID, TableColumnName.OUTPUT);
@@ -56,7 +66,7 @@ public class MQGetCommand extends QueueCommand {
                     if (destination.exists() && destination.isDirectory()) {
                         destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
                     }
-                    MessageTools.writeMessageBodyToFile(message, destination);
+                    writeMessageBodyToFile(message, destination);
                     table.appendToLastRow(destination.getAbsolutePath()).flash();
                 }
             } catch (NoMessageAvailableException e) {

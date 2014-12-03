@@ -59,7 +59,7 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new QueueInspectorImpl(queue, context.getQueueManager());
     }
 
-    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException {
+    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
         final Command cmd1 = new ConnectCommand().setContext(context);
@@ -78,7 +78,7 @@ public abstract class QueueingCapability extends CLITestSupport {
         return message;
     }
 
-    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException {
+    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
         final Command cmd1 = new ConnectCommand().setContext(context);

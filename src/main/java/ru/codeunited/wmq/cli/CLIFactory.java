@@ -136,6 +136,11 @@ public class CLIFactory {
                 .hasArg(NO)
                 .create('s');
 
+        final Option all = OptionBuilder
+                .withLongOpt("all")
+                .withDescription("Applicabele to GET command")
+                .hasArg(NO)
+                .create();
         messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
@@ -153,6 +158,7 @@ public class CLIFactory {
                 .addOption(srcQueue)
                 .addOption(wait)
                 .addOption(lsLocalQueues)
+                .addOption(all)
                 .addOptionGroup(messagePayload);
 
         return options;

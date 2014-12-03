@@ -21,7 +21,7 @@ public interface Command {
      * @see ru.codeunited.wmq.commands.ReturnCode
      * @throws CommandGeneralException
      */
-    ReturnCode execute() throws CommandGeneralException, MissedParameterException;
+    ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException;
 
     /**
      * Get current Command state.
