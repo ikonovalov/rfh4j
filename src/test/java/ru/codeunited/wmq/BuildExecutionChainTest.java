@@ -71,7 +71,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
         assertThat("Wrong commands list size", commands.size(), is(2));
 
         // check that ConnectCommand and DisconnectCommand is a right position and resolve it
-        assertThatCommandInstanceOf(commands, ConnectCommand.class, DisconnectCommand.class);
+        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQDisconnectCommand.class);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
         assertThat("Wrong commands list size", commands.size(), is(2));
 
         // check that ConnectCommand and DisconnectCommand is a right position and resolve it
-        assertThatCommandInstanceOf(commands, ConnectCommand.class, DisconnectCommand.class);
+        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQDisconnectCommand.class);
     }
 
     @Test(expected = MissedParameterException.class)
@@ -112,13 +112,13 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         // check ConnectCommand position and resolve it
         Command unknownCommand0 = commands.get(0);
-        assertThatCommandInstanceOf(unknownCommand0, ConnectCommand.class);
+        assertThatCommandInstanceOf(unknownCommand0, MQConnectCommand.class);
 
         Command unknownCommand1 = commands.get(1);
         assertThatCommandInstanceOf(unknownCommand1, MQPutCommand.class);
 
         Command unknownCommand2 = commands.get(2);
-        assertThatCommandInstanceOf(unknownCommand2, DisconnectCommand.class);
+        assertThatCommandInstanceOf(unknownCommand2, MQDisconnectCommand.class);
 
     }
 
@@ -137,13 +137,13 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         // check ConnectCommand position and resolve it
         Command unknownCommand0 = commands.get(0);
-        assertThatCommandInstanceOf(unknownCommand0, ConnectCommand.class);
+        assertThatCommandInstanceOf(unknownCommand0, MQConnectCommand.class);
 
         Command unknownCommand1 = commands.get(1);
         assertThatCommandInstanceOf(unknownCommand1, MQPutCommand.class);
 
         Command unknownCommand2 = commands.get(2);
-        assertThatCommandInstanceOf(unknownCommand2, DisconnectCommand.class);
+        assertThatCommandInstanceOf(unknownCommand2, MQDisconnectCommand.class);
 
     }
 

@@ -20,8 +20,8 @@ public class ChainCommandTest extends CLITestSupport {
     @Test
     public void addCommandToChain() throws ParseException {
         final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
-        final AbstractCommand cmd1 = new ConnectCommand();
-        final AbstractCommand cmd2 = new DisconnectCommand();
+        final AbstractCommand cmd1 = new MQConnectCommand();
+        final AbstractCommand cmd2 = new MQDisconnectCommand();
 
         assertTrue("ConnectCommand already initialized", cmd1.selfStateCheckFailed());
         assertTrue("DisconnectCommand already initialized", cmd2.selfStateCheckFailed());
@@ -41,22 +41,22 @@ public class ChainCommandTest extends CLITestSupport {
     @Test(expected = UnsupportedOperationException.class)
     public void immutableWorkload() throws ParseException {
         final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
-        maker.getCommandChain().add(new DisconnectCommand());
+        maker.getCommandChain().add(new MQDisconnectCommand());
     }
 
     @Test
     public void insertAfterCommandS1() throws ParseException {
         final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
-        maker.addAfter(new ConnectCommand(), null);
+        maker.addAfter(new MQConnectCommand(), null);
         assertThat("Wrong chain size after add one command", maker.getCommandChain().size(), is(1));
-        assertThat(maker.getCommandChain().get(0), instanceOf(ConnectCommand.class));
+        assertThat(maker.getCommandChain().get(0), instanceOf(MQConnectCommand.class));
     }
 
     @Test
     public void insertAfterCommandS3() throws ParseException {
         final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
-        final Command connect = new ConnectCommand();
-        final Command disconnect = new DisconnectCommand();
+        final Command connect = new MQConnectCommand();
+        final Command disconnect = new MQDisconnectCommand();
         final MQPutCommand put = new MQPutCommand();
         maker
                 .addCommand(connect)
@@ -64,8 +64,8 @@ public class ChainCommandTest extends CLITestSupport {
                 .addAfter(disconnect, put);
         List<Command> chain = maker.getCommandChain();
         assertThat("Wrong chain size after add one command. " + chain.toString(), chain.size(), is(3));
-        assertThat(chain.get(0), instanceOf(ConnectCommand.class));
+        assertThat(chain.get(0), instanceOf(MQConnectCommand.class));
         assertThat(chain.get(1), instanceOf(MQPutCommand.class));
-        assertThat(chain.get(2), instanceOf(DisconnectCommand.class));
+        assertThat(chain.get(2), instanceOf(MQDisconnectCommand.class));
     }
 }

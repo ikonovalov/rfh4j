@@ -23,7 +23,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
 
         final CommandLine commandLine = getCliParser().parse(getOptions(), args);
 
-        final ConnectCommand connectCommand = new ConnectCommand();
+        final MQConnectCommand connectCommand = new MQConnectCommand();
         connectCommand.setContext(new CLIExecutionContext(commandLine));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());
@@ -32,7 +32,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
         assertTrue("Unexpected return code in connect operation " + returnCode.name(), returnCode == ReturnCode.SUCCESS);
         assertTrue("Connection command not in final state", ReturnCode.SUCCESS == connectCommand.getState());
 
-        final DisconnectCommand disconnectCommand = new DisconnectCommand();
+        final MQDisconnectCommand disconnectCommand = new MQDisconnectCommand();
         connectCommand.copyEnvironmentTo(disconnectCommand);
         assertTrue("Disconnect command in bad initial state " + disconnectCommand.getState(), ReturnCode.READY == disconnectCommand.getState());
 

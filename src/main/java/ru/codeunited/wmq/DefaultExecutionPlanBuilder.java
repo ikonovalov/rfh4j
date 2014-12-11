@@ -24,10 +24,10 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
         final CommandChainMaker chain = new CommandChainMaker(executionContext);
 
         // create connect/disconnect commands
-        if (executionContext.hasOption("qmanager") || executionContext.hasOption("config") || ConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
+        if (executionContext.hasOption("qmanager") || executionContext.hasOption("config") || MQConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
             chain
-                    .addCommand(new ConnectCommand())
-                    .addCommand(new DisconnectCommand());
+                    .addCommand(new MQConnectCommand())
+                    .addCommand(new MQDisconnectCommand());
         } else {
             // this is mandatory arguments (one and two)
             throw new MissedParameterException("qmanager", "config").withMessage("And default.properties not available also.");

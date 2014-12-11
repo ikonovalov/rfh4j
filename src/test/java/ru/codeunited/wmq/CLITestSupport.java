@@ -55,8 +55,8 @@ public class CLITestSupport {
      */
     protected CommandChainMaker surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Command command) {
         final CommandChainMaker maker = new CommandChainMaker(context);
-        final AbstractCommand cmdConnect = new ConnectCommand();
-        final AbstractCommand cmdDisconnect = new DisconnectCommand();
+        final AbstractCommand cmdConnect = new MQConnectCommand();
+        final AbstractCommand cmdDisconnect = new MQDisconnectCommand();
         return maker.addCommand(cmdConnect).addCommand(command).addCommand(cmdDisconnect);
     }
 

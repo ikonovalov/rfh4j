@@ -9,7 +9,7 @@ import ru.codeunited.wmq.ExecutionContext;
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class DisconnectCommand extends AbstractCommand {
+public class MQDisconnectCommand extends AbstractCommand {
 
     @Override
     public void work() throws CommandGeneralException {

@@ -37,8 +37,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     public void communication(QueueWork work) throws Exception {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         try {
@@ -62,8 +62,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
@@ -81,8 +81,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(queueName, context);

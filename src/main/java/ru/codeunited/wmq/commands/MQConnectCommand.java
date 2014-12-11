@@ -19,7 +19,7 @@ import static com.ibm.mq.constants.CMQC.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class ConnectCommand extends AbstractCommand {
+public class MQConnectCommand extends AbstractCommand {
 
     private static final String DEFAULT_HOST = "localhost";
 
@@ -47,11 +47,11 @@ public class ConnectCommand extends AbstractCommand {
         defaultProperties.put(CHANNEL_PROPERTY, DEFAULT_CHANNEL);
     }
 
-    public ConnectCommand() {
+    public MQConnectCommand() {
         connectionFactory = new WMQDefaultConnectionFactory();
     }
 
-    public ConnectCommand(WMQConnectionFactory connectionFactory) {
+    public MQConnectCommand(WMQConnectionFactory connectionFactory) {
         this.connectionFactory = connectionFactory;
     }
 

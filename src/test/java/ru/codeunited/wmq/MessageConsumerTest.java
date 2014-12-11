@@ -47,8 +47,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -69,8 +69,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -85,8 +85,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command connectCmd = new ConnectCommand().setContext(context);
-        final Command disconnectCmd = new DisconnectCommand().setContext(context);
+        final Command connectCmd = new MQConnectCommand().setContext(context);
+        final Command disconnectCmd = new MQDisconnectCommand().setContext(context);
 
         connectCmd.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -104,8 +104,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command connectCommand = new ConnectCommand().setContext(context);
-        final Command disconnectCommand = new DisconnectCommand().setContext(context);
+        final Command connectCommand = new MQConnectCommand().setContext(context);
+        final Command disconnectCommand = new MQDisconnectCommand().setContext(context);
 
         final ReturnCode connectReturn = connectCommand.execute();
         assertThat(connectReturn, sameInstance(ReturnCode.SUCCESS));
@@ -135,8 +135,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -162,8 +162,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final QueueInspector consumer = getMessageInspector(QUEUE, context);
@@ -184,8 +184,8 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new ConnectCommand().setContext(context);
-        final Command cmd2 = new DisconnectCommand().setContext(context);
+        final Command cmd1 = new MQConnectCommand().setContext(context);
+        final Command cmd2 = new MQDisconnectCommand().setContext(context);
 
         cmd1.execute();
         final QueueInspector consumer = getMessageInspector(QUEUE, context);
