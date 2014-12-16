@@ -68,4 +68,8 @@ public abstract class QueueCommand extends AbstractCommand {
         }
     }
 
+    protected void raiseIncompatibeException(String errorString) throws IncompatibleOptionsException {
+        throw new IncompatibleOptionsException(errorString);
+    }
+
 }

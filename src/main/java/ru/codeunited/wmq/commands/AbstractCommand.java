@@ -29,6 +29,7 @@ public abstract class AbstractCommand implements Command {
     public final ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
+            validateOptions();
             work();
             getConsoleWriter().flush();
             updateCurrentState(ReturnCode.SUCCESS);
@@ -48,6 +49,16 @@ public abstract class AbstractCommand implements Command {
         if (selfStateCheckFailed())
             this.executionContext = context;
         return this;
+    }
+
+    /**
+     * Implements parameters validation logic here. This method should be executed be external mechanism out of command scope.
+     *
+     * @throws IncompatibleOptionsException
+     * @throws MissedParameterException
+     */
+    protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
+
     }
 
     /**

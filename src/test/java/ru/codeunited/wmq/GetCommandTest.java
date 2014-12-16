@@ -17,8 +17,26 @@ import ru.codeunited.wmq.commands.MissedParameterException;
 public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = IncompatibleOptionsException.class)
-    public void getIncompatibleParams() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+    public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
         CommandLine cl = prepareCommandLine("-Q DEFQM --stream --all");
+        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        // should throw IncompatibleOptionsException here
+        getCmd.execute();
+    }
+
+    @Test(expected = IncompatibleOptionsException.class)
+    public void getIncompatibleParamsStreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+        CommandLine cl = prepareCommandLine("-Q DEFQM --stream --limit 10");
+        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        // should throw IncompatibleOptionsException here
+        getCmd.execute();
+    }
+
+    @Test(expected = MissedParameterException.class)
+    public void getMissedParameterException() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+        CommandLine cl = prepareCommandLine("-Q DEFQM --stream");
         ExecutionContext executionContext = new CLIExecutionContext(cl);
         MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here

@@ -20,6 +20,13 @@ import java.util.List;
  */
 public class MQInspectCommand extends QueueCommand {
 
+
+    @Override
+    protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
+        if (getExecutionContext().hasntOption("lslq"))
+            raiseIncompatibeException("Option --lslq are missed.");
+    }
+
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
@@ -28,25 +35,24 @@ public class MQInspectCommand extends QueueCommand {
         final ExecutionContext ctx = getExecutionContext();
         try {
             final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
-            if (ctx.hasOption("lslq")) {
-                final String filter = ctx.getOption("lslq", "*");
-                final List<Queue> queues = managerInspector.selectLocalQueues(filter);
-                for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
-                    Queue next = iterator.next();
-                    table.append(
-                            next.getName(),                                 // queue name
-                            next.getDepth() + "/" + next.getMaxDepth(),     // current depth / max depth
-                            String.valueOf(next.getInputCount()),           // opened input count
-                            String.valueOf(next.getOutputCount())           // opened output count
-                    );
-                }
+            final String filter = ctx.getOption("lslq", "*");
+            final List<Queue> queues = managerInspector.selectLocalQueues(filter);
+            for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
+                Queue next = iterator.next();
+                table.append(
+                        next.getName(),                                 // queue name
+                        next.getDepth() + "/" + next.getMaxDepth(),     // current depth / max depth
+                        String.valueOf(next.getInputCount()),           // opened input count
+                        String.valueOf(next.getOutputCount())           // opened output count
+                );
             }
             table.flash();
 
-        } catch (IOException| MQException e) {
-        LOG.severe(e.getMessage());
-        console.errorln(e.getMessage());
-        throw new CommandGeneralException(e);
+        } catch (IOException | MQException e) {
+            LOG.severe(e.getMessage());
+            console.errorln(e.getMessage());
+            throw new CommandGeneralException(e);
+        }
     }
-    }
+
 }

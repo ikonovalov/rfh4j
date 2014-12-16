@@ -138,9 +138,16 @@ public class CLIFactory {
 
         final Option all = OptionBuilder
                 .withLongOpt("all")
-                .withDescription("Applicabele to GET command")
+                .withDescription("Applicable to GET command")
                 .hasArg(NO)
                 .create();
+
+        final Option limit = OptionBuilder
+                .withLongOpt("limit")
+                .withDescription("Limit GET command")
+                .hasArg(YES)
+                .create();
+
         messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
 
         Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
@@ -159,6 +166,7 @@ public class CLIFactory {
                 .addOption(wait)
                 .addOption(lsLocalQueues)
                 .addOption(all)
+                .addOption(limit)
                 .addOptionGroup(messagePayload);
 
         return options;
