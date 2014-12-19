@@ -34,26 +34,6 @@ public abstract class QueueCommand extends AbstractCommand {
         }
     }
 
-    /**
-     * If passed --wait parameter.
-     * @return true if context has 'wait' option.
-     */
-    protected boolean shouldWait() {
-        return getExecutionContext().hasOption("wait");
-    }
-
-    /**
-     * Return 'wait' parameter value.
-     * @return value or -1 if 'wait' passed without argument.
-     */
-    protected int waitTime() {
-        if (getExecutionContext().getOption("wait") == null) {
-            return -1;
-        } else {
-            return Integer.valueOf(getExecutionContext().getOption("wait"));
-        }
-    }
-
     public String getSourceQueueName() throws MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
         if (ctx.hasOption("srcq")) {
@@ -67,9 +47,4 @@ public abstract class QueueCommand extends AbstractCommand {
             throw new MissedParameterException("srcq");
         }
     }
-
-    protected void raiseIncompatibeException(String errorString) throws IncompatibleOptionsException {
-        throw new IncompatibleOptionsException(errorString);
-    }
-
 }

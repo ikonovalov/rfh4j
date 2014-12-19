@@ -34,12 +34,12 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
         }
 
         // insert PUT command (if srcq not present) - simple PUT case
-        if (executionContext.hasOption("dstq") && !executionContext.hasOption("srcq") && (executionContext.hasAnyOption("text", "payload", "stream") )) {
+        if (executionContext.hasOption("dstq") && !executionContext.hasOption("srcq")) {
             chain.addAfter(new MQPutCommand(), chain.getCommandChain().get(0));
         }
 
         // insert GET command (if dstq not present) - simple GET case
-        if (executionContext.hasOption("srcq") && !executionContext.hasOption("dstq") && (executionContext.hasAnyOption("payload", "stream") )) {
+        if (executionContext.hasOption("srcq") && !executionContext.hasOption("dstq")) {
             chain.addAfter(new MQGetCommand(), chain.getCommandChain().get(0));
         }
 

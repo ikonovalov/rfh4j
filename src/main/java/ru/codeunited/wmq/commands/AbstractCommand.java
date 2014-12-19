@@ -108,6 +108,10 @@ public abstract class AbstractCommand implements Command {
 
     }
 
+    protected void raiseIncompatibeException(String errorString) throws IncompatibleOptionsException {
+        throw new IncompatibleOptionsException(errorString);
+    }
+
     @Override
     public String toString() {
         return "[" + getClass().getSimpleName() + "]";

@@ -38,7 +38,7 @@ public class MQInspectCommand extends QueueCommand {
             final String filter = ctx.getOption("lslq", "*");
             final List<Queue> queues = managerInspector.selectLocalQueues(filter);
             for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
-                Queue next = iterator.next();
+                final Queue next = iterator.next();
                 table.append(
                         next.getName(),                                 // queue name
                         next.getDepth() + "/" + next.getMaxDepth(),     // current depth / max depth

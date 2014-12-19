@@ -27,9 +27,8 @@ public class MessageProducerImpl implements MessageProducer {
         defaultPutSpec.options = defaultPutSpec.options | MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
     }
 
-    private byte[] putWithOptions(MQQueue mqQueue, MQMessage mqMessage, MQPutMessageOptions options) throws MQException {
+    private void putWithOptions(MQQueue mqQueue, MQMessage mqMessage, MQPutMessageOptions options) throws MQException {
         mqQueue.put(mqMessage, options);
-        return mqMessage.messageId;
     }
 
     @Override

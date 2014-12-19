@@ -31,6 +31,9 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
+        if (!ctx.hasAnyOption("stream", "payload")) {
+            raiseIncompatibeException("Option --stream or --payload are missed.");
+        }
         if (ctx.hasOption("stream") && ctx.hasOption("all")) {
             raiseIncompatibeException("Options --stream and --all can't run together. Use --payload instead --stream.");
         }
@@ -50,11 +53,13 @@ public class MQGetCommand extends QueueCommand {
 
         try {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
+            boolean queueHasMessages = false;
             try {
                 int limit = getMessagesCountLimit(1);
+
                 while (limit-->0) {
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
-
+                    queueHasMessages = true;
                     table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                     // print to std output (console)
@@ -72,12 +77,15 @@ public class MQGetCommand extends QueueCommand {
                             destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
                         }
                         writeMessageBodyToFile(message, destination);
-                        table.appendToLastRow(destination.getAbsolutePath()).flash();
+                        table.appendToLastRow(destination.getAbsolutePath());
                     }
                 }
+
             } catch (NoMessageAvailableException e) {
-                table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]").flash();
+                if (!queueHasMessages) // prevent output extra information if queue has messages.
+                    table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
             }
+            table.flash();
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());
@@ -91,6 +99,26 @@ public class MQGetCommand extends QueueCommand {
      */
     private int getMessagesCountLimit(int defaultValue) {
         final ExecutionContext ctx = getExecutionContext();
-        return ctx.hasOption("limit") ? Integer.valueOf("limit") : defaultValue;
+        return ctx.hasOption("limit") ? Integer.valueOf(ctx.getOption("limit")) : defaultValue;
+    }
+
+    /**
+     * If passed --wait parameter.
+     * @return true if context has 'wait' option.
+     */
+    protected boolean shouldWait() {
+        return getExecutionContext().hasOption("wait");
+    }
+
+    /**
+     * Return 'wait' parameter value.
+     * @return value or -1 if 'wait' passed without argument.
+     */
+    protected int waitTime() {
+        if (getExecutionContext().getOption("wait") == null) {
+            return -1;
+        } else {
+            return Integer.valueOf(getExecutionContext().getOption("wait"));
+        }
     }
 }

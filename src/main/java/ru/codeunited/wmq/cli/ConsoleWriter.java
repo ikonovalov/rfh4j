@@ -99,7 +99,7 @@ public class ConsoleWriter implements Closeable {
     }
 
     public ConsoleWriter errorln(String message) {
-        return error(message).end();
+        return error(message).end(); // TODO THis is a wrong Writer for end(). They have different writers.
     }
 
     @Override

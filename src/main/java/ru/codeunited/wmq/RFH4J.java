@@ -33,9 +33,8 @@ public class RFH4J {
             }
 
         } catch (MissedParameterException | ParseException | CommandGeneralException | IncompatibleOptionsException e) {
-            consoleWriter.errorln(e.getMessage());
+            consoleWriter.errorln("Error occurred. ").errorln("Details: " + e.getMessage());
             consoleWriter.end().flush();
-            CLIFactory.showHelp();
         }
 
     }

@@ -13,8 +13,6 @@ public class MessageConsumerImpl implements MessageConsumer {
 
     private final MQQueue queue;
 
-    private final int DEFAULT_OPEN_OPTIONS = MQOO_FAIL_IF_QUIESCING | MQOO_INPUT_AS_Q_DEF;
-
     private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_SYNCPOINT;
 
     /**
@@ -27,7 +25,7 @@ public class MessageConsumerImpl implements MessageConsumer {
         /** MQOO_INPUT_AS_Q_DEF -- open queue to get message
          *  using queue-define default.
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, DEFAULT_OPEN_OPTIONS);
+        this.queue = queueManager.accessQueue(queueName, MQOO_FAIL_IF_QUIESCING | MQOO_INPUT_AS_Q_DEF);
     }
 
     private MQMessage get(MQMessage message, MQGetMessageOptions getMessageOptions) throws NoMessageAvailableException, MQException {

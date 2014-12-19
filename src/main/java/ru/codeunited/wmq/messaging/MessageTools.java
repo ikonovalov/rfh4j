@@ -60,14 +60,12 @@ public class MessageTools {
      * @return MQMessage with written str
      * @throws IOException
      */
-    public static MQMessage writeStringToMessage(String str, MQMessage message) throws IOException {
+    public static void writeStringToMessage(String str, MQMessage message) throws IOException {
         message.writeString(str);
-        return message;
     }
 
-    public MQMessage writeUTFToMessage(String utf, MQMessage message) throws IOException {
+    public void writeUTFToMessage(String utf, MQMessage message) throws IOException {
         message.writeUTF(utf);
-        return message;
     }
 
     public static String messageIdAsString(MQMessage message) {
