@@ -10,5 +10,10 @@ import com.ibm.mq.MQMessage;
  */
 public interface MessageSelector {
 
+    /**
+     * Setup MQGET options and query message header (message or correlation id for instance).
+     * @param messageOptions
+     * @param message
+     */
     void setup(MQGetMessageOptions messageOptions, MQMessage message);
 }
