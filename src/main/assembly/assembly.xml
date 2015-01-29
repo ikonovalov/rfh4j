@@ -29,6 +29,7 @@
             <includes>
                 <include>rfh4j.sh</include>
                 <include>rput.sh</include>
+                <include>rput_file.sh</include>
                 <include>default.properties</include>
             </includes>
         </fileSet>
