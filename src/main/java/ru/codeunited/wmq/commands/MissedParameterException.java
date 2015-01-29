@@ -55,7 +55,7 @@ public class MissedParameterException extends Exception {
         if (longName != null) for (String s : longName) {
             missedOptions.append('[').append(s).append(']').append(' ');
         }
-        return "Option(s) " + missedOptions.toString() + " are missed. " + message;
+        return ("Option(s) " + missedOptions.toString() + " are missed. " + message).trim();
     }
 
     /**

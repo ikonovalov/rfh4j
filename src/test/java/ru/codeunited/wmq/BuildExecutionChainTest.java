@@ -31,8 +31,17 @@ public class BuildExecutionChainTest extends CLITestSupport {
         assertThat("Command list is null", command, notNullValue());
         assertThat("Command list size is empty", command.size(), not(0));
         assertThat("Command list != classes list", command.size(), is(commandClasses.size()));
-
-
+        for (int z =0; z < command.size(); z++) {
+            assertThat(
+                    String.format(
+                            "Command %s with index %d in wrong place or not equals required class %s",
+                            command.get(z).getClass().getName(),
+                            z,
+                            commandClasses.get(z).getName()),
+                    command.get(z),
+                    instanceOf(commandClasses.get(z))
+            );
+        }
     }
 
     @Test
@@ -59,7 +68,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
     @Test
     public void ConnectDisconnectContainsAndResolveWithPassedArgs() throws ParseException, MissedParameterException {
-        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --srcq Q");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
@@ -68,15 +77,15 @@ public class BuildExecutionChainTest extends CLITestSupport {
         final List<Command> commands = chain.getCommandChain();
 
         // check total commands size
-        assertThat("Wrong commands list size", commands.size(), is(2));
+        assertThat("Wrong commands list size", commands.size(), is(3));
 
         // check that ConnectCommand and DisconnectCommand is a right position and resolve it
-        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQDisconnectCommand.class);
+        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQGetCommand.class, MQDisconnectCommand.class);
     }
 
     @Test
     public void ConnectDisconnectContainsAndResolveWithConfig() throws ParseException, MissedParameterException {
-        final CommandLine commandLine = prepareCommandLine("--config def.props -c JVM.DEF.SVRCONN");
+        final CommandLine commandLine = prepareCommandLine("--config def.props -c JVM.DEF.SVRCONN --srcq Q");
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
@@ -85,16 +94,27 @@ public class BuildExecutionChainTest extends CLITestSupport {
         final List<Command> commands = chain.getCommandChain();
 
         // check total commands size
-        assertThat("Wrong commands list size", commands.size(), is(2));
+        assertThat("Wrong commands list size", commands.size(), is(3)); // connect/disconnect/put
 
         // check that ConnectCommand and DisconnectCommand is a right position and resolve it
-        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQDisconnectCommand.class);
+        assertThatCommandInstanceOf(commands, MQConnectCommand.class, MQGetCommand.class, MQDisconnectCommand.class);
     }
 
     @Test(expected = MissedParameterException.class)
     public void ConnectFailedWithoutConfig() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("--dstq RFH.QTEST.QGENERAL1 -t hello");
         new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
+    }
+
+    @Test(expected = MissedParameterException.class)
+    public void ChainFailedWithoutOperationActions() throws ParseException, MissedParameterException {
+        final CommandLine commandLine = prepareCommandLine("--config def.props");
+        try {
+            new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
+        } catch(MissedParameterException e) {
+            assertThat("Wrong exception message for missed parameters", "Option(s) [dstq] [lslq] [srcq]  are missed.", equalTo(e.getMessage()));
+            throw e;
+        }
     }
 
     @Test
