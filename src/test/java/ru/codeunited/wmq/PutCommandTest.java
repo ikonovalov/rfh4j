@@ -33,7 +33,7 @@ public class PutCommandTest extends CLITestSupport {
             final String[] dstqParam = {"dstq"};
             assertTrue(
                     "Parameter --dstq should be missed, but really " + pe.getMessage(),
-                    Arrays.equals(dstqParam, pe.getLongName()));
+                    Arrays.equals(dstqParam, pe.getLongNames()));
             exceptionOccured = true;
         }
         if (!exceptionOccured) {
