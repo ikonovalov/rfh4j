@@ -16,6 +16,8 @@ class MessageConsoleFormatFactory {
         switch (format) {
             case MQFMT_STRING:
                 return new MQFMTStringFormatter();
+            case MQFMT_ADMIN:
+                return new MQFTMAdminFormatter();
             default:
                 return new MQFMTStringFormatter();
         }

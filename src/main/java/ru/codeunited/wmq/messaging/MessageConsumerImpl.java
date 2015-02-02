@@ -2,7 +2,7 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.*;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru

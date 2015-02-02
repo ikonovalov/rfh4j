@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ibm.mq.constants.CMQCFC.*;
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
