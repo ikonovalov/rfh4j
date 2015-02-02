@@ -19,7 +19,9 @@ public class MissedParameterException extends Exception {
     private String message = "";
 
     public MissedParameterException withMessage(String message) {
-        this.message = message;
+        if (message != null) {
+            this.message = message;
+        }
         return this;
     }
 

@@ -112,6 +112,14 @@ public abstract class AbstractCommand implements Command {
         throw new IncompatibleOptionsException(errorString);
     }
 
+    protected void raiseMissedParameters(String message, String...parameters) throws MissedParameterException {
+        throw new MissedParameterException(parameters).withMessage(message);
+    }
+
+    protected void raiseMissedParameters(String... parameters) throws MissedParameterException {
+        raiseMissedParameters(null, parameters);
+    }
+
     @Override
     public String toString() {
         return "[" + getClass().getSimpleName() + "]";

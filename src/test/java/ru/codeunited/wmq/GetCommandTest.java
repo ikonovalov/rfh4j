@@ -4,10 +4,12 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
-import ru.codeunited.wmq.commands.CommandGeneralException;
-import ru.codeunited.wmq.commands.IncompatibleOptionsException;
-import ru.codeunited.wmq.commands.MQGetCommand;
-import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.commands.*;
+
+import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.*;
+
+import java.util.List;
 
 /**
  * codeunited.ru
@@ -42,4 +44,20 @@ public class GetCommandTest extends CLITestSupport {
         // should throw IncompatibleOptionsException here
         getCmd.execute();
     }
+
+    @Test(expected = MissedParameterException.class)
+    public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException {
+        CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
+        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+        try {
+            List<Command> commands = executionPlanBuilder.buildChain().getCommandChain();
+            MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+            getCmd.execute();
+        } catch (MissedParameterException missed) {
+            assertThat(missed.getMessage(), equalTo("Option(s) [payload] [stream]  are missed."));
+            throw missed;
+        }
+    }
+
 }

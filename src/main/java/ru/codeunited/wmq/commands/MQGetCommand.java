@@ -31,8 +31,8 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
-        if (!ctx.hasAnyOption("stream", "payload")) {
-            raiseIncompatibeException("Option --stream or --payload are missed.");
+        if (ctx.hasntOption("stream", "payload")) {
+            raiseMissedParameters(new String[]{"stream", "payload"});
         }
         if (ctx.hasOption("stream") && ctx.hasOption("all")) {
             raiseIncompatibeException("Options --stream and --all can't run together. Use --payload instead --stream.");
