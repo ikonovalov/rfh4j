@@ -81,7 +81,8 @@ public class ConsoleWriter implements Closeable {
 
     public ConsoleWriter write(MQMessage message) throws IOException {
         writeln(BORDER);
-        writeln(message.readStringOfByteLength(message.getDataLength()));
+        final MessageConsoleFormatter formatter = MessageConsoleFormatFactory.formatterFor(message);
+        writeln(formatter.format(message));
         writeln(BORDER);
         end();
         return this;

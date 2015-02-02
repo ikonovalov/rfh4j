@@ -66,10 +66,7 @@ public class MQGetCommand extends QueueCommand {
                     if (ctx.hasOption("stream")) { // standard output to std.out
                         table.appendToLastRow("<stream>").flash();
                         console.write(message);
-                    }
-
-                    // print to a file (can used with conjunction with --stream)
-                    if (ctx.hasOption("payload")) {
+                    } else  if (ctx.hasOption("payload")) { /* print to a file */
                         File destination = new File(ctx.getOption("payload", fileNameForMessage(message)));
 
                         // if payload specified as folder, then we need to append file name

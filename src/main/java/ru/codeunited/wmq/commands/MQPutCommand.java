@@ -44,7 +44,7 @@ public class MQPutCommand extends QueueCommand {
                 }
             } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
                 sentMessage = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
-            } else if (ctx.hasOption('s')) {
+            } else if (ctx.hasOption("stream")) {
                 try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
                     sentMessage = messageProducer.send(bufferedInputStream);
                 }
