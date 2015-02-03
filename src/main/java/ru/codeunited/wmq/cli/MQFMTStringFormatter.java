@@ -11,8 +11,18 @@ import java.io.IOException;
  */
 public class MQFMTStringFormatter implements MessageConsoleFormatter {
 
+    private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
+
     @Override
     public String format(MQMessage message) throws IOException {
-        return message.readStringOfByteLength(message.getDataLength());
+        final StringBuffer buffer = new StringBuffer();
+        boarder(buffer);
+        buffer.append(message.readStringOfByteLength(message.getDataLength()));
+        boarder(buffer);
+        return buffer.toString();
+    }
+
+    private void boarder(StringBuffer buffer) {
+        buffer.append(BORDER).append('\n');
     }
 }

@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.cli;
 
+import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 
 import java.io.IOException;
@@ -11,5 +12,5 @@ import java.io.IOException;
  */
 public interface MessageConsoleFormatter {
 
-    String format(MQMessage message) throws IOException;
+    String format(MQMessage message) throws IOException, MQException;
 }
