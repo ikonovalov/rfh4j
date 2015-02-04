@@ -17,14 +17,31 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
 
 
     @Test
-    public void makeConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+    public void makeBindingConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
 
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --transport=binding");
 
-        final CommandLine commandLine = getCliParser().parse(getOptions(), args);
+        connectOperation(commandLine);
+    }
 
-        final MQConnectCommand connectCommand = new MQConnectCommand();
-        connectCommand.setContext(new CLIExecutionContext(commandLine));
+    @Test
+    public void makeClientConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --transport=client");
+
+        connectOperation(commandLine);
+    }
+
+    @Test
+    public void makeDefaultConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+
+        final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
+
+        connectOperation(commandLine);
+    }
+
+    private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+        final MQConnectCommand connectCommand = new MQConnectCommand(new CLIExecutionContext(commandLine));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());
 
