@@ -32,7 +32,6 @@ public class MQConnectCommand extends AbstractCommand {
     public static final String CONFIG_OPTION = "config";
     public static final String CHANNEL_PROPERTY = "channel";
     public static final String HOST_PROPERTY = "host";
-    public static final String PORT_PROPERTY = "port";
     public static final String USER_PROPERTY = "user";
     public static final String DEFAULT_CONFIG_PATH = "./default.properties";
 
@@ -41,14 +40,25 @@ public class MQConnectCommand extends AbstractCommand {
     private final Properties defaultProperties = new Properties();
 
     {
+        //defaultProperties.put(APPNAME_PROPERTY, "RFH4J");
         defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
-        defaultProperties.put(CMQC.PORT_PROPERTY, DEFAULT_PORT);
+        defaultProperties.put(PORT_PROPERTY, DEFAULT_PORT);
+        //defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_BINDINGS); // anti-RC2495 use with -Djava.library.path=/opt/mqm/java/lib64
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
         defaultProperties.put(CHANNEL_PROPERTY, DEFAULT_CHANNEL);
+        defaultProperties.put(CONNECT_OPTIONS_PROPERTY,
+                MQCNO_NONE
+                        | MQCNO_ACTIVITY_TRACE_DISABLED | MQCNO_ACCOUNTING_MQI_DISABLED | MQCNO_ACCOUNTING_Q_DISABLED
+        );
     }
 
     public MQConnectCommand() {
         connectionFactory = new WMQDefaultConnectionFactory();
+    }
+
+    public MQConnectCommand(ExecutionContext context) {
+        this();
+        setContext(context);
     }
 
     public MQConnectCommand(WMQConnectionFactory connectionFactory) {
@@ -96,9 +106,26 @@ public class MQConnectCommand extends AbstractCommand {
         if (ctx.hasOption(HOST_PROPERTY))
             passedProperties.put(HOST_NAME_PROPERTY, ctx.getOption(HOST_PROPERTY));
         if (ctx.hasOption(PORT_PROPERTY))
-            passedProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(ctx.getOption(PORT_PROPERTY)));
+            passedProperties.put(PORT_PROPERTY, Integer.valueOf(ctx.getOption(PORT_PROPERTY)));
         if (ctx.hasOption(USER_PROPERTY))
             passedProperties.put(USER_ID_PROPERTY, ctx.getOption(USER_PROPERTY));
+        if(ctx.hasOption(TRANSPORT_PROPERTY)) {
+            final String transportAlias = ctx.getOption(TRANSPORT_PROPERTY).toUpperCase();
+            String decodedTransport;
+            switch (transportAlias) {
+                case "BINDING":
+                    decodedTransport = TRANSPORT_MQSERIES_BINDINGS;
+                    break;
+                case "CLIENT":
+                    decodedTransport = TRANSPORT_MQSERIES_CLIENT;
+                    break;
+                default:
+                    LOG.warning(String.format("%s unrecognized with passed value %s. Switched to %s", TRANSPORT_PROPERTY, transportAlias, TRANSPORT_MQSERIES_BINDINGS));
+                    decodedTransport = TRANSPORT_MQSERIES_BINDINGS;
+
+            }
+            passedProperties.put(TRANSPORT_PROPERTY, decodedTransport);
+        }
         return passedProperties;
     }
 

@@ -35,6 +35,14 @@ public class CLIFactory {
                 .isRequired(NO)
                 .create('c');
 
+        final Option transport = OptionBuilder
+                .withLongOpt("transport")
+                .withArgName("binding|client")
+                .withDescription("WMQ transport type")
+                .hasArg(YES)
+                .isRequired(NO)
+                .create();
+
         final Option queueManager = OptionBuilder
                 .withLongOpt("qmanager")
                 .withArgName("qmanager")
@@ -167,6 +175,7 @@ public class CLIFactory {
                 .addOption(lsLocalQueues)
                 .addOption(all)
                 .addOption(limit)
+                .addOption(transport)
                 .addOptionGroup(messagePayload);
 
         return options;
