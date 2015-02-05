@@ -13,6 +13,8 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import static ru.codeunited.wmq.cli.CLIFactory.*;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -58,7 +60,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
         assertThat(context.hasAnyOption('Q', 's'), is(true));
 
         // check long name notation
-        assertThat(context.hasOption("stream"), is(true));
+        assertThat(context.hasOption(OPT_STREAM), is(true));
         assertThat(context.hasOption("qmanager"), is(true));
         assertThat(context.hasOption("channel"), is(true));
         assertThat(context.hasOption("host"), is(false));

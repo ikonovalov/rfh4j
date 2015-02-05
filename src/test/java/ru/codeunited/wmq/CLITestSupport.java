@@ -26,8 +26,6 @@ public class CLITestSupport {
         return options;
     }
 
-    private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
-
     protected CommandLine prepareCommandLine(String line) throws ParseException {
         final String[] args = line.split(" ");
         return prepareCommandLine(args);

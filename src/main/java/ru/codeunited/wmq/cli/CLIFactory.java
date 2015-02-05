@@ -15,6 +15,10 @@ public class CLIFactory {
 
     private static final boolean NO = false;
 
+    public static final String OPT_STREAM = "stream";
+
+    public static final String OPT_PAYLOAD = "payload";
+
     private CLIFactory() {
 
     }
@@ -124,7 +128,7 @@ public class CLIFactory {
         // message payload group
         final OptionGroup messagePayload = new OptionGroup();
         final Option filePayload = OptionBuilder
-                .withLongOpt("payload")
+                .withLongOpt(OPT_PAYLOAD)
                 .withArgName("file")
                 .withDescription("File to send.")
                 .hasOptionalArg()
@@ -138,7 +142,7 @@ public class CLIFactory {
                 .create('t');
 
         final Option redirectedStream = OptionBuilder
-                .withLongOpt("stream")
+                .withLongOpt(OPT_STREAM)
                 .withArgName("stream")
                 .withDescription("Stream for message (std in/out).")
                 .hasArg(NO)
@@ -223,15 +227,20 @@ public class CLIFactory {
         int index = 1;
         return  "Usage examples:\n"
                 + commandUsage(index++,
-                    "Send text message to a queue (host, port, channel are default)", "--dstq RFH.QTEST.QGENERAL1 -t hello!")
+                    "Send text message to a queue (host, port, channel are default)",
+                        String.format("--dstq RFH.QTEST.QGENERAL1 -t hello!"))
                 + commandUsage(index++,
-                    "Get message from a queue and print to console", "--srcq RFH.QTEST.QGENERAL1 -stream")
+                    "Get message from a queue and print to console",
+                        String.format("--srcq RFH.QTEST.QGENERAL1 --%s", OPT_STREAM))
                 + commandUsage(index++,
-                    "Get message from a queue with timeout and put to file with default name", "--srcq RFH.QTEST.QGENERAL1 --wait 5000 --payload /tmp/")
+                    "Get message from a queue with timeout and put to file with default name",
+                        String.format("--srcq RFH.QTEST.QGENERAL1 --wait 5000 --%s /tmp/", OPT_PAYLOAD))
                 + commandUsage(index++,
-                    "List all local queues", " --lslq")
-                + commandUsage(index++,
-                    "List all local queues with filter", "--lslq MYQ*");
+                    "List all local queues",
+                        String.format(" --lslq"))
+                + commandUsage(index,
+                    "List all local queues with filter",
+                        String.format("--lslq MYQ*"));
     }
 
     private static String commandUsage(int index, String description, String example) {

@@ -47,8 +47,7 @@ public class MQConnectCommand extends AbstractCommand {
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);
         defaultProperties.put(CHANNEL_PROPERTY, DEFAULT_CHANNEL);
         defaultProperties.put(CONNECT_OPTIONS_PROPERTY,
-                MQCNO_NONE
-                        | MQCNO_ACTIVITY_TRACE_DISABLED | MQCNO_ACCOUNTING_MQI_DISABLED | MQCNO_ACCOUNTING_Q_DISABLED
+                MQCNO_ACTIVITY_TRACE_DISABLED | MQCNO_ACCOUNTING_MQI_DISABLED | MQCNO_ACCOUNTING_Q_DISABLED
         );
     }
 

@@ -3,6 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
+import static ru.codeunited.wmq.cli.CLIFactory.*;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
@@ -31,14 +32,14 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
-        if (ctx.hasntOption("stream", "payload")) {
-            raiseMissedParameters(new String[]{"stream", "payload"});
+        if (ctx.hasntOption(OPT_STREAM, OPT_PAYLOAD)) {
+            raiseMissedParameters(new String[]{OPT_STREAM, OPT_PAYLOAD});
         }
-        if (ctx.hasOption("stream") && ctx.hasOption("all")) {
-            raiseIncompatibeException("Options --stream and --all can't run together. Use --payload instead --stream.");
+        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("all")) {
+            raiseIncompatibeException(String.format("Options --%1$s and --all can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD));
         }
-        if (ctx.hasOption("stream") && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
-            raiseIncompatibeException("--stream can't be used with --limit > 1");
+        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
+            raiseIncompatibeException(String.format("--%s can't be used with --limit > 1", OPT_STREAM));
         }
     }
 
@@ -63,11 +64,11 @@ public class MQGetCommand extends QueueCommand {
                     table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                     // print to std output (console)
-                    if (ctx.hasOption("stream")) { // standard output to std.out
+                    if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
                         table.appendToLastRow("<stream>").flash();
                         console.write(message);
-                    } else  if (ctx.hasOption("payload")) { /* print to a file */
-                        File destination = new File(ctx.getOption("payload", fileNameForMessage(message)));
+                    } else  if (ctx.hasOption(OPT_PAYLOAD)) { /* print to a file */
+                        File destination = new File(ctx.getOption(OPT_PAYLOAD, fileNameForMessage(message)));
 
                         // if payload specified as folder, then we need to append file name
                         if (destination.exists() && destination.isDirectory()) {

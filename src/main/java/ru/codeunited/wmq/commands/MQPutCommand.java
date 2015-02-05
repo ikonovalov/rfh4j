@@ -14,7 +14,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
-
+import static ru.codeunited.wmq.cli.CLIFactory.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -38,18 +38,18 @@ public class MQPutCommand extends QueueCommand {
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
             MQMessage sentMessage;
             // handle payload parameters
-            if (ctx.hasOption(FILE_PAYLOAD)) { // file payload
-                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(FILE_PAYLOAD))) {
+            if (ctx.hasOption(OPT_PAYLOAD)){ // file payload
+                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(OPT_PAYLOAD))) {
                     sentMessage = messageProducer.send(fileStream);
                 }
             } else if (ctx.hasOption(TEXT_PAYLOAD)) { // just text message
                 sentMessage = messageProducer.send(ctx.getOption(TEXT_PAYLOAD));
-            } else if (ctx.hasOption("stream")) {
+            } else if (ctx.hasOption(OPT_STREAM)) {
                 try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
                     sentMessage = messageProducer.send(bufferedInputStream);
                 }
             } else {
-                throw new MissedParameterException(FILE_PAYLOAD, TEXT_PAYLOAD, STREAM_PAYLOAD);
+                throw new MissedParameterException(OPT_PAYLOAD, "text", OPT_STREAM);
             }
 
             table

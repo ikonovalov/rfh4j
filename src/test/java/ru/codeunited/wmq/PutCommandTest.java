@@ -9,7 +9,7 @@ import ru.codeunited.wmq.commands.*;
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
-
+import static ru.codeunited.wmq.cli.CLIFactory.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -53,10 +53,10 @@ public class PutCommandTest extends CLITestSupport {
         try {
             maker.execute();
         } catch (MissedParameterException pe) {
-            final char[] ptParams = {'p', 's', 't'};
+            final String[] ptParams = {OPT_PAYLOAD, OPT_STREAM, "text"};
             assertTrue(
-                    "Parameter -t or -p or -s are missed, but we got another error here. [" + pe.getMessage() + "]",
-                    Arrays.equals(pe.getSingleCharName(), ptParams));
+                    String.format("Parameter --%s or --%s or --%s are missed, but we got another error here. [%s]", "text", OPT_PAYLOAD, OPT_STREAM, pe.getMessage()),
+                    Arrays.equals(pe.getLongNames(), ptParams));
             exceptionOccured = true;
         }
 

@@ -11,6 +11,8 @@ import static org.hamcrest.CoreMatchers.*;
 
 import java.util.List;
 
+import static ru.codeunited.wmq.cli.CLIFactory.*;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -20,7 +22,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = IncompatibleOptionsException.class)
     public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine("-Q DEFQM --stream --all");
+        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --all", OPT_STREAM));
         ExecutionContext executionContext = new CLIExecutionContext(cl);
         MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here
@@ -29,7 +31,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = IncompatibleOptionsException.class)
     public void getIncompatibleParamsStreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine("-Q DEFQM --stream --limit 10");
+        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --limit 10", OPT_STREAM));
         ExecutionContext executionContext = new CLIExecutionContext(cl);
         MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here
@@ -38,7 +40,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = MissedParameterException.class)
     public void getMissedParameterException() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine("-Q DEFQM --stream");
+        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s", OPT_STREAM));
         ExecutionContext executionContext = new CLIExecutionContext(cl);
         MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here
@@ -55,7 +57,7 @@ public class GetCommandTest extends CLITestSupport {
             MQGetCommand getCmd = (MQGetCommand) commands.get(1);
             getCmd.execute();
         } catch (MissedParameterException missed) {
-            assertThat(missed.getMessage(), equalTo("Option(s) [payload] [stream]  are missed."));
+            assertThat(missed.getMessage(), equalTo(String.format("Option(s) [%s] [%s]  are missed.", OPT_PAYLOAD, OPT_STREAM)));
             throw missed;
         }
     }
