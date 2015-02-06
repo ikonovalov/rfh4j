@@ -25,6 +25,15 @@ public class MQGetCommand extends QueueCommand {
 
     public static final String GET_OPERATION_NAME = "GET";
 
+    private static final TableColumnName[] TABLE_HEADER = {
+            TableColumnName.ACTION,
+            TableColumnName.QMANAGER,
+            TableColumnName.QUEUE,
+            TableColumnName.MESSAGE_ID,
+            TableColumnName.CORREL_ID,
+            TableColumnName.OUTPUT
+    };
+
     /**
      * Check input context options and raise IncompatibleOptionsException if something wrong.
      * @throws IncompatibleOptionsException
@@ -38,16 +47,18 @@ public class MQGetCommand extends QueueCommand {
         if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("all")) {
             raiseIncompatibeException(String.format("Options --%1$s and --all can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD));
         }
-        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
+        /*if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
             raiseIncompatibeException(String.format("--%s can't be used with --limit > 1", OPT_STREAM));
-        }
+        }*/
+    }
+
+    private ConsoleTable createTable(ConsoleWriter console) {
+        return console.createTable(TABLE_HEADER);
     }
 
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         final ConsoleWriter console = getConsoleWriter();
-        final ConsoleTable table = console.createTable(
-                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.CORREL_ID, TableColumnName.OUTPUT);
 
         final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
@@ -61,6 +72,7 @@ public class MQGetCommand extends QueueCommand {
                 while (isListenerMode() || limit-->0) {
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
+                    final ConsoleTable table = createTable(console);
                     table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                     // print to std output (console)
@@ -77,13 +89,16 @@ public class MQGetCommand extends QueueCommand {
                         writeMessageBodyToFile(message, destination);
                         table.appendToLastRow(destination.getAbsolutePath());
                     }
+                    table.flash();
                 }
 
             } catch (NoMessageAvailableException e) {
-                if (!queueHasMessages) // prevent output extra information if queue has messages.
-                    table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
+                if (!queueHasMessages) { // prevent output extra information if queue has messages.
+                    createTable(console)
+                            .append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                            .flash();
+                }
             }
-            table.flash(); // pring accumulated table
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());

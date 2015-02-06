@@ -23,6 +23,6 @@ public class MQFMTStringFormatter implements MessageConsoleFormatter {
     }
 
     private void boarder(StringBuffer buffer) {
-        buffer.append(BORDER).append('\n');
+        buffer.append('\n').append(BORDER).append('\n');
     }
 }
