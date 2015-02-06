@@ -13,7 +13,7 @@ public class MessageConsumerImpl implements MessageConsumer {
 
     private final MQQueue queue;
 
-    private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_SYNCPOINT;
+    private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_NO_SYNCPOINT;
 
     /**
      * Create message consumer for a MQ queue.
