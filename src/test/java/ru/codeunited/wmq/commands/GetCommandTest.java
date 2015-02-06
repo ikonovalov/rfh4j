@@ -23,27 +23,53 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = IncompatibleOptionsException.class)
     public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --all", OPT_STREAM));
-        ExecutionContext executionContext = new CLIExecutionContext(cl);
-        MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --all", OPT_STREAM));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here
         getCmd.execute();
     }
 
-    @Test(expected = IncompatibleOptionsException.class)
-    public void getIncompatibleParamsStreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --limit 10", OPT_STREAM));
-        ExecutionContext executionContext = new CLIExecutionContext(cl);
-        MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
-        // should throw IncompatibleOptionsException here
+    @Test(expected = MissedParameterException.class) /* very synthetic test, not from real life */
+    public void getMissedParameterExceptiontreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --limit 10", OPT_STREAM));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        assertThat("shouldWait", getCmd.shouldWait(), is(false));
+        assertThat("getMessagesCountLimit", getCmd.getMessagesCountLimit(1), is(10));
+        assertThat("waitTime", getCmd.waitTime(), is(-1));
+        // should throw MissedParameterException here from the work() of MQGetCommand
         getCmd.execute();
+    }
+
+    @Test
+    public void justGetOneMessageNOWaitAndExit() throws ParseException {
+        final String queue = "RFH.QTEST.QGENERAL1";
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s", OPT_STREAM, queue));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        assertThat(getCmd.isListenerMode(), is(false));
+        assertThat(getCmd.shouldWait(), is(false));
+        assertThat(getCmd.getMessagesCountLimit(1), is(1));
+    }
+
+    @Test
+    public void justGetOneMessageWithWaitAndExit() throws ParseException {
+        final String queue = "RFH.QTEST.QGENERAL1";
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s --wait 1000", OPT_STREAM, queue));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        assertThat(getCmd.isListenerMode(), is(false));
+        assertThat(getCmd.shouldWait(), is(true));
+        assertThat(getCmd.getMessagesCountLimit(1), is(1));
+        assertThat(getCmd.waitTime(), is(1000));
     }
 
     @Test(expected = MissedParameterException.class)
     public void getMissedParameterException() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
-        CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s", OPT_STREAM));
-        ExecutionContext executionContext = new CLIExecutionContext(cl);
-        MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s", OPT_STREAM));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         // should throw IncompatibleOptionsException here
         getCmd.execute();
     }
@@ -91,7 +117,7 @@ public class GetCommandTest extends CLITestSupport {
                 final MQGetCommand getCmd = (MQGetCommand) commands.get(1);
                 assertThat("isListenerMode", getCmd.isListenerMode(), is(false));
                 assertThat("shouldWait", getCmd.shouldWait(), is(true));
-                assertThat("waitTime", getCmd.waitTime(), is(8000));
+                assertThat("waitTime", getCmd.waitTime(), is(3000));
 
                 chain.execute();
             }

@@ -47,9 +47,6 @@ public class MQGetCommand extends QueueCommand {
         if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("all")) {
             raiseIncompatibeException(String.format("Options --%1$s and --all can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD));
         }
-        /*if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
-            raiseIncompatibeException(String.format("--%s can't be used with --limit > 1", OPT_STREAM));
-        }*/
     }
 
     private ConsoleTable createTable(ConsoleWriter console) {
@@ -59,7 +56,6 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         final ConsoleWriter console = getConsoleWriter();
-
         final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
 
