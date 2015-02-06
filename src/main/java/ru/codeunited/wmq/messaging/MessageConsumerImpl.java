@@ -50,7 +50,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     public MQMessage get() throws NoMessageAvailableException, MQException {
         final MQGetMessageOptions messageOptions = new MQGetMessageOptions();
-        messageOptions.options = DEFAULT_GET_OPTIONS| MQGMO_NO_WAIT;
+        messageOptions.options = DEFAULT_GET_OPTIONS | MQGMO_NO_WAIT;
         //gmo.waitInterval = MQC.MQWI_UNLIMITED;
         return get(messageOptions);
     }

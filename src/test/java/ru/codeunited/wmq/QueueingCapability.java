@@ -37,8 +37,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     public void communication(QueueWork work) throws Exception {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         try {
@@ -49,6 +49,14 @@ public abstract class QueueingCapability extends CLITestSupport {
         } finally {
             cmd2.execute();
         }
+    }
+
+    private AbstractCommand prepareMQDisconnectCommand(ExecutionContext context) {
+        return new MQDisconnectCommand().setContext(context);
+    }
+
+    private AbstractCommand prepareMQConnectCommand(ExecutionContext context) {
+        return new MQConnectCommand().setContext(context);
     }
 
     protected MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
@@ -62,8 +70,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
@@ -81,8 +89,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(queueName, context);

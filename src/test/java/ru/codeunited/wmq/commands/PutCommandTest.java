@@ -1,8 +1,9 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.commands;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
+import ru.codeunited.wmq.CLITestSupport;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 
@@ -25,7 +26,7 @@ public class PutCommandTest extends CLITestSupport {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
         final MQPutCommand putCommand = new MQPutCommand();
-        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
+        final CommandChain maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
         boolean exceptionOccured = false;
         try {
             maker.execute();
@@ -48,7 +49,7 @@ public class PutCommandTest extends CLITestSupport {
     public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException {
         final CommandLine commandLine = getCommandLine_With_Qc_dstq();
         final MQPutCommand putCommand = new MQPutCommand();
-        final CommandChainMaker maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
+        final CommandChain maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
         boolean exceptionOccured = false;
         try {
             maker.execute();

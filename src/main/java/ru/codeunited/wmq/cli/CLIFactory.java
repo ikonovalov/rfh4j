@@ -156,13 +156,13 @@ public class CLIFactory {
 
         final Option limit = OptionBuilder
                 .withLongOpt("limit")
-                .withDescription("Limit GET command")
+                .withDescription("Limit GET command. This is maximum messages or use negative value for infinity mode")
                 .hasArg(YES)
                 .create();
 
         messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
 
-        Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
+        final Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
         options
                 .addOption(help)

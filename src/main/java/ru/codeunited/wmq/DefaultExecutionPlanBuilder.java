@@ -20,8 +20,8 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
     }
 
     @Override
-    public CommandChainMaker buildChain() throws MissedParameterException {
-        final CommandChainMaker chain = new CommandChainMaker(executionContext);
+    public CommandChain buildChain() throws MissedParameterException {
+        final CommandChain chain = new CommandChain(executionContext);
 
         // create connect/disconnect commands
         if (executionContext.hasOption("qmanager") ||

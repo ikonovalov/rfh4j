@@ -19,7 +19,7 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test
     public void addCommandToChain() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
         final AbstractCommand cmd1 = new MQConnectCommand();
         final AbstractCommand cmd2 = new MQDisconnectCommand();
 
@@ -40,13 +40,13 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test(expected = UnsupportedOperationException.class)
     public void immutableWorkload() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.getCommandChain().add(new MQDisconnectCommand());
     }
 
     @Test
     public void insertAfterCommandS1() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.addAfter(new MQConnectCommand(), null);
         assertThat("Wrong chain size after add one command", maker.getCommandChain().size(), is(1));
         assertThat(maker.getCommandChain().get(0), instanceOf(MQConnectCommand.class));
@@ -54,7 +54,7 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test
     public void insertAfterCommandS3() throws ParseException {
-        final CommandChainMaker maker = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
         final Command connect = new MQConnectCommand();
         final Command disconnect = new MQDisconnectCommand();
         final MQPutCommand put = new MQPutCommand();

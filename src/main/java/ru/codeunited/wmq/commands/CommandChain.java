@@ -11,15 +11,15 @@ import java.util.List;
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
  */
-public class CommandChainMaker extends AbstractCommand {
+public class CommandChain extends AbstractCommand {
 
     private final List<Command> commandChain = new ArrayList<>();
 
-    public CommandChainMaker(ExecutionContext executionContext) {
+    public CommandChain(ExecutionContext executionContext) {
         setContext(executionContext);
     }
 
-    private CommandChainMaker checkAndAdd(int index, Command command) {
+    private CommandChain checkAndAdd(int index, Command command) {
         if (selfStateCheckOK()) {
             copyEnvironmentTo(command);
             commandChain.add(index, command);
@@ -35,11 +35,11 @@ public class CommandChainMaker extends AbstractCommand {
      * @param command new command instance.
      * @return instance of CommandMaker.
      */
-    public CommandChainMaker addCommand(Command command) {
+    public CommandChain addCommand(Command command) {
         return checkAndAdd(commandChain.size(), command);
     }
 
-    public CommandChainMaker addCommand(int index, Command command) {
+    public CommandChain addCommand(int index, Command command) {
         return checkAndAdd(index, command);
     }
 
@@ -49,7 +49,7 @@ public class CommandChainMaker extends AbstractCommand {
      * @param afterThat after this command newCommand will be inserted.
      * @return CommandChainMaker
      */
-    public CommandChainMaker addAfter(Command newCommand, Command afterThat) {
+    public CommandChain addAfter(Command newCommand, Command afterThat) {
         if (commandChain.size() == 0 || afterThat == null) { // add like first element
             addCommand(newCommand);
         } else { // insert after

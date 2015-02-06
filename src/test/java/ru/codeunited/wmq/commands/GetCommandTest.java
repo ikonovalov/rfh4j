@@ -1,15 +1,16 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.commands;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
+import ru.codeunited.wmq.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
-import ru.codeunited.wmq.commands.*;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static ru.codeunited.wmq.cli.CLIFactory.*;
 
@@ -49,8 +50,8 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(expected = MissedParameterException.class)
     public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException {
-        CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
-        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
         try {
             List<Command> commands = executionPlanBuilder.buildChain().getCommandChain();
@@ -60,6 +61,59 @@ public class GetCommandTest extends CLITestSupport {
             assertThat(missed.getMessage(), equalTo(String.format("Option(s) [%s] [%s]  are missed.", OPT_PAYLOAD, OPT_STREAM)));
             throw missed;
         }
+    }
+
+    @Test
+    public void initListenerMode() throws MissedParameterException, ParseException {
+        final String queue = "RFH.QTEST.QGENERAL1";
+        final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), queue));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+        final CommandChain chain = executionPlanBuilder.buildChain();
+        final List<Command> commands = chain.getCommandChain();
+        final MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+        assertThat("isListenerMode", getCmd.isListenerMode(), is(true));
+        assertThat("shouldWait", getCmd.shouldWait(), is(true)); // engage MQGMO_WAIT
+        assertThat("waitTime", getCmd.waitTime(), is(-1)); // engage MQWI_UNLIMITED
+    }
+
+    @Test(timeout = 20000)
+    public void waitTwoMessages() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, ExecutionException, InterruptedException {
+        final String queue = "RFH.QTEST.QGENERAL1";
+        branch(new Parallel.Branch() {
+            @Override
+            protected void perform() throws Exception {
+                final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 3000", connectionParameter(), queue));
+                final ExecutionContext executionContext = new CLIExecutionContext(cl);
+                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+                final CommandChain chain = executionPlanBuilder.buildChain();
+                final List<Command> commands = chain.getCommandChain();
+                final MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+                assertThat("isListenerMode", getCmd.isListenerMode(), is(false));
+                assertThat("shouldWait", getCmd.shouldWait(), is(true));
+                assertThat("waitTime", getCmd.waitTime(), is(8000));
+
+                chain.execute();
+            }
+        });
+
+        branch(new Parallel.Branch(2000) {
+            @Override
+            protected void perform() throws Exception {
+                putToQueue(queue);
+            }
+        });
+
+        branch(new Parallel.Branch(5000) {
+            @Override
+            protected void perform() throws Exception {
+                putToQueue(queue);
+            }
+        });
+
+        parallel();
+
+
     }
 
 }

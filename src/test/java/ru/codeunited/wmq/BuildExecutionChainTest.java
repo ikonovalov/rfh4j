@@ -74,7 +74,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
-        final CommandChainMaker chain = executionPlanBuilder.buildChain();
+        final CommandChain chain = executionPlanBuilder.buildChain();
 
         final List<Command> commands = chain.getCommandChain();
 
@@ -91,7 +91,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
-        final CommandChainMaker chain = executionPlanBuilder.buildChain();
+        final CommandChain chain = executionPlanBuilder.buildChain();
 
         final List<Command> commands = chain.getCommandChain();
 
@@ -125,7 +125,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
-        final CommandChainMaker chain = executionPlanBuilder.buildChain();
+        final CommandChain chain = executionPlanBuilder.buildChain();
 
         final List<Command> commands = chain.getCommandChain();
 
@@ -151,7 +151,7 @@ public class BuildExecutionChainTest extends CLITestSupport {
 
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
 
-        final CommandChainMaker chain = executionPlanBuilder.buildChain();
+        final CommandChain chain = executionPlanBuilder.buildChain();
 
         final List<Command> commands = chain.getCommandChain();
 

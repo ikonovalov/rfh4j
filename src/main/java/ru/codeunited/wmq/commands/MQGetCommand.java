@@ -56,9 +56,9 @@ public class MQGetCommand extends QueueCommand {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
             boolean queueHasMessages = false;
             try {
-                int limit = getMessagesCountLimit(1);
+                int limit = getMessagesCountLimit(1); // default is only one message per command
 
-                while (limit-->0) {
+                while (isListenerMode() || limit-->0) {
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
                     table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
@@ -83,7 +83,7 @@ public class MQGetCommand extends QueueCommand {
                 if (!queueHasMessages) // prevent output extra information if queue has messages.
                     table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
             }
-            table.flash();
+            table.flash(); // pring accumulated table
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());
@@ -95,17 +95,25 @@ public class MQGetCommand extends QueueCommand {
      * Return maximum message count limit or defaultValue.
      * @return int.
      */
-    private int getMessagesCountLimit(int defaultValue) {
+    protected int getMessagesCountLimit(int defaultValue) {
         final ExecutionContext ctx = getExecutionContext();
         return ctx.hasOption("limit") ? Integer.valueOf(ctx.getOption("limit")) : defaultValue;
     }
 
     /**
-     * If passed --wait parameter.
-     * @return true if context has 'wait' option.
+     * true - If passed --wait parameter.
+     * true - if MQGet in the listener mode. (with negative limit)
+     *
+     * @return true if context has 'wait' option or 'limit' has negative value..
      */
     protected boolean shouldWait() {
-        return getExecutionContext().hasOption("wait");
+        final ExecutionContext context = getExecutionContext();
+        return isListenerMode() || context.hasOption("wait");
+    }
+
+    protected boolean isListenerMode() {
+        final ExecutionContext context = getExecutionContext();
+        return context.hasOption("limit") && Integer.valueOf(context.getOption("limit")) < 0;
     }
 
     /**
