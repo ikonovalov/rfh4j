@@ -26,6 +26,7 @@ public class MQGetCommand extends QueueCommand {
     public static final String GET_OPERATION_NAME = "GET";
 
     private static final TableColumnName[] TABLE_HEADER = {
+            TableColumnName.INDEX,
             TableColumnName.ACTION,
             TableColumnName.QMANAGER,
             TableColumnName.QUEUE,
@@ -64,12 +65,12 @@ public class MQGetCommand extends QueueCommand {
             boolean queueHasMessages = false;
             try {
                 int limit = getMessagesCountLimit(1); // default is only one message per command
-
+                int messageCouter = 0;
                 while (isListenerMode() || limit-->0) {
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
                     final ConsoleTable table = createTable(console);
-                    table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
+                    table.append(String.valueOf(messageCouter), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                     // print to std output (console)
                     if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
@@ -86,12 +87,13 @@ public class MQGetCommand extends QueueCommand {
                         table.appendToLastRow(destination.getAbsolutePath());
                     }
                     table.flash();
+                    messageCouter++;
                 }
 
             } catch (NoMessageAvailableException e) {
                 if (!queueHasMessages) { // prevent output extra information if queue has messages.
                     createTable(console)
-                            .append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                            .append(String.valueOf(0), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
                             .flash();
                 }
             }
