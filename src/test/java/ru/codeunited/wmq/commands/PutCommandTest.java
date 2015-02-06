@@ -1,9 +1,13 @@
 package ru.codeunited.wmq.commands;
 
+import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.CLITestSupport;
+import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 
@@ -16,7 +20,15 @@ import static ru.codeunited.wmq.cli.CLIFactory.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 24.10.14.
  */
-public class PutCommandTest extends CLITestSupport {
+public class PutCommandTest extends QueueingCapability {
+
+    private final static String QUEUE = "RFH.QTEST.QGENERAL1";
+
+    @Before
+    @After
+    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException {
+        cleanupQueue(QUEUE);
+    }
 
     @Test
     /**

@@ -1,7 +1,10 @@
 package ru.codeunited.wmq.commands;
 
+import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
@@ -19,7 +22,9 @@ import static ru.codeunited.wmq.cli.CLIFactory.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 29.11.14.
  */
-public class GetCommandTest extends CLITestSupport {
+public class GetCommandTest extends QueueingCapability {
+
+    private final static String QUEUE = "RFH.QTEST.QGENERAL1";
 
     @Test(expected = IncompatibleOptionsException.class)
     public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
@@ -44,8 +49,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test
     public void justGetOneMessageNOWaitAndExit() throws ParseException {
-        final String queue = "RFH.QTEST.QGENERAL1";
-        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s", OPT_STREAM, queue));
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s", OPT_STREAM, QUEUE));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         assertThat(getCmd.isListenerMode(), is(false));
@@ -55,8 +59,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test
     public void justGetOneMessageWithWaitAndExit() throws ParseException {
-        final String queue = "RFH.QTEST.QGENERAL1";
-        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s --wait 1000", OPT_STREAM, queue));
+        final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%1$s --srcq %2$s --wait 1000", OPT_STREAM, QUEUE));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
         assertThat(getCmd.isListenerMode(), is(false));
@@ -91,8 +94,7 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test
     public void initListenerMode() throws MissedParameterException, ParseException {
-        final String queue = "RFH.QTEST.QGENERAL1";
-        final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), queue));
+        final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), QUEUE));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
         final CommandChain chain = executionPlanBuilder.buildChain();
@@ -105,11 +107,11 @@ public class GetCommandTest extends CLITestSupport {
 
     @Test(timeout = 20000)
     public void waitTwoMessages() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, ExecutionException, InterruptedException {
-        final String queue = "RFH.QTEST.QGENERAL1";
+
         branch(new Parallel.Branch() {
             @Override
             protected void perform() throws Exception {
-                final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 3000", connectionParameter(), queue));
+                final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 3000", connectionParameter(), QUEUE));
                 final ExecutionContext executionContext = new CLIExecutionContext(cl);
                 final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
                 final CommandChain chain = executionPlanBuilder.buildChain();
@@ -126,20 +128,26 @@ public class GetCommandTest extends CLITestSupport {
         branch(new Parallel.Branch(2000) {
             @Override
             protected void perform() throws Exception {
-                putToQueue(queue);
+                putToQueue(QUEUE);
             }
         });
 
         branch(new Parallel.Branch(5000) {
             @Override
             protected void perform() throws Exception {
-                putToQueue(queue);
+                putToQueue(QUEUE);
             }
         });
 
         parallel();
 
 
+    }
+
+    @Before
+    @After
+    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException {
+        cleanupQueue(QUEUE);
     }
 
 }
