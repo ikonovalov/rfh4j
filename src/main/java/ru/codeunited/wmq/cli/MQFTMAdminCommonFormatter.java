@@ -17,7 +17,7 @@ import java.util.Enumeration;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminFormatter implements MessageConsoleFormatter {
+public class MQFTMAdminCommonFormatter implements MessageConsoleFormatter {
 
     private void boarder(final StringBuffer buffer) {
         buffer.append("<--------------MQFTM_ADMIN------------------------>").append('\n');
@@ -25,6 +25,7 @@ public class MQFTMAdminFormatter implements MessageConsoleFormatter {
 
     @Override
     public String format(MQMessage message) throws IOException, MQException {
+        final PCFMessage pcfMessage = new PCFMessage(message);
         final StringBuffer buffer = new StringBuffer();
 
         // print MQMD header
@@ -32,7 +33,7 @@ public class MQFTMAdminFormatter implements MessageConsoleFormatter {
 
         // print MQFTM_ADMIN
         boarder(buffer);
-        final PCFMessage pcfMessage = new PCFMessage(message);
+
         int paramCount = pcfMessage.getParameterCount();
 
         buffer.append(String.format("Command: %d\n", pcfMessage.getCommand()));

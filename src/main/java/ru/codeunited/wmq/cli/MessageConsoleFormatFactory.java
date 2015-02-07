@@ -17,7 +17,7 @@ class MessageConsoleFormatFactory {
             case MQFMT_STRING:
                 return new MQFMTStringFormatter();
             case MQFMT_ADMIN:
-                return new MQFTMAdminFormatter();
+                return new MQFTMAdminActivityFormatter();
             default:
                 return new MQFMTStringFormatter();
         }

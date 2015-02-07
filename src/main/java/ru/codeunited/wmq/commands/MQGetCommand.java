@@ -67,6 +67,7 @@ public class MQGetCommand extends QueueCommand {
                 int limit = getMessagesCountLimit(1); // default is only one message per command
                 int messageCouter = 0;
                 while (isListenerMode() || limit-->0) {
+                    // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
                     final ConsoleTable table = createTable(console);
