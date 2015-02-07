@@ -19,13 +19,19 @@ import java.util.Enumeration;
  */
 public class MQFTMAdminCommonFormatter implements MessageConsoleFormatter {
 
+    private final PCFMessage message;
+
+    public MQFTMAdminCommonFormatter(PCFMessage pcfMessage) {
+        this.message = pcfMessage;
+    }
+
     private void boarder(final StringBuffer buffer) {
         buffer.append("<--------------MQFTM_ADMIN------------------------>").append('\n');
     }
 
     @Override
-    public String format(MQMessage message) throws IOException, MQException {
-        final PCFMessage pcfMessage = new PCFMessage(message);
+    public String format(final MQMessage message) throws IOException, MQException {
+        final PCFMessage pcfMessage = this.message;
         final StringBuffer buffer = new StringBuffer();
 
         // print MQMD header

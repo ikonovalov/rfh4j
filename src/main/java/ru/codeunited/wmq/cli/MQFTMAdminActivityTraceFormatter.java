@@ -16,7 +16,13 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityFormatter implements MessageConsoleFormatter {
+public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter {
+
+    private final PCFMessage message;
+
+    MQFTMAdminActivityTraceFormatter(PCFMessage pcfMessage) {
+        this.message = pcfMessage;
+    }
 
     static interface Filter {
         boolean allowed(PCFParameter code);
@@ -51,11 +57,10 @@ public class MQFTMAdminActivityFormatter implements MessageConsoleFormatter {
     public String format(MQMessage message) throws IOException, MQException {
         final StringBuffer buffer = new StringBuffer();
 
-
         // print MQFTM_ADMIN
-        final PCFMessage pcfMessage = new PCFMessage(message);
+        final PCFMessage pcfMessage = this.message;
         if (pcfMessage.getCommand() != MQCMD_ACTIVITY_TRACE)
-            return String.format("Can't handled with %s", MQFTMAdminActivityFormatter.class.getName());
+            return String.format("Can't handled with %s", MQFTMAdminActivityTraceFormatter.class.getName());
 
         buffer.append(String.format("[%1$s %2$s] QM:[%3$s]",
                 valueOf(pcfMessage, MQCAMO_START_DATE),
