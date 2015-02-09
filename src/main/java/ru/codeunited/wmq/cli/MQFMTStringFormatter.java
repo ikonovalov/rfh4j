@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class MQFMTStringFormatter implements MessageConsoleFormatter {
 
-    private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
+    private static final String BORDER = "<--------------MQFMT_STRING-------------------->";
 
     @Override
     public String format(MQMessage message) throws IOException {

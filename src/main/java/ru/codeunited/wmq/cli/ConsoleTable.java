@@ -127,6 +127,9 @@ public class ConsoleTable {
 
         console.writef(boarderH);
 
+        // flash
+        console.flush();
+
         // clear data
         clear();
     }
