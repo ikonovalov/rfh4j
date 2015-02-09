@@ -110,7 +110,9 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
         return value;
     }
 
-    private String decodeValue(PCFParameter pcfParameter) {
+    private String decodeValue(final PCFParameter pcfParameter) {
+        if (pcfParameter == null)
+            return "";
         final int code = pcfParameter.getParameter();
         final Object value = pcfParameter.getValue();
         switch (code) { //http://www-01.ibm.com/support/knowledgecenter/SSFKSJ_7.5.0/com.ibm.mq.ref.dev.doc/q090210_.htm
