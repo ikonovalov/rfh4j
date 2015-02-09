@@ -32,6 +32,7 @@ public class MessageTools {
         final MQMessage message = new MQMessage();
         message.characterSet = charset;
         message.persistence = MQPER_PERSISTENT;
+        message.format = MQFMT_STRING;
         return message;
     }
 
