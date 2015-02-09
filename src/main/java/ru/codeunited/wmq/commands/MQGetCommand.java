@@ -50,10 +50,6 @@ public class MQGetCommand extends QueueCommand {
         }
     }
 
-    private ConsoleTable createTable(ConsoleWriter console) {
-        return console.createTable(TABLE_HEADER);
-    }
-
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
         final ConsoleWriter console = getConsoleWriter();
@@ -70,7 +66,7 @@ public class MQGetCommand extends QueueCommand {
                     // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
-                    final ConsoleTable table = createTable(console);
+                    final ConsoleTable table = console.createTable(TABLE_HEADER);
                     table.append(String.valueOf(messageCouter), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
                     // print to std output (console)
@@ -93,7 +89,7 @@ public class MQGetCommand extends QueueCommand {
 
             } catch (NoMessageAvailableException e) {
                 if (!queueHasMessages) { // prevent output extra information if queue has messages.
-                    createTable(console)
+                    console.createTable(TABLE_HEADER)
                             .append(String.valueOf(0), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
                             .flash();
                 }

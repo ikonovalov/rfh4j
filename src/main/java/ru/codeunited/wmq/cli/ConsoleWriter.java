@@ -28,7 +28,7 @@ public class ConsoleWriter implements Closeable {
         this.normalWriter = new PrintWriter(printWriter);
     }
 
-    public ConsoleTable createTable() {
+    public final ConsoleTable createTable() {
         return new ConsoleTable(this);
     }
 
@@ -37,7 +37,7 @@ public class ConsoleWriter implements Closeable {
      * @param head
      * @return
      */
-    public ConsoleTable createTable(TableColumnName...head) {
+    public final ConsoleTable createTable(TableColumnName...head) {
         return createTable().head(head);
     }
 
