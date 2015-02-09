@@ -77,19 +77,24 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
             if (parameter.getParameter() != MQGACF_ACTIVITY_TRACE)
                 continue;
 
-            // process activity trace elements (ACTIVITY_TRACE is always grouped as MQCFGR)
-            MQCFGR trace = (MQCFGR) parameter;
+            // process activity trace elements (MQGACF_ACTIVITY_TRACE is always grouped as MQCFGR)
+            MQCFGR trace = (MQCFGR) parameter; // => MQGACF_ACTIVITY_TRACE
 
-            final PCFParameter operation = trace.getParameter(MQIACF_OPERATION_ID);
-            if (operationFilter.allowed(operation)) {
-                String operationName = decodeValue(operation);
-                buffer.append(String.format(" op:[%s]", operationName));
-                if (Integer.valueOf(MQXF_PUT).equals(operation.getValue())) {
-                    buffer.append(String.format(" obj:[%s]", valueOf(trace, MQCACF_OBJECT_NAME)));
-                    buffer.append(String.format(" msgid:[%s]", valueOf(trace, MQBACF_MSG_ID)));
-                    buffer.append(String.format(" corid:[%s]", valueOf(trace, MQBACF_CORREL_ID)));
-                    buffer.append(String.format(" len:[%s]", valueOf(trace, MQIACF_MSG_LENGTH)));
-                    buffer.append(String.format(" dat:[%s]", valueOf(trace, MQBACF_MESSAGE_DATA)));
+            final PCFParameter mqiacfOperation = trace.getParameter(MQIACF_OPERATION_ID);
+            if (trace.getParameter(MQIACF_COMP_CODE).equals(MQCC_OK) // => skip failed operations
+                    && operationFilter.allowed(mqiacfOperation) // => skip not interesting operations
+                    ) {
+                String operationName = decodeValue(mqiacfOperation);
+                buffer.append(String.format(" opr:[%s]", operationName));
+                final Integer operationValue = (Integer) mqiacfOperation.getValue();
+                switch (operationValue) {
+                    case MQXF_PUT:
+                    case MQXF_GET:
+                        buffer.append(String.format(" obj:[%s]", valueOf(trace, MQCACF_OBJECT_NAME)));
+                        buffer.append(String.format(" mid:[%s]", valueOf(trace, MQBACF_MSG_ID)));
+                        buffer.append(String.format(" cid:[%s]", valueOf(trace, MQBACF_CORREL_ID)));
+                        buffer.append(String.format(" len:[%s]", valueOf(trace, MQIACF_MSG_LENGTH)));
+                        buffer.append(String.format(" dat:[%s]", valueOf(trace, MQBACF_MESSAGE_DATA)));
                 }
                 buffer.append(';');
             }
