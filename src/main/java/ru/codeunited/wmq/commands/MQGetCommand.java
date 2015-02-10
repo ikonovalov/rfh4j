@@ -66,32 +66,13 @@ public class MQGetCommand extends QueueCommand {
                     // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
-                    final ConsoleTable table = console.createTable(TABLE_HEADER);
-                    table.append(String.valueOf(messageCouter), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
-
-                    // print to std output (console)
-                    if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
-                        table.appendToLastRow("<stream>").flash();
-                        console.write(message);
-                    } else  if (ctx.hasOption(OPT_PAYLOAD)) { /* print to a file */
-                        File destination = new File(ctx.getOption(OPT_PAYLOAD, fileNameForMessage(message)));
-
-                        // if payload specified as folder, then we need to append file name
-                        if (destination.exists() && destination.isDirectory()) {
-                            destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
-                        }
-                        writeMessageBodyToFile(message, destination);
-                        table.appendToLastRow(destination.getAbsolutePath());
-                    }
-                    table.flash();
+                    handleMessage(message, messageCouter, sourceQueueName, console, ctx);
                     messageCouter++;
                 }
 
             } catch (NoMessageAvailableException e) {
                 if (!queueHasMessages) { // prevent output extra information if queue has messages.
-                    console.createTable(TABLE_HEADER)
-                            .append(String.valueOf(0), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
-                            .flash();
+                    handleNoMessage(console, sourceQueueName);
                 }
             }
         } catch (MQException | IOException e) {
@@ -101,40 +82,38 @@ public class MQGetCommand extends QueueCommand {
         }
     }
 
-    /**
-     * Return maximum message count limit or defaultValue.
-     * @return int.
-     */
-    protected int getMessagesCountLimit(int defaultValue) {
-        final ExecutionContext ctx = getExecutionContext();
-        return ctx.hasOption("limit") ? Integer.valueOf(ctx.getOption("limit")) : defaultValue;
+    void handleNoMessage(ConsoleWriter console, String sourceQueueName) throws MQException {
+        console.createTable(TABLE_HEADER)
+                .append(String.valueOf(0), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                .flash();
     }
 
-    /**
-     * true - If passed --wait parameter.
-     * true - if MQGet in the listener mode. (with negative limit)
-     *
-     * @return true if context has 'wait' option or 'limit' has negative value..
-     */
-    protected boolean shouldWait() {
-        final ExecutionContext context = getExecutionContext();
-        return isListenerMode() || context.hasOption("wait");
-    }
+    void handleMessage(MQMessage message, int messageIndex, String sourceQueueName, ConsoleWriter console, ExecutionContext ctx) throws MQException, IOException {
+        final ConsoleTable table = console.createTable(TABLE_HEADER);
+        table.append(String.valueOf(messageIndex), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
 
-    protected boolean isListenerMode() {
-        final ExecutionContext context = getExecutionContext();
-        return context.hasOption("limit") && Integer.valueOf(context.getOption("limit")) < 0;
-    }
-
-    /**
-     * Return 'wait' parameter value.
-     * @return value or -1 if 'wait' passed without argument.
-     */
-    protected int waitTime() {
-        if (getExecutionContext().getOption("wait") == null) {
-            return -1;
-        } else {
-            return Integer.valueOf(getExecutionContext().getOption("wait"));
+        // print to std output (console)
+        if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
+            handleAsStream(message, console, table);
+        } else  if (ctx.hasOption(OPT_PAYLOAD)) { /* print to a file */
+            handleAsPayload(message, ctx, table);
         }
+        table.flash();
+    }
+
+    private void handleAsPayload(MQMessage message, ExecutionContext ctx, ConsoleTable table) throws IOException {
+        File destination = new File(ctx.getOption(OPT_PAYLOAD, fileNameForMessage(message)));
+
+        // if payload specified as folder, then we need to append file name
+        if (destination.exists() && destination.isDirectory()) {
+            destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
+        }
+        writeMessageBodyToFile(message, destination);
+        table.appendToLastRow(destination.getAbsolutePath());
+    }
+
+    private void handleAsStream(MQMessage message, ConsoleWriter console, ConsoleTable table) throws IOException, MQException {
+        table.appendToLastRow("<stream>").flash();
+        console.write(message);
     }
 }

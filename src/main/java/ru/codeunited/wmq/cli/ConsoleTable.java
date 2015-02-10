@@ -24,6 +24,10 @@ public class ConsoleTable {
         this.console = console;
     }
 
+    public final ConsoleWriter console() {
+        return console;
+    }
+
     /**
      * Add new row to table.
      * @param delimited
