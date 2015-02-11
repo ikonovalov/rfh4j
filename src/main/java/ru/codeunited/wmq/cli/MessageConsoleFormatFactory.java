@@ -12,9 +12,9 @@ import static com.ibm.mq.constants.CMQC.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-class MessageConsoleFormatFactory {
+public class MessageConsoleFormatFactory {
 
-    static MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
+    public static MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final String format = message.format;
         switch (format) {
             case MQFMT_STRING:

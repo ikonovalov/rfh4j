@@ -78,9 +78,12 @@ public class ConsoleWriter implements Closeable {
         return write(string).end();
     }
 
+    @Deprecated
     public ConsoleWriter write(MQMessage message) throws IOException, MQException {
-        final MessageConsoleFormatter formatter = MessageConsoleFormatFactory.formatterFor(message);
-        writeln(formatter.format(message)).end().flush();
+        final String formatterOutput = MessageConsoleFormatFactory.formatterFor(message).format(message);
+        if (formatterOutput.length() > 0) {
+            writeln(formatterOutput).flush();
+        }
         return this;
     }
 

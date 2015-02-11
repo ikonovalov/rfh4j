@@ -28,19 +28,21 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
         boolean allowed(PCFParameter code);
     }
 
-    static class OperationFilter implements Filter {
+    /**
+     * Filter for allowed operations of MQXF.
+     */
+    static final class OperationFilter implements Filter {
 
-        private final Set<Integer> WHITE_LIST = new HashSet<>();
-        {
-            WHITE_LIST.add(MQXF_PUT);
-            WHITE_LIST.add(MQXF_PUT1);
-            WHITE_LIST.add(MQXF_GET);
-            WHITE_LIST.add(MQXF_CMIT);
-            WHITE_LIST.add(MQXF_BACK);
-        }
+        private final Set<Integer> WHITE_LIST;
 
         OperationFilter() {
-
+            final Set<Integer> whiteList = new HashSet<>();
+            whiteList.add(MQXF_PUT);
+            whiteList.add(MQXF_PUT1);
+            whiteList.add(MQXF_GET);
+            whiteList.add(MQXF_CMIT);
+            whiteList.add(MQXF_BACK);
+            WHITE_LIST = Collections.unmodifiableSet(whiteList);
         }
 
         @Override
@@ -50,7 +52,7 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
 
     }
 
-    private Filter operationFilter = new OperationFilter();
+    private final static Filter OPERATION_FILTER = new OperationFilter();
 
 
     @Override
@@ -63,10 +65,12 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
             return String.format("Can't handled with %s", MQFTMAdminActivityTraceFormatter.class.getName());
 
         buffer.append(String.format("[%1$s %2$s] QM:[%3$s]",
-                valueOf(pcfMessage, MQCAMO_START_DATE),
-                valueOf(pcfMessage, MQCAMO_START_TIME),
-                valueOf(pcfMessage, MQCA_Q_MGR_NAME)
+                decodedParameter(pcfMessage, MQCAMO_START_DATE),
+                decodedParameter(pcfMessage, MQCAMO_START_TIME),
+                decodedParameter(pcfMessage, MQCA_Q_MGR_NAME)
         ));
+
+        boolean allowOutput = false;
 
         // scan for MQGACF_ACTIVITY_TRACE
         Enumeration<PCFParameter> parametersL1 = pcfMessage.getParameters();
@@ -81,35 +85,40 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
             MQCFGR trace = (MQCFGR) parameter; // => MQGACF_ACTIVITY_TRACE
 
             final PCFParameter mqiacfOperation = trace.getParameter(MQIACF_OPERATION_ID);
-            if (trace.getParameter(MQIACF_COMP_CODE).equals(MQCC_OK) // => skip failed operations
-                    && operationFilter.allowed(mqiacfOperation) // => skip not interesting operations
-                    ) {
+            if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
+                    && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
+
                 String operationName = decodeValue(mqiacfOperation);
                 buffer.append(String.format(" opr:[%s]", operationName));
                 final Integer operationValue = (Integer) mqiacfOperation.getValue();
                 switch (operationValue) {
                     case MQXF_PUT:
                     case MQXF_GET:
-                        buffer.append(String.format(" obj:[%s]", valueOf(trace, MQCACF_OBJECT_NAME)));
-                        buffer.append(String.format(" mid:[%s]", valueOf(trace, MQBACF_MSG_ID)));
-                        buffer.append(String.format(" cid:[%s]", valueOf(trace, MQBACF_CORREL_ID)));
-                        buffer.append(String.format(" len:[%s]", valueOf(trace, MQIACF_MSG_LENGTH)));
-                        buffer.append(String.format(" dat:[%s]", valueOf(trace, MQBACF_MESSAGE_DATA)));
+                        buffer.append(String.format(" obj:[%s]", decodedParameter(trace, MQCACF_OBJECT_NAME)));
+                        buffer.append(String.format(" mid:[%s]", decodedParameter(trace, MQBACF_MSG_ID)));
+                        buffer.append(String.format(" cid:[%s]", decodedParameter(trace, MQBACF_CORREL_ID)));
+                        buffer.append(String.format(" len:[%s]", decodedParameter(trace, MQIACF_MSG_LENGTH)));
+                        buffer.append(String.format(" dat:[%s]", decodedParameter(trace, MQBACF_MESSAGE_DATA)));
                 }
                 buffer.append(';');
+                allowOutput = true;
             }
 
         }
 
-        /*final Enumeration<PCFParameter> parametersEnum = pcfMessage.getParameters();
-        final StringBuffer parametersBuffer = formatParameters(parametersEnum, 1);
-        buffer.append(parametersBuffer);*/
+        if (!allowOutput) { // drop buffer in it contains nothing interesting.
+            buffer.setLength(0);
+        }
 
         return buffer.toString();
     }
 
-    private String valueOf(PCFContent message, int paramCode) {
-        String value = decodeValue(message.getParameter(paramCode));
+    private PCFParameter parameterOf(PCFContent content, int paramCode) {
+        return content.getParameter(paramCode);
+    }
+
+    private String decodedParameter(PCFContent content, int paramCode) {
+        String value = decodeValue(parameterOf(content, paramCode));
         if (value != null)
             value = value.trim();
         return value;
