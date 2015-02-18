@@ -31,24 +31,17 @@ public class RFHFX extends Application {
         this.primaryStage.setTitle("RFHFX");
 
         initRootLayout();
-
-
-       /* StackPane root = new StackPane();
-        root.getChildren().add(btn);
-
-        primaryStage.setScene(new Scene(root, 1024, 800));
-        primaryStage.show();*/
     }
 
 
-    private void initRootLayout() {
+    private void initRootLayout() throws IOException {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            //URL url = RFHFX.class.getResource("../../../application.fxml");
+
             URL url = RFHFX.class.getResource("fx/application.fxml");
             loader.setLocation(url);
-            rootLayout = (GridPane) loader.load();
+            rootLayout = loader.load();
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
@@ -57,6 +50,7 @@ public class RFHFX extends Application {
             
         } catch (IOException e) {
             e.printStackTrace();
+            throw e;
         }
     }
 }
