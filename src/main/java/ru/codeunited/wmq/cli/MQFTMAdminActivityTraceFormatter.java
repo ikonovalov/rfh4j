@@ -40,8 +40,6 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
             whiteList.add(MQXF_PUT);
             whiteList.add(MQXF_PUT1);
             whiteList.add(MQXF_GET);
-            whiteList.add(MQXF_CMIT);
-            whiteList.add(MQXF_BACK);
             WHITE_LIST = Collections.unmodifiableSet(whiteList);
         }
 
@@ -57,17 +55,22 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
 
     @Override
     public String format(MQMessage message) throws IOException, MQException {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer(1024);
 
         // print MQFTM_ADMIN
         final PCFMessage pcfMessage = this.message;
         if (pcfMessage.getCommand() != MQCMD_ACTIVITY_TRACE)
             return String.format("Can't handled with %s", MQFTMAdminActivityTraceFormatter.class.getName());
 
-        buffer.append(String.format("[%1$s %2$s] QM:[%3$s]",
-                decodedParameter(pcfMessage, MQCAMO_START_DATE),
+        buffer.append(String.format("TRR:[%s %s -> %s] QM:[%s] APP:[%s %s] USR:[%s] CHL:[%s] ->",
+                decodedParameter(pcfMessage, MQCAMO_START_DATE), /* TRace Record - TRR time*/
                 decodedParameter(pcfMessage, MQCAMO_START_TIME),
-                decodedParameter(pcfMessage, MQCA_Q_MGR_NAME)
+                decodedParameter(pcfMessage, MQCAMO_END_TIME),
+                decodedParameter(pcfMessage, MQCA_Q_MGR_NAME),
+                decodedParameter(pcfMessage, MQCACF_APPL_NAME),
+                decodedParameter(pcfMessage, MQIACF_PROCESS_ID),
+                decodedParameter(pcfMessage, MQCACF_USER_IDENTIFIER),
+                decodedParameter(pcfMessage, MQCACH_CHANNEL_NAME)
         ));
 
         boolean allowOutput = false;
@@ -90,22 +93,25 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
 
                 String operationName = decodeValue(mqiacfOperation);
                 buffer.append(String.format(" opr:[%s]", operationName));
+                buffer.append(String.format(" otm:[%s]", decodedParameter(trace, MQCACF_OPERATION_TIME)));
                 final Integer operationValue = (Integer) mqiacfOperation.getValue();
                 switch (operationValue) {
                     case MQXF_PUT:
                     case MQXF_GET:
-                        buffer.append(String.format(" obj:[%s]", decodedParameter(trace, MQCACF_OBJECT_NAME)));
-                        buffer.append(String.format(" mid:[%s]", decodedParameter(trace, MQBACF_MSG_ID)));
-                        buffer.append(String.format(" cid:[%s]", decodedParameter(trace, MQBACF_CORREL_ID)));
-                        buffer.append(String.format(" len:[%s]", decodedParameter(trace, MQIACF_MSG_LENGTH)));
-                        buffer.append(String.format(" dat:[%s]", decodedParameter(trace, MQBACF_MESSAGE_DATA)));
+                        buffer.append(
+                                String.format(" obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
+                                        decodedParameter(trace, MQCACF_OBJECT_NAME),
+                                        decodedParameter(trace, MQBACF_MSG_ID),
+                                        decodedParameter(trace, MQBACF_CORREL_ID),
+                                        decodedParameter(trace, MQIACF_MSG_LENGTH),
+                                        decodedParameter(trace, MQBACF_MESSAGE_DATA)
+                                        ));
                 }
                 buffer.append(';');
                 allowOutput = true;
             }
 
         }
-
         if (!allowOutput) { // drop buffer in it contains nothing interesting.
             buffer.setLength(0);
         }
