@@ -31,6 +31,12 @@ public class CLIFactory {
     public static Options createOptions() {
         final Options options = new Options();
 
+        final Option runFX = OptionBuilder
+                .withLongOpt("fx")
+                .hasArg(NO)
+                .isRequired(NO)
+                .create();
+
         final Option channel = OptionBuilder
                 .withLongOpt("channel")
                 .withArgName("channel")
@@ -165,6 +171,7 @@ public class CLIFactory {
         final Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 
         options
+                .addOption(runFX)
                 .addOption(help)
                 .addOption(verbose)
                 .addOption(host)

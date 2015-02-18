@@ -24,6 +24,9 @@ public class RFH4J {
             final CommandLine cli = cliParser.parse(options, args);
             if (cli.hasOption('h') || cli.getOptions().length == 0) {
                 CLIFactory.showHelp();
+            } else if (cli.hasOption("fx")) {
+                final ExecutionContext context = new CLIExecutionContext(cli);
+                RFHFX.up(context, args);
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
                 context.setConsoleWriter(consoleWriter);

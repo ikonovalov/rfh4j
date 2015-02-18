@@ -6,6 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.ParseException;
+import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.cli.CLIFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,7 +25,16 @@ public class RFHFX extends Application {
 
     private GridPane rootLayout;
 
-    public static void main(String[] args) {
+    private static ExecutionContext context;
+
+    public static void main(String[] args) throws ParseException {
+        final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
+        final ExecutionContext context = new CLIExecutionContext(cli);
+        up(context, args);
+    }
+
+    static void up(ExecutionContext contezt, String ... args) {
+        context = contezt;
         launch(args);
     }
 
