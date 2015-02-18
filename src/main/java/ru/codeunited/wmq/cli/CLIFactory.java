@@ -3,7 +3,7 @@ package ru.codeunited.wmq.cli;
 import org.apache.commons.cli.*;
 
 import java.io.PrintWriter;
-
+import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -14,10 +14,6 @@ public class CLIFactory {
     private static final boolean YES = true;
 
     private static final boolean NO = false;
-
-    public static final String OPT_STREAM = "stream";
-
-    public static final String OPT_PAYLOAD = "payload";
 
     private CLIFactory() {
 
@@ -54,8 +50,8 @@ public class CLIFactory {
                 .create();
 
         final Option queueManager = OptionBuilder
-                .withLongOpt("qmanager")
-                .withArgName("qmanager")
+                .withLongOpt(OPT_QMANAGER)
+                .withArgName("quene manager")
                 .withDescription("WMQ queue manager name")
                 .hasArg(YES)
                 .isRequired(NO)
@@ -118,7 +114,7 @@ public class CLIFactory {
                 .create('w');
 
         final Option config = OptionBuilder
-                .withLongOpt("config")
+                .withLongOpt(OPT_CONFIG)
                 .withArgName("config_file")
                 .withDescription("Configuration file for WMQ connection (use it like c,H,P,Q,u)")
                 .withType(String.class)

@@ -6,15 +6,13 @@ import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import ru.codeunited.wmq.CLITestSupport;
 import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
-import ru.codeunited.wmq.commands.*;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static org.junit.Assert.assertTrue;
+import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com

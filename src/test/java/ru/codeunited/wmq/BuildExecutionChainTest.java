@@ -13,7 +13,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru
