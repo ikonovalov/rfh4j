@@ -44,7 +44,8 @@ public class RFHFX extends Application {
         try {
             // Load root layout from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            URL url = RFHFX.class.getResource("ru/codeunited/wmq/fx/application.fxml");
+            //URL url = RFHFX.class.getResource("../../../application.fxml");
+            URL url = RFHFX.class.getResource("fx/application.fxml");
             loader.setLocation(url);
             rootLayout = (BorderPane) loader.load();
 
