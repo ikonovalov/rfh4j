@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class RFHFX extends Application {
 
     private Stage primaryStage;
 
-    private BorderPane rootLayout;
+    private GridPane rootLayout;
 
     public static void main(String[] args) {
         launch(args);
@@ -47,7 +48,7 @@ public class RFHFX extends Application {
             //URL url = RFHFX.class.getResource("../../../application.fxml");
             URL url = RFHFX.class.getResource("fx/application.fxml");
             loader.setLocation(url);
-            rootLayout = (BorderPane) loader.load();
+            rootLayout = (GridPane) loader.load();
 
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
