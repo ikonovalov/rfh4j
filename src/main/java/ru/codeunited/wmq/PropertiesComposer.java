@@ -11,7 +11,7 @@ import java.util.logging.Logger;
 import static com.ibm.mq.constants.CMQC.*;
 import static com.ibm.mq.constants.CMQC.MQCNO_ACCOUNTING_MQI_DISABLED;
 import static com.ibm.mq.constants.CMQC.MQCNO_ACCOUNTING_Q_DISABLED;
-import static ru.codeunited.wmq.cli.CLIFactory.OPT_CONFIG;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru

@@ -15,7 +15,7 @@ import static org.hamcrest.CoreMatchers.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru

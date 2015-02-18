@@ -13,8 +13,8 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import static ru.codeunited.wmq.RFHConstants.*;
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
-import static ru.codeunited.wmq.cli.CLIFactory.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com

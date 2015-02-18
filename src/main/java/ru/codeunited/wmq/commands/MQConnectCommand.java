@@ -2,13 +2,13 @@ package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
-import ru.codeunited.wmq.cli.CLIPropertiesComposer;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.CLIFactory;
+import ru.codeunited.wmq.cli.CLIPropertiesComposer;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
+import static ru.codeunited.wmq.RFHConstants.*;
 import java.util.Properties;
 
 /**
@@ -17,12 +17,6 @@ import java.util.Properties;
  * Created by ikonovalov on 22.10.14.
  */
 public class MQConnectCommand extends AbstractCommand {
-
-    private static final String DEFAULT_HOST = "localhost";
-
-    private static final int DEFAULT_PORT = 1414;
-
-    private static final String DEFAULT_CHANNEL = "SYSTEM.DEF.SVRCONN";
 
     private final WMQConnectionFactory connectionFactory;
 
@@ -46,8 +40,7 @@ public class MQConnectCommand extends AbstractCommand {
         final ExecutionContext context = getExecutionContext();
 
         final Properties mergedProperties = new CLIPropertiesComposer(context).compose();
-
-        final String queueManagerName = mergedProperties.getProperty(CLIFactory.OPT_QMANAGER);
+        final String queueManagerName = mergedProperties.getProperty(OPT_QMANAGER);
 
         final ConnectionOptions connectionOptions = new ConnectionOptions(queueManagerName).withOptions(mergedProperties);
 

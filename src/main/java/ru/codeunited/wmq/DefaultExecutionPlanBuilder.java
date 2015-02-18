@@ -1,6 +1,6 @@
 package ru.codeunited.wmq;
 
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 import ru.codeunited.wmq.commands.*;
 
 import java.util.logging.Logger;

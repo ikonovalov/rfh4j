@@ -3,7 +3,7 @@ package ru.codeunited.wmq.cli;
 import org.apache.commons.cli.*;
 
 import java.io.PrintWriter;
-
+import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -14,14 +14,6 @@ public class CLIFactory {
     private static final boolean YES = true;
 
     private static final boolean NO = false;
-
-    public static final String OPT_STREAM = "stream";
-
-    public static final String OPT_PAYLOAD = "payload";
-
-    public static final String OPT_CONFIG = "config";
-
-    public static final String OPT_QMANAGER = "qmanager";
 
     private CLIFactory() {
 

@@ -8,8 +8,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
-
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru

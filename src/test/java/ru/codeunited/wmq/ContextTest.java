@@ -8,7 +8,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import static ru.codeunited.wmq.cli.CLIFactory.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com

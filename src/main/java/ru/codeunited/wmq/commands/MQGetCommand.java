@@ -3,10 +3,8 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
-import static ru.codeunited.wmq.cli.CLIFactory.*;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.MessageConsoleFormatFactory;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
@@ -14,10 +12,12 @@ import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
 import java.io.File;
 import java.io.IOException;
-import static com.ibm.mq.constants.MQConstants.*;
+
+import static com.ibm.mq.constants.MQConstants.MQFMT_ADMIN;
+import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
+import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
+import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 import static ru.codeunited.wmq.messaging.MessageTools.*;
-
-
 
 /**
  * codeunited.ru
