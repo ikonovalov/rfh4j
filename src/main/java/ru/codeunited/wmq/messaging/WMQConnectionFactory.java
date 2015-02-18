@@ -17,6 +17,6 @@ public interface WMQConnectionFactory {
      * @return
      * @throws MQException
      */
-    public MQQueueManager connectQueueManager(String queueManagerName, Properties properties) throws MQException;
+    public MQQueueManager connectQueueManager(ConnectionOptions connectionOptions) throws MQException;
 
 }

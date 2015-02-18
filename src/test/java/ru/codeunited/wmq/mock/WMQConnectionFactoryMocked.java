@@ -3,6 +3,7 @@ package ru.codeunited.wmq.mock;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
+import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 
 import java.util.Properties;
@@ -15,7 +16,6 @@ import static org.mockito.Mockito.*;
  */
 public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
 
-    @Override
     public MQQueueManager connectQueueManager(String queueManagerName, Properties properties) throws MQException {
         MQQueueManager manager = mock(MQQueueManager.class);
 
@@ -28,5 +28,13 @@ public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
         when(manager.getDescription()).thenReturn("Mocked manager");
 
         return manager;
+    }
+
+    @Override
+    public MQQueueManager connectQueueManager(ConnectionOptions connectionOptions) throws MQException {
+        return connectQueueManager(
+                connectionOptions.getQueueManagerName(),
+                connectionOptions.getOptions()
+        );
     }
 }

@@ -5,6 +5,7 @@ import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.cli.CLIPropertiesComposer;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
+import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
@@ -48,11 +49,13 @@ public class MQConnectCommand extends AbstractCommand {
 
         final String queueManagerName = mergedProperties.getProperty(CLIFactory.OPT_QMANAGER);
 
+        final ConnectionOptions connectionOptions = new ConnectionOptions(queueManagerName).withOptions(mergedProperties);
+
         LOG.fine("Connecting to [" + queueManagerName + "] with " + mergedProperties.toString());
 
         // perform connection
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(queueManagerName, mergedProperties);
+            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(connectionOptions);
             context.setQueueManager(mqQueueManager);
             // check connection
             if (mqQueueManager.isConnected()) {
