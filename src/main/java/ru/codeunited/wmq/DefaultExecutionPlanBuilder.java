@@ -1,5 +1,6 @@
 package ru.codeunited.wmq;
 
+import static ru.codeunited.wmq.cli.CLIFactory.*;
 import ru.codeunited.wmq.commands.*;
 
 import java.util.logging.Logger;
@@ -24,14 +25,14 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
         final CommandChain chain = new CommandChain(executionContext);
 
         // create connect/disconnect commands
-        if (executionContext.hasOption("qmanager") ||
-                executionContext.hasOption("config") || MQConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
+        if (executionContext.hasOption(OPT_QMANAGER) ||
+                executionContext.hasOption(OPT_CONFIG) || PropertiesComposer.isDefaultConfigAvailable()) { // need to connect to queue manager
             chain
                     .addCommand(new MQConnectCommand())
                     .addCommand(new MQDisconnectCommand());
         } else {
             // this is mandatory arguments (one and two)
-            throw new MissedParameterException("qmanager", "config").withMessage("And default.properties not available also.");
+            throw new MissedParameterException(OPT_QMANAGER, OPT_CONFIG).withMessage("And default.properties not available also.");
         }
 
         final String[] activeActions = {"srcq", "dstq", "lslq"};
