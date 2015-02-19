@@ -144,6 +144,12 @@ public class CLIFactory {
                 .hasArg(NO)
                 .create('s');
 
+        final Option customHandler = OptionBuilder
+                .withLongOpt(OPT_HANDLER)
+                .withArgName("handler.class")
+                .hasArg(YES)
+                .create();
+
         final Option all = OptionBuilder
                 .withLongOpt("all")
                 .withDescription("Applicable to GET command")
@@ -156,7 +162,11 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
-        messagePayload.addOption(textMessage).addOption(filePayload).addOption(redirectedStream);
+        messagePayload
+                .addOption(textMessage)
+                .addOption(filePayload)
+                .addOption(redirectedStream)
+                .addOption(customHandler);
 
         final Option help = OptionBuilder.withLongOpt("help").withDescription("Help information").isRequired(false).create('h');
 

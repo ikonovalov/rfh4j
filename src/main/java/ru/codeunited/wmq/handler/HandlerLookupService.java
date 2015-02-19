@@ -8,22 +8,19 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
-public abstract class CommonMessageHander<T> implements MessageHandler<T> {
+public class HandlerLookupService {
 
     private final ExecutionContext context;
 
-    private ConsoleWriter console;
+    private final ConsoleWriter console;
 
-    protected CommonMessageHander(ExecutionContext context, ConsoleWriter console) {
+
+    public HandlerLookupService(ExecutionContext context, ConsoleWriter console) {
         this.context = context;
         this.console = console;
     }
 
-    public ExecutionContext getContext() {
-        return context;
-    }
-
-    public ConsoleWriter getConsole() {
-        return console;
+    public MessageHandler lookup(Class clazz) {
+        return null;
     }
 }

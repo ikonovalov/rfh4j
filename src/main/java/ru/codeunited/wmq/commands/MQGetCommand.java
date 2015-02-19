@@ -15,6 +15,7 @@ import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 import java.io.File;
 import java.io.IOException;
 
+import static ru.codeunited.wmq.RFHConstants.OPT_HANDLER;
 import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 import static ru.codeunited.wmq.messaging.MessageTools.*;
@@ -92,7 +93,6 @@ public class MQGetCommand extends QueueCommand {
     }
 
     void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException, NestedHandlerException {
-        final ExecutionContext ctx = getExecutionContext();
 
         // create event
         final EventSource eventSource = new EventSource(getSourceQueueName());
@@ -101,13 +101,22 @@ public class MQGetCommand extends QueueCommand {
         event.setMessage(message);
         event.setOperation(MQOperation.MQGET);
 
-        // print to std output (console)
-        if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
-            MessageHandler<Void> handler = new PrintStreamHandler(ctx, console);
+        final HandlerLookupService lookupService = new HandlerLookupService(executionContext, console);
+
+        // lookup handler
+        if (executionContext.hasOption(OPT_HANDLER)) {
+            try {
+                MessageHandler handler = lookupService.lookup(Class.forName(executionContext.getOption(OPT_HANDLER)));
+                handler.onMessage(event);
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e);
+            }
+        } else if (executionContext.hasOption(OPT_STREAM)) { // standard output to std.out
+            MessageHandler handler = new PrintStreamHandler(executionContext, console);
             handler.onMessage(event);
 
-        } else  if (ctx.hasOption(OPT_PAYLOAD)) { /* print to a file */
-            MessageHandler<File> handler = new BodyToFileHandler(ctx, console);
+        } else if (executionContext.hasOption(OPT_PAYLOAD)) { /* print to a file */
+            MessageHandler handler = new BodyToFileHandler(executionContext, console);
             handler.onMessage(event);
         }
     }

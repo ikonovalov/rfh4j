@@ -6,14 +6,14 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
+import ru.codeunited.wmq.messaging.MessageTools;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
-import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
-import static ru.codeunited.wmq.messaging.MessageTools.writeMessageBodyToFile;
 
 /**
  * codeunited.ru
@@ -21,8 +21,6 @@ import static ru.codeunited.wmq.messaging.MessageTools.writeMessageBodyToFile;
  * Created by ikonovalov on 19.02.15.
  */
 public class BodyToFileHandler extends CommonMessageHander<File> {
-
-    private final ConsoleWriter console;
 
     private static final TableColumnName[] TABLE_HEADER = {
             TableColumnName.INDEX,
@@ -35,26 +33,13 @@ public class BodyToFileHandler extends CommonMessageHander<File> {
     };
 
     public BodyToFileHandler(ExecutionContext context, ConsoleWriter console) {
-        super(context);
-        this.console = console;
+        super(context, console);
     }
 
     @Override
     public File onMessage(MessageEvent messageEvent) throws NestedHandlerException {
-        final ConsoleTable table = console.createTable(TABLE_HEADER);
+
         final MQMessage message = messageEvent.getMessage();
-        try {
-            table.append(
-                    String.valueOf(messageEvent.getMessageIndex()),
-                    messageEvent.getOperation().name(),
-                    getContext().getQueueManager().getName(),
-                    messageEvent.getEventSource().getName(),
-                    messageEvent.getHexMessageId(),
-                    messageEvent.getHexCorrelationId()
-            );
-        } catch (MQException e) {
-            throw NestedHandlerException.nest(e);
-        }
 
         File destination = new File(getContext().getOption(OPT_PAYLOAD, fileNameForMessage(message)));
 
@@ -62,13 +47,28 @@ public class BodyToFileHandler extends CommonMessageHander<File> {
         if (destination.exists() && destination.isDirectory()) {
             destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
         }
+
         try {
             writeMessageBodyToFile(message, destination);
-        } catch (IOException e) {
+            final ConsoleTable table = getConsole().createTable(TABLE_HEADER);
+            table.append(
+                    String.valueOf(messageEvent.getMessageIndex()),
+                    messageEvent.getOperation().name(),
+                    getContext().getQueueManager().getName(),
+                    messageEvent.getEventSource().getName(),
+                    messageEvent.getHexMessageId(),
+                    messageEvent.getHexCorrelationId(),
+                    destination.getAbsolutePath()
+            ).flash();
+        } catch (MQException | IOException e) {
             throw NestedHandlerException.nest(e);
         }
-        table.appendToLastRow(destination.getAbsolutePath());
-        table.flash();
         return destination;
+    }
+
+    private static void writeMessageBodyToFile(MQMessage message, File destination) throws IOException {
+        try(final FileOutputStream fos = new FileOutputStream(destination)) {
+            fos.write(MessageTools.readMessageBodyToBytes(message));
+        }
     }
 }

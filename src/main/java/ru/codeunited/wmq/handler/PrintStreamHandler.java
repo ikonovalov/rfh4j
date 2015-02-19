@@ -1,9 +1,10 @@
 package ru.codeunited.wmq.handler;
 
 import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.cli.MessageConsoleFormatFactory;
 import ru.codeunited.wmq.cli.TableColumnName;
 
 import java.io.IOException;
@@ -18,8 +19,6 @@ import static com.ibm.mq.constants.CMQC.MQFMT_STRING;
  */
 public class PrintStreamHandler extends CommonMessageHander<Void> {
 
-    private final ConsoleWriter console;
-
     private static final TableColumnName[] TABLE_HEADER = {
             TableColumnName.INDEX,
             TableColumnName.ACTION,
@@ -31,32 +30,32 @@ public class PrintStreamHandler extends CommonMessageHander<Void> {
     };
 
     public PrintStreamHandler(ExecutionContext context, ConsoleWriter console) {
-        super(context);
-        this.console = console;
+        super(context, console);
     }
 
     @Override
     public Void onMessage(MessageEvent messageEvent) throws NestedHandlerException {
         final String messageFormat = messageEvent.getMessageFormat();
+        final MQMessage message = messageEvent.getMessage();
         try {
             switch (messageFormat) {
                 case MQFMT_STRING:
-                    final ConsoleTable table = console.createTable(TABLE_HEADER);
-
-                    table.append(
-                            String.valueOf(messageEvent.getMessageIndex()),
-                            messageEvent.getOperation().name(),
-                            getContext().getQueueManager().getName(),
-                            messageEvent.getEventSource().getName(),
-                            messageEvent.getHexMessageId(),
-                            messageEvent.getHexCorrelationId()
-                    );
-
-                    table.appendToLastRow("<stream>").flash();
-                    table.flash();
+                    getConsole().createTable(TABLE_HEADER)
+                            .append(
+                                    String.valueOf(messageEvent.getMessageIndex()),
+                                    messageEvent.getOperation().name(),
+                                    getContext().getQueueManager().getName(),
+                                    messageEvent.getEventSource().getName(),
+                                    messageEvent.getHexMessageId(),
+                                    messageEvent.getHexCorrelationId(),
+                                    "<stream>"
+                            ).flash();
                 case MQFMT_ADMIN:
                 default:
-                    console.write(messageEvent.getMessage());
+                    final String formatterOutput = MessageConsoleFormatFactory.formatterFor(message).format(message);
+                    if (formatterOutput.length() > 0) {
+                        getConsole().writeln(formatterOutput).flush();
+                    }
             }
         } catch (MQException | IOException e) {
             throw NestedHandlerException.nest(e);

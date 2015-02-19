@@ -89,16 +89,10 @@ public class MessageTools {
         LOG.fine("File with size " + totalBytes + "b stored in a message.");
     }
 
-    public static byte[] readMessageToBytes(MQMessage message) throws IOException {
+    public static byte[] readMessageBodyToBytes(MQMessage message) throws IOException {
         final byte[] buffer = new byte[message.getDataLength()];
         message.readFully(buffer);
         return buffer;
-    }
-
-    public static void writeMessageBodyToFile(MQMessage message, File destination) throws IOException {
-        try(final FileOutputStream fos = new FileOutputStream(destination)) {
-            fos.write(MessageTools.readMessageToBytes(message));
-        }
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
