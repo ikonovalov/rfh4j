@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 /**
  * codeunited.ru
@@ -21,7 +22,7 @@ public interface Command {
      * @see ru.codeunited.wmq.commands.ReturnCode
      * @throws CommandGeneralException
      */
-    ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException;
+    ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException;
 
     /**
      * Get current Command state.

@@ -7,6 +7,7 @@ import static org.junit.Assert.*;
 
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 /**
  * codeunited.ru
@@ -17,7 +18,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
 
 
     @Test
-    public void makeBindingConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+    public void makeBindingConnection() throws Exception {
 
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --transport=binding");
 
@@ -25,7 +26,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
     }
 
     @Test
-    public void makeClientConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+    public void makeClientConnection() throws Exception {
 
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --transport=client");
 
@@ -33,14 +34,14 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
     }
 
     @Test
-    public void makeDefaultConnection() throws CommandGeneralException, ParseException, MissedParameterException, IncompatibleOptionsException {
+    public void makeDefaultConnection() throws Exception {
 
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN");
 
         connectOperation(commandLine);
     }
 
-    private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+    private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         final MQConnectCommand connectCommand = new MQConnectCommand(new CLIExecutionContext(commandLine));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());

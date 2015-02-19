@@ -10,6 +10,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.commands.CommandGeneralException;
 import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
@@ -79,7 +80,7 @@ public class MessageProducerTest extends QueueingCapability {
 
     @After
     @Before
-    public void cleanUp() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IncompatibleOptionsException {
+    public void cleanUp() throws Exception {
         cleanupQueue(QUEUE);
     }
 }
