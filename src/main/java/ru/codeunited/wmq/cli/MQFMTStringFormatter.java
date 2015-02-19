@@ -15,10 +15,14 @@ public class MQFMTStringFormatter implements MessageConsoleFormatter {
 
     @Override
     public String format(MQMessage message) throws IOException {
+        message.seek(0); // going to begining of message
+        final int size = message.getDataLength(); // all remaining data size
         final StringBuffer buffer = new StringBuffer();
+        buffer.append(String.format("Remain %d bytes", size));
         boarder(buffer);
         buffer.append(message.readStringOfByteLength(message.getDataLength()));
         boarder(buffer);
+
         return buffer.toString();
     }
 

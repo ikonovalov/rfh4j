@@ -5,6 +5,7 @@ import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new QueueInspectorImpl(queue, context.getQueueManager());
     }
 
-    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException {
+    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
         final Command cmd1 = prepareMQConnectCommand(context);
@@ -86,7 +87,7 @@ public abstract class QueueingCapability extends CLITestSupport {
         return message;
     }
 
-    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
+    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
         final Command cmd1 = prepareMQConnectCommand(context);

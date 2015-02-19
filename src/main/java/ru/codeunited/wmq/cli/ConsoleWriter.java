@@ -1,8 +1,5 @@
 package ru.codeunited.wmq.cli;
 
-import com.ibm.mq.MQException;
-import com.ibm.mq.MQMessage;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -76,15 +73,6 @@ public class ConsoleWriter implements Closeable {
 
     public ConsoleWriter writeln(String string) {
         return write(string).end();
-    }
-
-    @Deprecated
-    public ConsoleWriter write(MQMessage message) throws IOException, MQException {
-        final String formatterOutput = MessageConsoleFormatFactory.formatterFor(message).format(message);
-        if (formatterOutput.length() > 0) {
-            writeln(formatterOutput).flush();
-        }
-        return this;
     }
 
     public ConsoleWriter error(String string) {

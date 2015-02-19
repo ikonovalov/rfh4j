@@ -5,6 +5,7 @@ import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 /**
  * codeunited.ru
@@ -35,7 +36,7 @@ public class RFH4J {
                 commandMaker.execute();
             }
 
-        } catch (MissedParameterException | ParseException | CommandGeneralException | IncompatibleOptionsException e) {
+        } catch (NestedHandlerException | MissedParameterException | ParseException | CommandGeneralException | IncompatibleOptionsException e) {
             consoleWriter.errorln("Error occurred. ").errorln("Details: " + e.getMessage());
             consoleWriter.end().flush();
         }

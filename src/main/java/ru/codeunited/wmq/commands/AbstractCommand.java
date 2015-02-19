@@ -2,6 +2,7 @@ package ru.codeunited.wmq.commands;
 
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.logging.Logger;
 
@@ -23,10 +24,10 @@ public abstract class AbstractCommand implements Command {
      *
      * @throws CommandGeneralException if something goes wrong.
      */
-    protected abstract void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException;
+    protected abstract void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException;
 
     @Override
-    public final ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+    public final ReturnCode execute() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         updateCurrentState(ReturnCode.EXECUTING);
         try {
             validateOptions();

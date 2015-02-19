@@ -15,4 +15,6 @@ public final class RFHConstants {
 
     public static final String OPT_QMANAGER = "qmanager";
 
+    public static final String OPT_HANDLER = "handler";
+
 }

@@ -3,7 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.CLIPropertiesComposer;
+import ru.codeunited.wmq.cli.MQCLIPropertiesComposer;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
@@ -39,7 +39,7 @@ public class MQConnectCommand extends AbstractCommand {
     protected void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
 
-        final Properties mergedProperties = new CLIPropertiesComposer(context).compose();
+        final Properties mergedProperties = new MQCLIPropertiesComposer(context).compose();
         final String queueManagerName = mergedProperties.getProperty(OPT_QMANAGER);
 
         final ConnectionOptions connectionOptions = new ConnectionOptions(queueManagerName).withOptions(mergedProperties);

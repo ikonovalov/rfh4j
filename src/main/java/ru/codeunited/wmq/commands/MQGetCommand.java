@@ -6,6 +6,8 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
+import ru.codeunited.wmq.handler.*;
+import ru.codeunited.wmq.messaging.MQOperation;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
@@ -13,8 +15,7 @@ import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 import java.io.File;
 import java.io.IOException;
 
-import static com.ibm.mq.constants.MQConstants.MQFMT_ADMIN;
-import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
+import static ru.codeunited.wmq.RFHConstants.OPT_HANDLER;
 import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 import static ru.codeunited.wmq.messaging.MessageTools.*;
@@ -27,16 +28,6 @@ import static ru.codeunited.wmq.messaging.MessageTools.*;
 public class MQGetCommand extends QueueCommand {
 
     public static final String GET_OPERATION_NAME = "GET";
-
-    private static final TableColumnName[] TABLE_HEADER = {
-            TableColumnName.INDEX,
-            TableColumnName.ACTION,
-            TableColumnName.QMANAGER,
-            TableColumnName.QUEUE,
-            TableColumnName.MESSAGE_ID,
-            TableColumnName.CORREL_ID,
-            TableColumnName.OUTPUT
-    };
 
     /**
      * Check input context options and raise IncompatibleOptionsException if something wrong.
@@ -54,7 +45,7 @@ public class MQGetCommand extends QueueCommand {
     }
 
     @Override
-    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         final ConsoleWriter console = getConsoleWriter();
         final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
@@ -86,49 +77,48 @@ public class MQGetCommand extends QueueCommand {
     }
 
     void handleNoMessage(ConsoleWriter console, String sourceQueueName) throws MQException {
-        console.createTable(TABLE_HEADER)
-                .append(String.valueOf(0), GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+        TableColumnName[] header = {
+                TableColumnName.INDEX,
+                TableColumnName.ACTION,
+                TableColumnName.QMANAGER,
+                TableColumnName.QUEUE,
+                TableColumnName.MESSAGE_ID,
+                TableColumnName.CORREL_ID,
+                TableColumnName.OUTPUT
+        };
+
+        console.createTable(header)
+                .append(String.valueOf(0), MQOperation.MQGET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
                 .flash();
     }
 
-    void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException {
-        final ExecutionContext ctx = getExecutionContext();
-        // print to std output (console)
-        if (ctx.hasOption(OPT_STREAM)) { // standard output to std.out
-            handleAsStream(messageIndex, message, console);
-        } else  if (ctx.hasOption(OPT_PAYLOAD)) { /* print to a file */
-            handleAsPayload(messageIndex, message, console);
-        }
+    void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException, NestedHandlerException {
 
-    }
+        // create event
+        final EventSource eventSource = new EventSource(getSourceQueueName());
+        final MessageEvent event = new MessageEvent(eventSource);
+        event.setMessageIndex(messageIndex);
+        event.setMessage(message);
+        event.setOperation(MQOperation.MQGET);
 
-    private void handleAsPayload(int messageIndex, MQMessage message, ConsoleWriter console) throws IOException, MQException, MissedParameterException {
-        final ExecutionContext ctx = getExecutionContext();
-        final ConsoleTable table = console.createTable(TABLE_HEADER);
-        table.append(String.valueOf(messageIndex), GET_OPERATION_NAME, getQueueManager().getName(), getSourceQueueName(), bytesToHex(message.messageId), bytesToHex(message.correlationId));
+        final HandlerLookupService lookupService = new HandlerLookupService(executionContext, console);
 
-        File destination = new File(ctx.getOption(OPT_PAYLOAD, fileNameForMessage(message)));
+        // lookup handler
+        if (executionContext.hasOption(OPT_HANDLER)) {
+            try {
+                MessageHandler handler = lookupService.lookup(Class.forName(executionContext.getOption(OPT_HANDLER)));
+                handler.onMessage(event);
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e);
+            }
+        } else if (executionContext.hasOption(OPT_STREAM)) { // standard output to std.out
+            MessageHandler handler = new PrintStreamHandler(executionContext, console);
+            handler.onMessage(event);
 
-        // if payload specified as folder, then we need to append file name
-        if (destination.exists() && destination.isDirectory()) {
-            destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
-        }
-        writeMessageBodyToFile(message, destination);
-        table.appendToLastRow(destination.getAbsolutePath());
-        table.flash();
-    }
-
-    private void handleAsStream(int messageIndex, MQMessage message, ConsoleWriter console) throws IOException, MQException, MissedParameterException {
-        final String messageFormat = message.format;
-        switch (messageFormat) {
-            case MQFMT_STRING:
-                final ConsoleTable table = console.createTable(TABLE_HEADER);
-                table.append(String.valueOf(messageIndex), GET_OPERATION_NAME, getQueueManager().getName(), getSourceQueueName(), bytesToHex(message.messageId), bytesToHex(message.correlationId));
-                table.appendToLastRow("<stream>").flash();
-                table.flash();
-            case MQFMT_ADMIN:
-            default:
-                console.write(message);
+        } else if (executionContext.hasOption(OPT_PAYLOAD)) { /* print to a file */
+            MessageHandler handler = new BodyToFileHandler(executionContext, console);
+            handler.onMessage(event);
         }
     }
+
 }

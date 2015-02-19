@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.Arrays;
 
@@ -24,7 +25,7 @@ public class PutCommandTest extends QueueingCapability {
 
     @Before
     @After
-    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException {
+    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
         cleanupQueue(QUEUE);
     }
 
@@ -32,7 +33,7 @@ public class PutCommandTest extends QueueingCapability {
     /**
      * --dstq was missed.
      */
-    public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException {
+    public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
         final MQPutCommand putCommand = new MQPutCommand();
@@ -56,7 +57,7 @@ public class PutCommandTest extends QueueingCapability {
     /**
      * -t or -p was missed.
      */
-    public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException {
+    public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
         final CommandLine commandLine = getCommandLine_With_Qc_dstq();
         final MQPutCommand putCommand = new MQPutCommand();
         final CommandChain maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);

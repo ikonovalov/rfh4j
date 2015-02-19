@@ -2,7 +2,8 @@ package ru.codeunited.wmq.cli;
 
 import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.PropertiesComposer;
+import ru.codeunited.wmq.MQFilePropertiesComposer;
+import ru.codeunited.wmq.MQPropertiesComposer;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -15,15 +16,15 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 18.02.15.
  */
-public class CLIPropertiesComposer extends PropertiesComposer {
+public class MQCLIPropertiesComposer extends MQFilePropertiesComposer {
 
-    private static final Logger LOG = Logger.getLogger(CLIPropertiesComposer.class.getName());
+    private static final Logger LOG = Logger.getLogger(MQCLIPropertiesComposer.class.getName());
 
     public static final String HOST_PROPERTY = "host";
 
     public static final String USER_PROPERTY = "user";
 
-    public CLIPropertiesComposer(ExecutionContext context) {
+    public MQCLIPropertiesComposer(ExecutionContext context) {
         super(context);
     }
 
@@ -62,10 +63,8 @@ public class CLIPropertiesComposer extends PropertiesComposer {
     @Override
     public Properties compose() {
         final Properties mergedProperties = super.compose();
-
         // Override config with CLI passed arguments
         mergedProperties.putAll(passedArgumentsAsProperties());
-
-        return mergedProperties;
+        return checkCompatibility(mergedProperties);
     }
 }

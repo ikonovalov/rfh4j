@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +74,7 @@ public class CommandChain extends AbstractCommand {
     }
 
     @Override
-    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         // fixing work size
         final List<Command> unmodCommandChain = getCommandChain();
         for (Command command : unmodCommandChain) {

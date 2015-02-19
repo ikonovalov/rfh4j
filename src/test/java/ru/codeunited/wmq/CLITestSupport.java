@@ -4,6 +4,7 @@ import org.apache.commons.cli.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.concurrent.ExecutionException;
 
@@ -72,7 +73,7 @@ public class CLITestSupport {
      * @throws IncompatibleOptionsException
      * @throws CommandGeneralException
      */
-    protected void putToQueue(String destination) throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException {
+    protected void putToQueue(String destination) throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine(String.format("%3$s --dstq %1$s --text %2$s", destination, String.valueOf(System.currentTimeMillis()), connectionParameter()));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);

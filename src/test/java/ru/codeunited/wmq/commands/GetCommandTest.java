@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -27,7 +28,7 @@ public class GetCommandTest extends QueueingCapability {
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";
 
     @Test(expected = IncompatibleOptionsException.class)
-    public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+    public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --all", OPT_STREAM));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
@@ -36,7 +37,7 @@ public class GetCommandTest extends QueueingCapability {
     }
 
     @Test(expected = MissedParameterException.class) /* very synthetic test, not from real life */
-    public void getMissedParameterExceptiontreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+    public void getMissedParameterExceptiontreamLimit10() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s --limit 10", OPT_STREAM));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
@@ -69,7 +70,7 @@ public class GetCommandTest extends QueueingCapability {
     }
 
     @Test(expected = MissedParameterException.class)
-    public void getMissedParameterException() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException {
+    public void getMissedParameterException() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine(String.format("-Q DEFQM --%s", OPT_STREAM));
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MQGetCommand getCmd = (MQGetCommand) new MQGetCommand().setContext(executionContext);
@@ -78,7 +79,7 @@ public class GetCommandTest extends QueueingCapability {
     }
 
     @Test(expected = MissedParameterException.class)
-    public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException {
+    public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
@@ -146,7 +147,7 @@ public class GetCommandTest extends QueueingCapability {
 
     @Before
     @After
-    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException {
+    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
         cleanupQueue(QUEUE);
     }
 
