@@ -26,7 +26,7 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
 
         // create connect/disconnect commands
         if (executionContext.hasOption(OPT_QMANAGER) ||
-                executionContext.hasOption(OPT_CONFIG) || PropertiesComposer.isDefaultConfigAvailable()) { // need to connect to queue manager
+                executionContext.hasOption(OPT_CONFIG) || MQFilePropertiesComposer.isDefaultConfigAvailable()) { // need to connect to queue manager
             chain
                     .addCommand(new MQConnectCommand())
                     .addCommand(new MQDisconnectCommand());
