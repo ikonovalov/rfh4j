@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.cli;
+package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
@@ -14,15 +14,15 @@ import static com.ibm.mq.constants.CMQC.*;
  */
 public class MessageConsoleFormatFactory {
 
-    public static MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
+    public static MessageConsoleFormatter formatterFor(MQMessage message, Class clazz) throws MQException, IOException {
         final String format = message.format;
         switch (format) {
             case MQFMT_STRING:
-                return new MQFMTStringFormatter();
+                return new MQFMTStringFormatter(message);
             case MQFMT_ADMIN:
                 return new MQFTMAdminFormatFactory().formatterFor(message);
             default:
-                return new MQFMTStringFormatter();
+                return new MQFMTStringFormatter(message);
         }
     }
 

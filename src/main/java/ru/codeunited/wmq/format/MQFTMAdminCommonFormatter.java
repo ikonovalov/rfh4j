@@ -1,7 +1,6 @@
-package ru.codeunited.wmq.cli;
+package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.*;
 
@@ -17,12 +16,10 @@ import java.util.Enumeration;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminCommonFormatter implements MessageConsoleFormatter {
-
-    private final PCFMessage message;
+public class MQFTMAdminCommonFormatter extends MQFTMAdminAbstractFormatter<String> {
 
     public MQFTMAdminCommonFormatter(PCFMessage pcfMessage) {
-        this.message = pcfMessage;
+        super(pcfMessage);
     }
 
     private void boarder(final StringBuffer buffer) {
@@ -30,12 +27,8 @@ public class MQFTMAdminCommonFormatter implements MessageConsoleFormatter {
     }
 
     @Override
-    public String format(final MQMessage message) throws IOException, MQException {
-        final PCFMessage pcfMessage = this.message;
+    public String format() throws IOException, MQException {
         final StringBuffer buffer = new StringBuffer();
-
-        // print MQMD header
-        buffer.append(new MQMDFormatter().format(message));
 
         // print MQFTM_ADMIN
         boarder(buffer);

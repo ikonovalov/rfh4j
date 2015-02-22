@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.cli;
+package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
@@ -16,13 +16,12 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter {
-
-    private final PCFMessage message;
+public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatter<String> {
 
     MQFTMAdminActivityTraceFormatter(PCFMessage pcfMessage) {
-        this.message = pcfMessage;
+        super(pcfMessage);
     }
+
 
     static interface Filter {
         boolean allowed(PCFParameter code);
@@ -54,11 +53,10 @@ public class MQFTMAdminActivityTraceFormatter implements MessageConsoleFormatter
 
 
     @Override
-    public String format(MQMessage message) throws IOException, MQException {
+    public String format() throws IOException, MQException {
         final StringBuffer buffer = new StringBuffer(1024);
 
         // print MQFTM_ADMIN
-        final PCFMessage pcfMessage = this.message;
         if (pcfMessage.getCommand() != MQCMD_ACTIVITY_TRACE)
             return String.format("Can't handled with %s", MQFTMAdminActivityTraceFormatter.class.getName());
 
