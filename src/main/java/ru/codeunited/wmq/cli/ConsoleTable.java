@@ -72,7 +72,7 @@ public class ConsoleTable {
         return boarderH;
     }
 
-    public void flash() {
+    public void make() {
         if (table.isEmpty())
             return;
 
@@ -131,8 +131,8 @@ public class ConsoleTable {
 
         console.writef(boarderH);
 
-        // flash
-        console.flush();
+        // make
+        //console.flush();
 
         // clear data
         clear();
