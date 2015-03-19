@@ -60,17 +60,6 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
         if (pcfMessage.getCommand() != MQCMD_ACTIVITY_TRACE)
             return String.format("Can't handled with %s", MQFTMAdminActivityTraceFormatter.class.getName());
 
-        buffer.append(String.format("TRR:[%s %s -> %s] QM:[%s] APP:[%s %s] USR:[%s] CHL:[%s] ->",
-                decodedParameter(pcfMessage, MQCAMO_START_DATE), /* TRace Record - TRR time*/
-                decodedParameter(pcfMessage, MQCAMO_START_TIME),
-                decodedParameter(pcfMessage, MQCAMO_END_TIME),
-                decodedParameter(pcfMessage, MQCA_Q_MGR_NAME),
-                decodedParameter(pcfMessage, MQCACF_APPL_NAME),
-                decodedParameter(pcfMessage, MQIACF_PROCESS_ID),
-                decodedParameter(pcfMessage, MQCACF_USER_IDENTIFIER),
-                decodedParameter(pcfMessage, MQCACH_CHANNEL_NAME)
-        ));
-
         boolean allowOutput = false;
 
         // scan for MQGACF_ACTIVITY_TRACE
@@ -89,23 +78,30 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
             if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
                     && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
 
-                String operationName = decodeValue(mqiacfOperation);
-                buffer.append(String.format(" opr:[%s]", operationName));
-                buffer.append(String.format(" otm:[%s]", decodedParameter(trace, MQCACF_OPERATION_TIME)));
+                // timestamp;msgId;queueName;operation(put/get);QMGRNAme;size;<Строка заголовков - вида name=value>;
+
+                buffer.append(String.format("%s %s;", decodedParameter(trace, MQCACF_OPERATION_DATE), decodedParameter(trace, MQCACF_OPERATION_TIME)));
+                buffer.append(decodedParameter(trace, MQBACF_MSG_ID)).append(';');
+                buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_NAME)).append(';');
+                buffer.append(decodeValue(mqiacfOperation)).append(';');
+                buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_MGR)).append(';');
+                buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH)).append(';');
+                buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
+
                 final Integer operationValue = (Integer) mqiacfOperation.getValue();
+
                 switch (operationValue) {
                     case MQXF_PUT:
                     case MQXF_GET:
-                        buffer.append(
+                        /*buffer.append(
                                 String.format(" obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-                                        decodedParameter(trace, MQCACF_OBJECT_NAME),
-                                        decodedParameter(trace, MQBACF_MSG_ID),
-                                        decodedParameter(trace, MQBACF_CORREL_ID),
+
+
                                         decodedParameter(trace, MQIACF_MSG_LENGTH),
                                         decodedParameter(trace, MQBACF_MESSAGE_DATA)
-                                        ));
+                                        ));*/
                 }
-                buffer.append(';');
+                buffer.append('\n');
                 allowOutput = true;
             }
 

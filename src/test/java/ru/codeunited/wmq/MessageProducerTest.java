@@ -15,6 +15,8 @@ import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
 
+import static com.ibm.mq.constants.CMQC.MQFMT_RF_HEADER_2;
+import static com.ibm.mq.constants.CMQC.MQFMT_STRING;
 import static com.ibm.mq.constants.CMQC.MQMO_MATCH_MSG_ID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
