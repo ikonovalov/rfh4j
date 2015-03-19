@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.codeunited.wmq.fx.SceneController">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
   </columnConstraints>
@@ -15,9 +15,9 @@
     <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
+      <TabPane fx:id="globalTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
         <tabs>
-          <Tab closable="false" text="Main">
+          <Tab fx:id="mainTab" closable="false" text="Main">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -28,13 +28,13 @@
                                     <Insets bottom="2.0" top="2.0" />
                                  </padding>
                               </Label>
-                              <ComboBox editable="true" />
+                              <ComboBox fx:id="currentQM" editable="true" />
                               <Label text="Queue">
                                  <padding>
                                     <Insets bottom="2.0" top="2.0" />
                                  </padding>
                               </Label>
-                              <ComboBox editable="true" />
+                              <ComboBox fx:id="currentQ" editable="true" />
                            </children>
                            <padding>
                               <Insets left="5.0" right="5.0" />
