@@ -17,4 +17,10 @@ public final class RFHConstants {
 
     public static final String OPT_HANDLER = "handler";
 
+    public static final String OPT_LIMIT = "limit";
+
+    public static final String OPT_TIMES = "times"; // synonym for limit
+
+    public static final String OPT_WAIT = "wait";
+
 }

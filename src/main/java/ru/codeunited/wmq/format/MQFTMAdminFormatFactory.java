@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.cli;
+package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;

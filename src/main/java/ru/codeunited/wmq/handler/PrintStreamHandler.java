@@ -4,7 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.MessageConsoleFormatFactory;
+import ru.codeunited.wmq.format.MessageConsoleFormatFactory;
 import ru.codeunited.wmq.cli.TableColumnName;
 
 import java.io.IOException;
@@ -49,10 +49,10 @@ public class PrintStreamHandler extends CommonMessageHander<Void> {
                                     messageEvent.getHexMessageId(),
                                     messageEvent.getHexCorrelationId(),
                                     "<stream>"
-                            ).flash();
+                            ).make();
                 case MQFMT_ADMIN:
                 default:
-                    final String formatterOutput = MessageConsoleFormatFactory.formatterFor(message).format(message);
+                    final String formatterOutput = (String) MessageConsoleFormatFactory.formatterFor(message, String.class).format();
                     if (formatterOutput.length() > 0) {
                         getConsole().writeln(formatterOutput).flush();
                     }

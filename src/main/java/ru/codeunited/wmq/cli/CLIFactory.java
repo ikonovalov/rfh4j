@@ -168,6 +168,12 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option times = OptionBuilder
+                .withLongOpt("times")
+                .withDescription("Repeat count. Supported for MQPUT now.")
+                .hasArg(YES)
+                .create();
+
         messagePayload
                 .addOption(textMessage)
                 .addOption(filePayload)
@@ -192,6 +198,7 @@ public class CLIFactory {
                 .addOption(lsLocalQueues)
                 .addOption(all)
                 .addOption(limit)
+                .addOption(times)
                 .addOption(transport)
                 .addOptionGroup(messagePayload);
 

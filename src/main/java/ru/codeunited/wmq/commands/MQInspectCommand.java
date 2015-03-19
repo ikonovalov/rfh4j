@@ -46,7 +46,7 @@ public class MQInspectCommand extends QueueCommand {
                         String.valueOf(next.getOutputCount())           // opened output count
                 );
             }
-            table.flash();
+            table.make();
 
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());

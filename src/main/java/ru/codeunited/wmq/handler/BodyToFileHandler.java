@@ -59,7 +59,7 @@ public class BodyToFileHandler extends CommonMessageHander<File> {
                     messageEvent.getHexMessageId(),
                     messageEvent.getHexCorrelationId(),
                     destination.getAbsolutePath()
-            ).flash();
+            ).make();
         } catch (MQException | IOException e) {
             throw NestedHandlerException.nest(e);
         }

@@ -3,7 +3,6 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.handler.*;
@@ -12,13 +11,11 @@ import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
-import java.io.File;
 import java.io.IOException;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_HANDLER;
 import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
-import static ru.codeunited.wmq.messaging.MessageTools.*;
 
 /**
  * codeunited.ru
@@ -89,7 +86,7 @@ public class MQGetCommand extends QueueCommand {
 
         console.createTable(header)
                 .append(String.valueOf(0), MQOperation.MQGET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
-                .flash();
+                .make();
     }
 
     void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException, NestedHandlerException {

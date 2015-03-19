@@ -30,32 +30,39 @@ public class MQPutCommand extends QueueCommand {
 
         try {
             final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
-            MQMessage sentMessage;
-            // handle payload parameters
-            if (ctx.hasOption(OPT_PAYLOAD)){ // file payload
-                try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(OPT_PAYLOAD))) {
-                    sentMessage = messageProducer.send(fileStream);
+
+            int repeatTimes = getMessagesCountLimit();
+            int sentIndex = 0;
+            while (repeatTimes-->0) {
+                MQMessage sentMessage;
+                // handle payload parameters
+                if (ctx.hasOption(OPT_PAYLOAD)) { // file payload
+                    try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(OPT_PAYLOAD))) {
+                        sentMessage = messageProducer.send(fileStream);
+                    }
+                } else if (ctx.hasOption("text")) { // just text message
+                    sentMessage = messageProducer.send(ctx.getOption("text"));
+                } else if (ctx.hasOption(OPT_STREAM)) {
+                    try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
+                        sentMessage = messageProducer.send(bufferedInputStream);
+                    }
+                } else {
+                    throw new MissedParameterException(OPT_PAYLOAD, "text", OPT_STREAM);
                 }
-            } else if (ctx.hasOption("text")) { // just text message
-                sentMessage = messageProducer.send(ctx.getOption("text"));
-            } else if (ctx.hasOption(OPT_STREAM)) {
-                try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
-                    sentMessage = messageProducer.send(bufferedInputStream);
-                }
-            } else {
-                throw new MissedParameterException(OPT_PAYLOAD, "text", OPT_STREAM);
+
+                // create event
+                final EventSource eventSource = new EventSource(getDestinationQueueName());
+                final MessageEvent event = new MessageEvent(eventSource);
+                event.setMessageIndex(sentIndex);
+                event.setMessage(sentMessage);
+                event.setOperation(MQOperation.MQPUT);
+
+                // publish event
+                MessageHandler handler = new PrintStreamHandler(ctx, getConsoleWriter());
+                handler.onMessage(event);
+
+                sentIndex++;
             }
-
-            // create event
-            final EventSource eventSource = new EventSource(getDestinationQueueName());
-            final MessageEvent event = new MessageEvent(eventSource);
-            event.setMessageIndex(0);
-            event.setMessage(sentMessage);
-            event.setOperation(MQOperation.MQPUT);
-
-            // publish event
-            MessageHandler handler = new PrintStreamHandler(ctx, getConsoleWriter());
-            handler.onMessage(event);
 
         } catch (IOException | MQException e) {
             LOG.severe(e.getMessage());
