@@ -85,8 +85,8 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
                 buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_NAME)).append(';');
                 buffer.append(decodeValue(mqiacfOperation)).append(';');
                 buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_MGR)).append(';');
-                buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH)).append(';');
-                buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
+                buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH));//.append(';');
+                //buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
 
                 final Integer operationValue = (Integer) mqiacfOperation.getValue();
 
