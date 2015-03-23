@@ -4,6 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -126,6 +127,17 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
         if (value != null)
             value = value.trim();
         return value;
+    }
+
+    private String coalesce(PCFContent content, int... codes) {
+        if (codes == null || codes.length == 0) return null;
+        for (int code : codes) {
+            String midRes = decodeValue(content.getParameter(code));
+            if (StringUtils.isNotBlank(midRes)) {
+                return midRes;
+            }
+        }
+        return "";
     }
 
     private String decodeValue(final PCFParameter pcfParameter) {
