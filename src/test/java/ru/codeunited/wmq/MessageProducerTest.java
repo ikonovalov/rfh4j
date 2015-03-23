@@ -76,8 +76,6 @@ public class MessageProducerTest extends QueueingCapability {
                 assertThat(inspector.depth(), is(messageCount));
             }
         });
-
-        cleanUp();
     }
 
     @After

@@ -21,7 +21,7 @@ public class MQFMTStringFormatter extends MQFMTAbstractrFormatter {
     public String format() throws IOException {
         message.seek(0); // going to begining of message
         final int size = message.getDataLength(); // all remaining data size
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer(size);
         buffer.append(String.format("Remain %d bytes", size));
         boarder(buffer);
         buffer.append(message.readStringOfByteLength(message.getDataLength()));
