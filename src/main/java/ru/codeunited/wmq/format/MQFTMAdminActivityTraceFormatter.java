@@ -75,27 +75,23 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
             // process activity trace elements (MQGACF_ACTIVITY_TRACE is always grouped as MQCFGR)
             MQCFGR trace = (MQCFGR) parameter; // => MQGACF_ACTIVITY_TRACE
 
-            final PCFParameter mqiacfOperation = trace.getParameter(MQIACF_OPERATION_ID);
+            final PCFParameter mqiacfOperation = parameterOf(trace, MQIACF_OPERATION_ID);
             if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
                     && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
 
-                String operationName = decodeValue(mqiacfOperation);
-                buffer.append(String.format(" opr:[%s]", operationName));
-                buffer.append(String.format(" otm:[%s]", decodedParameter(trace, MQCACF_OPERATION_TIME)));
-                final Integer operationValue = (Integer) mqiacfOperation.getValue();
-                switch (operationValue) {
-                    case MQXF_PUT:
-                    case MQXF_GET:
-                        buffer.append(
-                                String.format(" obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-                                        coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
-                                        decodedParameter(trace, MQBACF_MSG_ID),
-                                        decodedParameter(trace, MQBACF_CORREL_ID),
-                                        decodedParameter(trace, MQIACF_MSG_LENGTH),
-                                        decodedParameter(trace, MQBACF_MESSAGE_DATA)
-                                        ));
-                }
-                buffer.append(';');
+                // timestamp;msgId;queueName;operation(put/get);QMGRNAme;size;<Строка заголовков - вида name=value>;
+
+                buffer.append(String.format("%s %s;", decodedParameter(trace, MQCACF_OPERATION_DATE), decodedParameter(trace, MQCACF_OPERATION_TIME)));
+                buffer.append(decodedParameter(trace, MQBACF_MSG_ID)).append(';');
+                buffer.append(coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME)).append(';');
+                buffer.append(decodeValue(mqiacfOperation)).append(';');
+                buffer.append(coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR)).append(';');
+                buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH)).append(';');
+                buffer.append(decodedParameter(pcfMessage, MQCACF_APPL_NAME)).append(';');
+                buffer.append(decodedParameter(pcfMessage, MQCACF_USER_IDENTIFIER));
+                //buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
+
+                buffer.append('\n');
                 allowOutput = true;
             }
 
