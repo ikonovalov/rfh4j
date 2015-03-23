@@ -86,7 +86,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
             // process activity trace elements (MQGACF_ACTIVITY_TRACE is always grouped as MQCFGR)
             MQCFGR trace = (MQCFGR) parameter; // => MQGACF_ACTIVITY_TRACE
 
-            final PCFParameter mqiacfOperation = trace.getParameter(MQIACF_OPERATION_ID);
+            final PCFParameter mqiacfOperation = parameterOf(trace, MQIACF_OPERATION_ID);
             if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
                     && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
 
@@ -99,7 +99,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
                     case MQXF_GET:
                         buffer.append(
                                 String.format(" obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-                                        decodedParameter(trace, MQCACF_OBJECT_NAME),
+                                        coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
                                         decodedParameter(trace, MQBACF_MSG_ID),
                                         decodedParameter(trace, MQBACF_CORREL_ID),
                                         decodedParameter(trace, MQIACF_MSG_LENGTH),
@@ -132,7 +132,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
     private String coalesce(PCFContent content, int... codes) {
         if (codes == null || codes.length == 0) return null;
         for (int code : codes) {
-            String midRes = decodeValue(content.getParameter(code));
+            String midRes = decodedParameter(content, code);
             if (StringUtils.isNotBlank(midRes)) {
                 return midRes;
             }
@@ -140,6 +140,11 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
         return "";
     }
 
+    /**
+     * Returns parameter value as string and in special cases it can lookup some of predefined constants values;
+     * @param pcfParameter
+     * @return
+     */
     private String decodeValue(final PCFParameter pcfParameter) {
         if (pcfParameter == null)
             return "";
