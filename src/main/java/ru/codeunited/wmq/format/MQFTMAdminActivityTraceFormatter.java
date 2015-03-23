@@ -4,6 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -78,30 +79,23 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
             if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
                     && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
 
-                // timestamp;msgId;queueName;operation(put/get);QMGRNAme;size;<Строка заголовков - вида name=value>;
-
-                buffer.append(String.format("%s %s;", decodedParameter(trace, MQCACF_OPERATION_DATE), decodedParameter(trace, MQCACF_OPERATION_TIME)));
-                buffer.append(decodedParameter(trace, MQBACF_MSG_ID)).append(';');
-                buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_NAME)).append(';');
-                buffer.append(decodeValue(mqiacfOperation)).append(';');
-                buffer.append(decodedParameter(trace, MQCACF_RESOLVED_Q_MGR)).append(';');
-                buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH));//.append(';');
-                //buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
-
+                String operationName = decodeValue(mqiacfOperation);
+                buffer.append(String.format(" opr:[%s]", operationName));
+                buffer.append(String.format(" otm:[%s]", decodedParameter(trace, MQCACF_OPERATION_TIME)));
                 final Integer operationValue = (Integer) mqiacfOperation.getValue();
-
                 switch (operationValue) {
                     case MQXF_PUT:
                     case MQXF_GET:
-                        /*buffer.append(
+                        buffer.append(
                                 String.format(" obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-
-
+                                        coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
+                                        decodedParameter(trace, MQBACF_MSG_ID),
+                                        decodedParameter(trace, MQBACF_CORREL_ID),
                                         decodedParameter(trace, MQIACF_MSG_LENGTH),
                                         decodedParameter(trace, MQBACF_MESSAGE_DATA)
-                                        ));*/
+                                        ));
                 }
-                buffer.append('\n');
+                buffer.append(';');
                 allowOutput = true;
             }
 
@@ -124,6 +118,22 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
         return value;
     }
 
+    private String coalesce(PCFContent content, int... codes) {
+        if (codes == null || codes.length == 0) return null;
+        for (int code : codes) {
+            String midRes = decodedParameter(content, code);
+            if (StringUtils.isNotBlank(midRes)) {
+                return midRes;
+            }
+        }
+        return "";
+    }
+
+    /**
+     * Returns parameter value as string and in special cases it can lookup some of predefined constants values;
+     * @param pcfParameter
+     * @return
+     */
     private String decodeValue(final PCFParameter pcfParameter) {
         if (pcfParameter == null)
             return "";
