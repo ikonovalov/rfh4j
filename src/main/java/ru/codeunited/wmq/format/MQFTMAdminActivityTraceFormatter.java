@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -18,6 +20,10 @@ import static com.ibm.mq.constants.MQConstants.*;
  * Created by ikonovalov on 02.02.15.
  */
 public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatter<String> {
+
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmss");
+
+    private static final SimpleDateFormat TIME_REFORMATED = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     MQFTMAdminActivityTraceFormatter(PCFMessage pcfMessage) {
         super(pcfMessage);
@@ -80,13 +86,43 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
                     && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
 
                 // timestamp;msgId;queueName;operation(put/get);QMGRNAme;size;<Строка заголовков - вида name=value>;
+                boolean xmitExchange = "MQXMIT".equals(decodedParameter(trace, MQCACH_FORMAT_NAME));
+                final String putDateTime = String.format("%s %s", decodedParameter(trace, MQCACF_PUT_DATE), decodedParameter(trace, MQCACF_PUT_TIME));
+                try {
+                    buffer.append(TIME_REFORMATED.format(TIME_FORMAT.parse(putDateTime)));
+                } catch (ParseException e) {
+                    buffer.append(putDateTime);
+                } finally {
+                    buffer.append(';');
+                }
+                buffer.append( /* append message id */
+                        xmitExchange ?
+                                decodedParameter(trace, MQBACF_XQH_MSG_ID) :
+                                decodedParameter(trace, MQBACF_MSG_ID))
+                        .append(';');
 
-                buffer.append(String.format("%s %s;", decodedParameter(trace, MQCACF_OPERATION_DATE), decodedParameter(trace, MQCACF_OPERATION_TIME)));
-                buffer.append(decodedParameter(trace, MQBACF_MSG_ID)).append(';');
-                buffer.append(coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME)).append(';');
+                buffer.append( /* append queue name */
+                        xmitExchange ?
+                                String.format("%s->%s",
+                                        coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
+                                        decodedParameter(trace, MQCACF_XQH_REMOTE_Q_NAME)
+                                ) :
+                                coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME))
+                        .append(';');
+
                 buffer.append(decodeValue(mqiacfOperation)).append(';');
-                buffer.append(coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR)).append(';');
+
+                buffer.append( /* append queuemanager name */
+                        xmitExchange ?
+                                String.format("%s->%s",
+                                        coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR),
+                                        decodedParameter(trace, MQCACF_XQH_REMOTE_Q_MGR)
+                                ) :
+                                coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR))
+                        .append(';');
+
                 buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH)).append(';');
+                buffer.append(decodedParameter(pcfMessage, MQIA_APPL_TYPE)).append(';');
                 buffer.append(decodedParameter(pcfMessage, MQCACF_APPL_NAME)).append(';');
                 buffer.append(decodedParameter(pcfMessage, MQCACF_USER_IDENTIFIER));
                 //buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
