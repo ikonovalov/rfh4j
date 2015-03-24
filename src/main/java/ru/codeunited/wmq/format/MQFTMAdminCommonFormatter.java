@@ -16,7 +16,7 @@ import java.util.Enumeration;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminCommonFormatter extends MQFTMAdminAbstractFormatter<String> {
+public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
     public MQFTMAdminCommonFormatter(PCFMessage pcfMessage) {
         super(pcfMessage);

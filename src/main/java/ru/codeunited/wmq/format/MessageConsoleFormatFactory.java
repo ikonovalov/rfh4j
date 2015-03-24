@@ -2,6 +2,7 @@ package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
+import ru.codeunited.wmq.ExecutionContext;
 
 import java.io.IOException;
 
@@ -14,16 +15,27 @@ import static com.ibm.mq.constants.CMQC.*;
  */
 public class MessageConsoleFormatFactory {
 
-    public static MessageConsoleFormatter formatterFor(MQMessage message, Class clazz) throws MQException, IOException {
+    private ExecutionContext context;
+
+    public MessageConsoleFormatFactory(ExecutionContext context) {
+        this.context = context;
+    }
+
+    public MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final String format = message.format;
+        MessageConsoleFormatter formatter;
         switch (format) {
             case MQFMT_STRING:
-                return new MQFMTStringFormatter(message);
+                formatter = new MQFMTStringFormatter(message);
+                break;
             case MQFMT_ADMIN:
-                return new MQFTMAdminFormatFactory().formatterFor(message);
+                formatter = new MQFTMAdminFormatFactory(context).formatterFor(message);
+                break;
             default:
-                return new MQFMTStringFormatter(message);
+                formatter = new MQFMTStringFormatter(message);
         }
+        formatter.attach(context);
+        return formatter;
     }
 
 }
