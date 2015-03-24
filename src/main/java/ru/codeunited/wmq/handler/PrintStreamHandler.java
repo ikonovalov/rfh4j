@@ -52,7 +52,8 @@ public class PrintStreamHandler extends CommonMessageHander<Void> {
                             ).make();
                 case MQFMT_ADMIN:
                 default:
-                    final String formatterOutput = (String) MessageConsoleFormatFactory.formatterFor(message, String.class).format();
+                    final MessageConsoleFormatFactory factory = new MessageConsoleFormatFactory(getContext());
+                    final String formatterOutput = (String) factory.formatterFor(message).format();
                     if (formatterOutput.length() > 0) {
                         getConsole().writeln(formatterOutput).flush();
                     }

@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.*;
 import org.apache.commons.lang3.StringUtils;
@@ -19,7 +18,7 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatter<String> {
+public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormatter<String> {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmss");
 
