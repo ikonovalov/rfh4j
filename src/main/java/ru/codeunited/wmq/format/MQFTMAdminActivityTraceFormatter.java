@@ -135,8 +135,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
         if (!allowOutput) { // drop buffer in it contains nothing interesting.
             buffer.setLength(0);
         }
-
-        return buffer.toString();
+        return buffer.toString().trim();
     }
 
     private PCFParameter parameterOf(PCFContent content, int paramCode) {
