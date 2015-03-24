@@ -103,23 +103,27 @@ public class MQFTMAdminActivityTraceFormatter extends MQFTMAdminAbstractFormatte
 
                 buffer.append( /* append queue name */
                         xmitExchange ?
-                                String.format("%s->%s",
+                                String.format("%s;%s;",
                                         coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
                                         decodedParameter(trace, MQCACF_XQH_REMOTE_Q_NAME)
                                 ) :
-                                coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME))
-                        .append(';');
+                                String.format("%s;;",
+                                        coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME)
+                                )
+                );
 
                 buffer.append(decodeValue(mqiacfOperation)).append(';');
 
                 buffer.append( /* append queuemanager name */
                         xmitExchange ?
-                                String.format("%s->%s",
+                                String.format("%s;%s;",
                                         coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR),
                                         decodedParameter(trace, MQCACF_XQH_REMOTE_Q_MGR)
                                 ) :
-                                coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR))
-                        .append(';');
+                                String.format("%s;;",
+                                        coalesce(trace, MQCACF_OBJECT_Q_MGR_NAME, MQCACF_RESOLVED_Q_MGR, MQCACF_RESOLVED_LOCAL_Q_MGR)
+                                )
+                );
 
                 buffer.append(decodedParameter(trace, MQIACF_MSG_LENGTH)).append(';');
                 buffer.append(decodedParameter(pcfMessage, MQIA_APPL_TYPE)).append(';');
