@@ -125,6 +125,10 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 {
         return decodedParameterAsInt(MQIACF_MSG_LENGTH);
     }
 
+    public String getBodyAsString() {
+        return decodedParameter(MQBACF_MESSAGE_DATA);
+    }
+
     public boolean isTransmissionMessage() {
         return MQFMT_XMIT_Q_HEADER.equals(decodedParameter(MQCACH_FORMAT_NAME));
     }

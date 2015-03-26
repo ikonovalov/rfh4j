@@ -15,6 +15,8 @@ public interface MQXFPutRecord extends ActivityTraceRecord {
 
     Integer getMessageLength();
 
+    String getBodyAsString();
+
     Integer getRecsPresent();
 
     Integer getKnownDestCount();

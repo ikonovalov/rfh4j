@@ -14,6 +14,8 @@ public interface MQXFGetRecord extends ActivityTraceRecord {
 
     Integer getMessageLength();
 
+    String getBodyAsString();
+
     String getObjectType();
 
     String getObjectName();
