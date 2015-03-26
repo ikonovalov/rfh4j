@@ -6,6 +6,7 @@ import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperations;
 import ru.codeunited.wmq.messaging.pcf.PCFGroupParameterWrapper;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -18,6 +19,8 @@ import static com.ibm.mq.constants.MQConstants.*;
  * Created by ikonovalov on 25.03.15.
  */
 public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements ActivityTraceRecord {
+
+    private static final SimpleDateFormat ISO_DATETIME = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
 
     static ActivityTraceRecord750 create(PCFParameter parameter) {
         return create((MQCFGR) parameter);
@@ -62,6 +65,11 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
     @Override
     public Date getOperationDate() {
         return createDateTime(MQCACF_OPERATION_DATE, MQCACF_OPERATION_TIME);
+    }
+
+    @Override
+    public String getOperationDateISO() {
+        return ISO_DATETIME.format(getOperationDate());
     }
 
     @Override

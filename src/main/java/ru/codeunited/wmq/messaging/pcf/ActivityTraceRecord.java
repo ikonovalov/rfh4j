@@ -17,6 +17,8 @@ public interface ActivityTraceRecord {
 
     Date getOperationDate();
 
+    String getOperationDateISO();
+
     String getCompCode();
 
     Integer getCompCodeAsInt();
