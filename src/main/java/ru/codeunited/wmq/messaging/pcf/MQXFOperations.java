@@ -62,6 +62,15 @@ public enum MQXFOperations {
         }
     }
 
+    public boolean anyOf(MQXFOperations... operations) {
+        for (MQXFOperations op : operations) {
+            if (code() == op.code()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Get operation code == MQIACF_OPERATION_ID
      * @return

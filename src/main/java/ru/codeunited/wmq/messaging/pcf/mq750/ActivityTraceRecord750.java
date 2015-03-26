@@ -20,7 +20,7 @@ import static com.ibm.mq.constants.MQConstants.*;
  */
 public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements ActivityTraceRecord {
 
-    private static final SimpleDateFormat ISO_DATETIME = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ss");
+    private static final SimpleDateFormat ISO_DATETIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     static ActivityTraceRecord750 create(PCFParameter parameter) {
         return create((MQCFGR) parameter);

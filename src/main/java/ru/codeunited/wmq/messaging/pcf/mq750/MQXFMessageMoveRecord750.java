@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
 import com.ibm.mq.pcf.MQCFGR;
+import ru.codeunited.wmq.messaging.pcf.MQXFMessageMoveRecord;
 
 import static com.ibm.mq.constants.CMQC.MQFMT_XMIT_Q_HEADER;
 import static com.ibm.mq.constants.CMQC.MQIA_CODED_CHAR_SET_ID;
@@ -11,7 +12,7 @@ import static com.ibm.mq.constants.CMQCFC.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 26.03.15.
  */
-public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 {
+public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 implements MQXFMessageMoveRecord {
 
     protected MQXFMessageMoveRecord750(MQCFGR parameter) {
         super(parameter);
