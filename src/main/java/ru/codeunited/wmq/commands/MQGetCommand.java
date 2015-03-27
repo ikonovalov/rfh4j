@@ -44,7 +44,6 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         final ConsoleWriter console = getConsoleWriter();
-        final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
 
         try {

@@ -1,13 +1,12 @@
 package ru.codeunited.wmq;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.ParseException;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  * codeunited.ru

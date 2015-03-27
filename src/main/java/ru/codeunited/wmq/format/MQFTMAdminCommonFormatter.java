@@ -1,16 +1,16 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQException;
-import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.pcf.*;
+import com.ibm.mq.pcf.MQCFBS;
+import com.ibm.mq.pcf.MQCFGR;
+import com.ibm.mq.pcf.PCFMessage;
+import com.ibm.mq.pcf.PCFParameter;
 
-import static com.ibm.mq.constants.MQConstants.*;
-
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
+
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
@@ -27,6 +27,7 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
         buffer.append("<--------------MQFTM_ADMIN------------------------>").append('\n');
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String formatPCFMessage(PCFMessage pcfMessage) {
 

@@ -3,7 +3,6 @@ package ru.codeunited.wmq.format;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
-import ru.codeunited.wmq.ExecutionContext;
 
 import java.io.IOException;
 

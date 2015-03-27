@@ -36,6 +36,7 @@ public class MQOperationEnumTest {
     @Test(expected = NullPointerException.class)
     public void lookupNullAutoBoxed() {
         final Integer nulled = null;
+        //noinspection ConstantConditions
         assertThat(MQXFOperations.lookup(nulled), is(MQXFOperations.MQXF_UNKNOWN));
     }
 }

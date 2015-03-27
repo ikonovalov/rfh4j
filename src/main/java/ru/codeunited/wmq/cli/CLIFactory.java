@@ -45,7 +45,7 @@ public class CLIFactory {
 
         final Option queueManager = OptionBuilder
                 .withLongOpt(OPT_QMANAGER)
-                .withArgName("quene manager")
+                .withArgName("queue manager")
                 .withDescription("WMQ queue manager name")
                 .hasArg(YES)
                 .isRequired(NO)

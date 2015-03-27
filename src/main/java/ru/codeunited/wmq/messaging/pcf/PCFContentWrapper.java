@@ -92,10 +92,6 @@ public class PCFContentWrapper {
     }
 
     protected String createDateTimeRaw(int dateCode, int timeCode) {
-        return new StringBuffer(19)
-                .append(decodedParameter(dateCode))
-                .append(' ')
-                .append(decodedParameter(timeCode))
-                .toString();
+        return decodedParameter(dateCode) + ' ' + decodedParameter(timeCode);
     }
 }

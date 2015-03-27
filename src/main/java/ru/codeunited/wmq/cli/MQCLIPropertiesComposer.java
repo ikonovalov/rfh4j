@@ -3,13 +3,12 @@ package ru.codeunited.wmq.cli;
 import com.ibm.mq.constants.CMQC;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.MQFilePropertiesComposer;
-import ru.codeunited.wmq.MQPropertiesComposer;
 
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
-import static ru.codeunited.wmq.RFHConstants.*;
+import static ru.codeunited.wmq.RFHConstants.OPT_QMANAGER;
 
 /**
  * codeunited.ru

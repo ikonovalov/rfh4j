@@ -1,16 +1,15 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQException;
-import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.pcf.*;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static com.ibm.mq.constants.MQConstants.*;
-import static ru.codeunited.wmq.messaging.pcf.PCFUtils.*;
 
 /**
  * codeunited.ru
@@ -57,7 +56,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
     @Override
     public String formatPCFMessage(PCFMessage pcfMessage) {
 
-        final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
+        final StringBuilder buffer = new StringBuilder(BUFFER_2Kb);
 
         ActivityTraceCommand activityCommand = PCFUtils.activityCommandFor(pcfMessage);
 
