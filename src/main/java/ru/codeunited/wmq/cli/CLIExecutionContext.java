@@ -32,7 +32,7 @@ public class CLIExecutionContext extends ExecutionContext {
     }
 
     public String getOption(String option) {
-        return commandLine.getOptionValue(option);
+        return commandLine.getOptionValue(option).trim();
     }
 
     @Override

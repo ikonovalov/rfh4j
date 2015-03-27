@@ -168,6 +168,12 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option formatter = OptionBuilder
+                .withLongOpt(OPT_FORMATTER)
+                .withDescription("Special formatter class name")
+                .hasArg(YES)
+                .create();
+
         messagePayload
                 .addOption(textMessage)
                 .addOption(filePayload)
@@ -193,6 +199,7 @@ public class CLIFactory {
                 .addOption(limit)
                 .addOption(times)
                 .addOption(transport)
+                .addOption(formatter)
                 .addOptionGroup(messagePayload);
 
         return options;

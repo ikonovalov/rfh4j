@@ -13,14 +13,15 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 08.02.15.
  */
-public class MQFTMAdminFormatFactory {
+class MQFTMAdminFormatFactory implements FormatterFactory {
 
     private final ExecutionContext context;
 
-    public MQFTMAdminFormatFactory(ExecutionContext context) {
+    MQFTMAdminFormatFactory(ExecutionContext context) {
         this.context = context;
     }
 
+    @Override
     public MQPCFMessageAbstractFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final PCFMessage pcfMessage = new PCFMessage(message);
         final int commandCode = pcfMessage.getCommand();

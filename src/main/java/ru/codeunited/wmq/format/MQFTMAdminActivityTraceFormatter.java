@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.format;
 
 import com.ibm.mq.pcf.PCFMessage;
-import ru.codeunited.wmq.messaging.MQOperation;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import java.util.Collections;

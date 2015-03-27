@@ -7,6 +7,7 @@ import ru.codeunited.wmq.ExecutionContext;
 import java.io.IOException;
 
 /**
+ * Formatter should be stateless and thread-safe!
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
