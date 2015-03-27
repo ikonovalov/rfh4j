@@ -27,7 +27,7 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
     }
 
     static ActivityTraceRecord750 create(MQCFGR parameter) {
-        Integer operation = getOperationAsInt(parameter);
+        Integer operation = (Integer) parameter.getParameter(MQIACF_OPERATION_ID).getValue();
         MQXFOperations operationEnum = MQXFOperations.lookup(operation);
         switch (operationEnum) {
             case MQXF_PUT:
@@ -37,10 +37,6 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
             default:
                 return new ActivityTraceRecord750(parameter);
         }
-    }
-
-    private static Integer getOperationAsInt(MQCFGR parameter) {
-        return (Integer) parameter.getParameter(MQIACF_OPERATION_ID).getValue();
     }
 
     protected ActivityTraceRecord750(MQCFGR parameter) {
@@ -54,7 +50,7 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
 
     @Override
     public Integer getOperationAsInt() {
-        return getOperationAsInt((MQCFGR) content);
+        return decodedParameterAsInt(MQIACF_OPERATION_ID);
     }
 
     @Override
