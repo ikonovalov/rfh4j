@@ -22,11 +22,11 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
 
     private static final SimpleDateFormat ISO_DATETIME = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    static ActivityTraceRecord750 create(PCFParameter parameter) {
+    static ActivityTraceRecord create(PCFParameter parameter) {
         return create((MQCFGR) parameter);
     }
 
-    static ActivityTraceRecord750 create(MQCFGR parameter) {
+    static ActivityTraceRecord create(MQCFGR parameter) {
         Integer operation = (Integer) parameter.getParameter(MQIACF_OPERATION_ID).getValue();
         MQXFOperations operationEnum = MQXFOperations.lookup(operation);
         switch (operationEnum) {

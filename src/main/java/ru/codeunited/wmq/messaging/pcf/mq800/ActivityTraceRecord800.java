@@ -2,6 +2,7 @@ package ru.codeunited.wmq.messaging.pcf.mq800;
 
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFParameter;
+import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperations;
 import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceRecord750;
 
@@ -15,11 +16,11 @@ import static com.ibm.mq.constants.MQConstants.*;
  */
 public class ActivityTraceRecord800 extends ActivityTraceRecord750 {
 
-    static ActivityTraceRecord750 create(PCFParameter parameter) {
+    static ActivityTraceRecord create(PCFParameter parameter) {
         return create((MQCFGR) parameter);
     }
 
-    static ActivityTraceRecord750 create(MQCFGR parameter) {
+    static ActivityTraceRecord create(MQCFGR parameter) {
         Integer operation = (Integer) parameter.getParameter(MQIACF_OPERATION_ID).getValue();
         MQXFOperations operationEnum = MQXFOperations.lookup(operation);
         switch (operationEnum) {

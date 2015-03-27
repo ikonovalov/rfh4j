@@ -90,7 +90,7 @@ public final class PCFUtils {
             case "800":
                 return new ActivityTraceCommand800(message);
             default:
-                throw new WrongTypeException("Unsupported command level for an activity command. Available 750, 800 but got ");
+                throw new WrongTypeException("Unsupported command level for an activity command. Available 750, 800 but got " + commandLevel);
         }
     }
 }
