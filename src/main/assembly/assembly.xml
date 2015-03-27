@@ -31,6 +31,7 @@
                 <include>rput.sh</include>
                 <include>rput_file.sh</include>
                 <include>default.properties</include>
+                <include>wmq.channel</include>
             </includes>
         </fileSet>
         <!-- adds jar package to the root directory of zip package -->
