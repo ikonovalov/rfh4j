@@ -75,6 +75,14 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create('u');
 
+        final Option password = OptionBuilder
+                .withLongOpt("password")
+                .withArgName("password")
+                .withDescription("WMQ QM user password.")
+                .withType(String.class)
+                .hasArg(YES)
+                .create();
+
         final Option destQueue = OptionBuilder
                 .withLongOpt("dstq")
                 .withArgName("queue")
@@ -190,6 +198,7 @@ public class CLIFactory {
                 .addOption(queueManager)
                 .addOption(channel)
                 .addOption(user)
+                .addOption(password)
                 .addOption(config)
                 .addOption(destQueue)
                 .addOption(srcQueue)

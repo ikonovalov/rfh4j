@@ -39,6 +39,8 @@ public class MQCLIPropertiesComposer extends MQFilePropertiesComposer {
             passedProperties.put(PORT_PROPERTY, Integer.valueOf(context.getOption(PORT_PROPERTY)));
         if (context.hasOption(USER_PROPERTY))
             passedProperties.put(USER_ID_PROPERTY, context.getOption(USER_PROPERTY));
+        if (context.hasOption(PASSWORD_PROPERTY))
+            passedProperties.put(PASSWORD_PROPERTY, context.getOption(PASSWORD_PROPERTY));
         if(context.hasOption(TRANSPORT_PROPERTY)) {
             final String transportAlias = context.getOption(TRANSPORT_PROPERTY).toUpperCase();
             String decodedTransport;
