@@ -3,6 +3,8 @@ package ru.codeunited.wmq.cli;
 import org.apache.commons.cli.*;
 
 import java.io.PrintWriter;
+
+import static com.ibm.mq.constants.MQConstants.*;
 import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
@@ -28,7 +30,7 @@ public class CLIFactory {
         final Options options = new Options();
 
         final Option channel = OptionBuilder
-                .withLongOpt("channel")
+                .withLongOpt(CHANNEL_PROPERTY)
                 .withArgName("channel")
                 .withDescription("WMQ SVRCON channel name")
                 .hasArg(YES)
@@ -36,7 +38,7 @@ public class CLIFactory {
                 .create('c');
 
         final Option transport = OptionBuilder
-                .withLongOpt("transport")
+                .withLongOpt(TRANSPORT_PROPERTY)
                 .withArgName("binding|client")
                 .withDescription("WMQ transport type")
                 .hasArg(YES)
@@ -52,7 +54,7 @@ public class CLIFactory {
                 .create('Q');
 
         final Option host = OptionBuilder
-                .withLongOpt("host")
+                .withLongOpt(HOST_NAME_PROPERTY)
                 .withArgName("hostname or IP")
                 .withDescription("WMQ QM host name or ip address (localhost is default).")
                 .withType(String.class)
@@ -68,16 +70,16 @@ public class CLIFactory {
                 .create('P');
 
         final Option user = OptionBuilder
-                .withLongOpt("user")
-                .withArgName("user")
-                .withDescription("WMQ QM user.")
+                .withLongOpt(USER_ID_PROPERTY)
+                .withArgName("user id")
+                .withDescription("WMQ QM user id.")
                 .withType(String.class)
                 .hasArg(YES)
                 .create('u');
 
         final Option password = OptionBuilder
-                .withLongOpt("password")
-                .withArgName("password")
+                .withLongOpt(PASSWORD_PROPERTY)
+                .withArgName("user password")
                 .withDescription("WMQ QM user password.")
                 .withType(String.class)
                 .hasArg(YES)
