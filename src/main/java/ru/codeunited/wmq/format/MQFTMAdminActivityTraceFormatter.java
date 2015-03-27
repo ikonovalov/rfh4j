@@ -1,15 +1,13 @@
 package ru.codeunited.wmq.format;
 
 import com.ibm.mq.pcf.PCFMessage;
-import com.ibm.mq.pcf.PCFParameter;
+import ru.codeunited.wmq.messaging.MQOperation;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
@@ -25,7 +23,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
     }
 
     interface Filter {
-        boolean allowed(PCFParameter code);
+        boolean allowed(ActivityTraceRecord record);
     }
 
     /**
@@ -33,19 +31,19 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
      */
     static final class OperationFilter implements Filter {
 
-        private final Set<Integer> WHITE_LIST;
+        private final Set<MQXFOperations> WHITE_LIST;
 
         OperationFilter() {
-            final Set<Integer> whiteList = new HashSet<>();
-            whiteList.add(MQXF_PUT);
-            whiteList.add(MQXF_PUT1);
-            whiteList.add(MQXF_GET);
+            final Set<MQXFOperations> whiteList = new HashSet<>();
+            whiteList.add(MQXFOperations.MQXF_GET);
+            whiteList.add(MQXFOperations.MQXF_PUT);
+            whiteList.add(MQXFOperations.MQXF_PUT1);
             WHITE_LIST = Collections.unmodifiableSet(whiteList);
         }
 
         @Override
-        public boolean allowed(PCFParameter checkIt) {
-            return WHITE_LIST.contains(checkIt.getValue());
+        public boolean allowed(ActivityTraceRecord checkIt) {
+            return WHITE_LIST.contains(checkIt.getOperation());
         }
 
     }
@@ -75,6 +73,11 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
         List<ActivityTraceRecord> records = activityCommand.getRecords();
         for (ActivityTraceRecord record : records) {
+
+            if (!OPERATION_FILTER.allowed(record)) { /* skip uninteresting operations */
+                continue;
+            }
+
             buffer.append(String.format("\topr:[%s] [%s] otm:[%s] ",
                     record.getOperation().name(),
                     record.getCompCode(),
