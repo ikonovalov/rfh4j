@@ -11,9 +11,9 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public interface MessageConsoleFormatter<T> {
+public interface MessageFormatter<T> {
 
-    T format() throws IOException, MQException;
+    T format(MQMessage message) throws IOException, MQException;
 
     void attach(ExecutionContext context);
 }

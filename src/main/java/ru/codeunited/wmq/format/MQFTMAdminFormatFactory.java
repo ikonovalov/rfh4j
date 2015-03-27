@@ -27,12 +27,13 @@ public class MQFTMAdminFormatFactory {
         final MQPCFMessageAbstractFormatter formatter;
         switch (commandCode) {
             case MQCMD_ACTIVITY_TRACE:
-                formatter = new MQFTMAdminActivityTraceFormatter(pcfMessage);
+                formatter = new MQFTMAdminActivityTraceFormatter();
                 break;
             default:
-                formatter = new MQFTMAdminCommonFormatter(pcfMessage);
+                formatter = new MQFTMAdminCommonFormatter();
         }
         formatter.attach(context);
+        formatter.presetMessage(pcfMessage);
         return formatter;
     }
 

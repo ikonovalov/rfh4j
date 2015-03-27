@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.*;
 
@@ -18,8 +19,8 @@ import java.util.Enumeration;
  */
 public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
-    public MQFTMAdminCommonFormatter(PCFMessage pcfMessage) {
-        super(pcfMessage);
+    public MQFTMAdminCommonFormatter() {
+        super();
     }
 
     private void boarder(final StringBuffer buffer) {
@@ -27,7 +28,8 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
     }
 
     @Override
-    public String format() throws IOException, MQException {
+    public String formatPCFMessage(PCFMessage pcfMessage) {
+
         final StringBuffer buffer = new StringBuffer();
 
         // print MQFTM_ADMIN

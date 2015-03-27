@@ -21,18 +21,18 @@ public class MessageConsoleFormatFactory {
         this.context = context;
     }
 
-    public MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
+    public MessageFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final String format = message.format;
-        MessageConsoleFormatter formatter;
+        MessageFormatter formatter;
         switch (format) {
             case MQFMT_STRING:
-                formatter = new MQFMTStringFormatter(message);
+                formatter = new MQFMTStringFormatter();
                 break;
             case MQFMT_ADMIN:
                 formatter = new MQFTMAdminFormatFactory(context).formatterFor(message);
                 break;
             default:
-                formatter = new MQFMTStringFormatter(message);
+                formatter = new MQFMTStringFormatter();
         }
         formatter.attach(context);
         return formatter;

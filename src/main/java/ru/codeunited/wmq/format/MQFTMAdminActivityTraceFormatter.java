@@ -21,10 +21,9 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
     private static final int BUFFER_2Kb = 2048;
 
-    MQFTMAdminActivityTraceFormatter(PCFMessage pcfMessage) {
-        super(pcfMessage);
+    MQFTMAdminActivityTraceFormatter() {
+        super();
     }
-
 
     interface Filter {
         boolean allowed(PCFParameter code);
@@ -56,7 +55,8 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
 
     @Override
-    public String format() throws IOException, MQException {
+    public String formatPCFMessage(PCFMessage pcfMessage) {
+
         final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
 
         ActivityTraceCommand activityCommand = PCFUtils.activityCommandFor(pcfMessage);
@@ -76,26 +76,25 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
         List<ActivityTraceRecord> records = activityCommand.getRecords();
         for (ActivityTraceRecord record : records) {
-            if(record.isSuccess()) {
-                buffer.append(String.format("\topr:[%s] otm:[%s] ",
-                        record.getOperation().name(),
-                        record.getOperationDateISO()
+            buffer.append(String.format("\topr:[%s] [%s] otm:[%s] ",
+                    record.getOperation().name(),
+                    record.getCompCode(),
+                    record.getOperationDateISO()
 
-                        ));
-                if (record.getOperation().anyOf(MQXFOperations.MQXF_GET, MQXFOperations.MQXF_PUT)) {
-                    MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
-                    buffer.append(String.format("obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-                            //coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
-                            moveRecord.getResolvedLocalQueueName(),
-                            moveRecord.getMessageId(),
-                            moveRecord.getCorrelId(),
-                            moveRecord.getMessageLength(),
-                            moveRecord.getBodyAsString()
-                    ));
-                }
-                buffer.append('\n');
-                allowOutput = true;
+            ));
+            if (record.getOperation().anyOf(MQXFOperations.MQXF_GET, MQXFOperations.MQXF_PUT)) {
+                MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
+                buffer.append(String.format("obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
+                        //coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
+                        moveRecord.getResolvedLocalQueueName(),
+                        moveRecord.getMessageId(),
+                        moveRecord.getCorrelId(),
+                        moveRecord.getMessageLength(),
+                        moveRecord.getBodyAsString()
+                ));
             }
+            buffer.append('\n');
+            allowOutput = true;
         }
 
         /*Enumeration<PCFParameter> parametersL1 = pcfMessage.getParameters();
