@@ -31,7 +31,7 @@ public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAware
         return formatPCFMessage(pcfMessage, message);
     }
 
-    protected void resetMQMessagePosition(MQMessage message) throws EOFException {
+    private static void resetMQMessagePosition(MQMessage message) throws EOFException {
         message.seek(0);
     }
 }
