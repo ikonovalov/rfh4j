@@ -15,7 +15,7 @@ import java.util.List;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityTraceFormatterDF extends MQPCFMessageAbstractFormatter<String> {
+public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
 
@@ -23,7 +23,7 @@ public class MQFTMAdminActivityTraceFormatterDF extends MQPCFMessageAbstractForm
 
     private static final SimpleDateFormat TIME_REFORMATED = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    MQFTMAdminActivityTraceFormatterDF() {
+    MQFTMAdminActivityTraceFormatterDepFin() {
         super();
     }
 
@@ -36,10 +36,8 @@ public class MQFTMAdminActivityTraceFormatterDF extends MQPCFMessageAbstractForm
 
 
     @Override
-    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
+    public String format(final ActivityTraceCommand activityCommand) {
         final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
-
-        ActivityTraceCommand activityCommand = PCFUtilService.activityCommandFor(pcfMessage, mqMessage);
 
         boolean allowOutput = false;
 

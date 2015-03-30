@@ -1,7 +1,5 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQMessage;
-import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.List;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormatter<String> {
+public class MQFTMAdminActivityTraceFormatter extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
 
@@ -27,11 +25,9 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
 
     @Override
-    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
+    public String format(final ActivityTraceCommand activityCommand) {
 
         final StringBuilder buffer = new StringBuilder(BUFFER_2Kb);
-
-        ActivityTraceCommand activityCommand = PCFUtilService.activityCommandFor(pcfMessage, mqMessage);
 
         buffer.append(String.format("COR[%s][%d] TRR[%s -> %s] QM[%s] APP[%s %d] USR[%s] CHL[%s:%s]\n",
                 activityCommand.getCorrelationId(),

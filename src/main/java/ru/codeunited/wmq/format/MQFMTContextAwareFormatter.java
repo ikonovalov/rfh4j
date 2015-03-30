@@ -7,7 +7,7 @@ import ru.codeunited.wmq.ExecutionContext;
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.02.15.
  */
-public abstract class MQFMTContextAwareFormatter {
+public abstract class MQFMTContextAwareFormatter<T> implements MessageFormatter<T> {
 
     protected ExecutionContext context;
 
