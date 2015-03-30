@@ -4,6 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.handler.MessageEvent;
 
 import java.io.IOException;
 import static com.ibm.mq.constants.MQConstants.*;
@@ -34,7 +35,6 @@ class MQFTMAdminFormatFactory implements FormatterFactory {
                 formatter = new MQFTMAdminCommonFormatter();
         }
         formatter.attach(context);
-        formatter.presetMessage(pcfMessage);
         return formatter;
     }
 

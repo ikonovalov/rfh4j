@@ -6,7 +6,7 @@ package ru.codeunited.wmq.messaging.pcf;
  * konovalov84@gmail.com
  * Created by ikonovalov on 26.03.15.
  */
-public enum MQXFOperations {
+public enum MQXFOperation {
     MQXF_INIT(1),
     MQXF_TERM(2),
     MQXF_CONN(3),
@@ -45,7 +45,7 @@ public enum MQXFOperations {
 
     final int code;
 
-    MQXFOperations(int code) {
+    MQXFOperation(int code) {
         this.code = code;
     }
 
@@ -54,7 +54,7 @@ public enum MQXFOperations {
      * @param code
      * @return
      */
-    public static MQXFOperations lookup(int code) {
+    public static MQXFOperation lookup(int code) {
         try {
             return values()[code - 1];
         } catch (ArrayIndexOutOfBoundsException out) {
@@ -62,8 +62,8 @@ public enum MQXFOperations {
         }
     }
 
-    public boolean anyOf(MQXFOperations... operations) {
-        for (MQXFOperations op : operations) {
+    public boolean anyOf(MQXFOperation... operations) {
+        for (MQXFOperation op : operations) {
             if (code() == op.code()) {
                 return true;
             }

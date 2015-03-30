@@ -3,7 +3,7 @@ package ru.codeunited.wmq.messaging.pcf.mq750;
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
-import ru.codeunited.wmq.messaging.pcf.MQXFOperations;
+import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 import ru.codeunited.wmq.messaging.pcf.PCFGroupParameterWrapper;
 
 import java.text.SimpleDateFormat;
@@ -28,7 +28,7 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
 
     static ActivityTraceRecord create(MQCFGR parameter) {
         Integer operation = (Integer) parameter.getParameter(MQIACF_OPERATION_ID).getValue();
-        MQXFOperations operationEnum = MQXFOperations.lookup(operation);
+        MQXFOperation operationEnum = MQXFOperation.lookup(operation);
         switch (operationEnum) {
             case MQXF_PUT:
                 return new MQXFPutRecord750(parameter);
@@ -44,8 +44,8 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
     }
 
     @Override
-    public MQXFOperations getOperation() {
-        return MQXFOperations.lookup(decodedParameterAsInt(MQIACF_OPERATION_ID));
+    public MQXFOperation getOperation() {
+        return MQXFOperation.lookup(decodedParameterAsInt(MQIACF_OPERATION_ID));
     }
 
     @Override

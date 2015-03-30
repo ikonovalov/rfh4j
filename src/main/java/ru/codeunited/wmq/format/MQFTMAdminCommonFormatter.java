@@ -1,6 +1,8 @@
 package ru.codeunited.wmq.format;
 
+import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
+import com.ibm.mq.headers.MQMD;
 import com.ibm.mq.pcf.MQCFBS;
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFMessage;
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 
 import static com.ibm.mq.constants.MQConstants.*;
+import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 
 /**
  * codeunited.ru
@@ -29,7 +32,7 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
 
     @SuppressWarnings("unchecked")
     @Override
-    public String formatPCFMessage(PCFMessage pcfMessage) {
+    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
 
         final StringBuffer buffer = new StringBuffer();
 
@@ -40,6 +43,8 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
 
         buffer.append(String.format("Command: %d\n", pcfMessage.getCommand()));
         buffer.append(String.format("Parameters count: %d\n", paramCount));
+        buffer.append(String.format("Correlation ID: %s\n", bytesToHex(mqMessage.correlationId)));
+        buffer.append(String.format("Sequence number %s\n", decodeValue(pcfMessage.getParameter(MQIACF_SEQUENCE_NUMBER))));
 
         final Enumeration<PCFParameter> parametersEnum = pcfMessage.getParameters();
         final StringBuffer parametersBuffer = formatParameters(parametersEnum, 1);

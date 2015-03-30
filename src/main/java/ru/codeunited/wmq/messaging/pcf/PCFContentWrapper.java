@@ -22,7 +22,7 @@ public class PCFContentWrapper {
     }
 
     protected String decodedParameter(int code) {
-        return PCFUtils.decodedParameter(content, code);
+        return PCFUtilService.decodedParameter(content, code);
     }
 
     protected Integer decodedParameterAsInt(int code) {
@@ -42,7 +42,7 @@ public class PCFContentWrapper {
     }
 
     protected Object decodeParameterRaw(int code) {
-        return PCFUtils.parameterOf(content, code).getValue();
+        return PCFUtilService.parameterOf(content, code).getValue();
     }
 
     protected List<PCFParameter> getParamaters() {

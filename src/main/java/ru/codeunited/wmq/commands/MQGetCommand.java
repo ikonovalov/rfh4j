@@ -6,16 +6,14 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.handler.*;
-import ru.codeunited.wmq.messaging.MQOperation;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import java.io.IOException;
 
-import static ru.codeunited.wmq.RFHConstants.OPT_HANDLER;
-import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
-import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru
@@ -23,8 +21,6 @@ import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
  * Created by ikonovalov on 17.11.14.
  */
 public class MQGetCommand extends QueueCommand {
-
-    public static final String GET_OPERATION_NAME = "GET";
 
     /**
      * Check input context options and raise IncompatibleOptionsException if something wrong.
@@ -84,7 +80,7 @@ public class MQGetCommand extends QueueCommand {
         };
 
         console.createTable(header)
-                .append(String.valueOf(0), MQOperation.MQGET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                .append(String.valueOf(0), MQXFOperation.MQXF_GET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
                 .make();
     }
 
@@ -95,7 +91,7 @@ public class MQGetCommand extends QueueCommand {
         final MessageEvent event = new MessageEvent(eventSource);
         event.setMessageIndex(messageIndex);
         event.setMessage(message);
-        event.setOperation(MQOperation.MQGET);
+        event.setOperation(MQXFOperation.MQXF_GET);
 
         final HandlerLookupService lookupService = new HandlerLookupService(executionContext, console);
 
