@@ -2,12 +2,13 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQMessage;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
-import static com.ibm.mq.constants.MQConstants.MQPER_PERSISTENT;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru

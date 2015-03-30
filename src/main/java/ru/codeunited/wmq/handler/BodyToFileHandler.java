@@ -20,7 +20,7 @@ import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
-public class BodyToFileHandler extends CommonMessageHandler<File> {
+public class BodyToFileHandler extends CommonMessageHander<File> {
 
     private static final TableColumnName[] TABLE_HEADER = {
             TableColumnName.INDEX,

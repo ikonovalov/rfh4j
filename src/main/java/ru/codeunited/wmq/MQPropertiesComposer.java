@@ -1,9 +1,15 @@
 package ru.codeunited.wmq;
 
+import com.ibm.mq.constants.CMQC;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
+import static ru.codeunited.wmq.RFHConstants.OPT_CONFIG;
 
 /**
  * codeunited.ru
@@ -63,7 +69,7 @@ public class MQPropertiesComposer {
      * @param properties
      * @return
      */
-    public static Properties checkCompatibility(Properties properties) {
+    public final static Properties checkCompatibility(Properties properties) {
         return properties;
     }
 }

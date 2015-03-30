@@ -3,10 +3,13 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.cli.ConsoleTable;
+import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.handler.*;
+import ru.codeunited.wmq.messaging.MQOperation;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageProducerImpl;
-import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -52,7 +55,7 @@ public class MQPutCommand extends QueueCommand {
                 final MessageEvent event = new MessageEvent(eventSource);
                 event.setMessageIndex(sentIndex);
                 event.setMessage(sentMessage);
-                event.setOperation(MQXFOperation.MQXF_PUT);
+                event.setOperation(MQOperation.MQPUT);
 
                 // publish event
                 MessageHandler handler = new PrintStreamHandler(ctx, getConsoleWriter());

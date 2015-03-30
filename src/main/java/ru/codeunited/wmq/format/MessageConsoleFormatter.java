@@ -8,10 +8,9 @@ import java.io.IOException;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
- * Created by ikonovalov on 27.03.15.
+ * Created by ikonovalov on 02.02.15.
  */
-public interface FormatterFactory {
+public interface MessageConsoleFormatter<T> {
 
-    MessageFormatter formatterFor(MQMessage message) throws MQException, IOException;
-
+    T format() throws IOException, MQException;
 }

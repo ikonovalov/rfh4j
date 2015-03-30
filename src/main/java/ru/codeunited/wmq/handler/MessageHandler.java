@@ -1,5 +1,7 @@
 package ru.codeunited.wmq.handler;
 
+import com.ibm.mq.MQException;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
