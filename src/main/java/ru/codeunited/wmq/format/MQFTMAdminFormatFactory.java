@@ -3,6 +3,8 @@ package ru.codeunited.wmq.format;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
+import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.handler.MessageEvent;
 
 import java.io.IOException;
 import static com.ibm.mq.constants.MQConstants.*;
@@ -12,17 +14,28 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 08.02.15.
  */
-public class MQFTMAdminFormatFactory {
+class MQFTMAdminFormatFactory implements FormatterFactory {
 
-    public MessageConsoleFormatter formatterFor(MQMessage message) throws MQException, IOException {
+    private final ExecutionContext context;
+
+    MQFTMAdminFormatFactory(ExecutionContext context) {
+        this.context = context;
+    }
+
+    @Override
+    public MQPCFMessageAbstractFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final PCFMessage pcfMessage = new PCFMessage(message);
         final int commandCode = pcfMessage.getCommand();
+        final MQPCFMessageAbstractFormatter formatter;
         switch (commandCode) {
             case MQCMD_ACTIVITY_TRACE:
-                return new MQFTMAdminActivityTraceFormatter(pcfMessage);
+                formatter = new MQFTMAdminActivityTraceFormatter();
+                break;
             default:
-                return new MQFTMAdminCommonFormatter(pcfMessage);
+                formatter = new MQFTMAdminCommonFormatter();
         }
+        formatter.attach(context);
+        return formatter;
     }
 
 }

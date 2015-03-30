@@ -17,7 +17,7 @@ import static com.ibm.mq.constants.CMQC.MQFMT_STRING;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
-public class PrintStreamHandler extends CommonMessageHander<Void> {
+public class PrintStreamHandler extends CommonMessageHandler<Void> {
 
     private static final TableColumnName[] TABLE_HEADER = {
             TableColumnName.INDEX,
@@ -39,7 +39,7 @@ public class PrintStreamHandler extends CommonMessageHander<Void> {
         final MQMessage message = messageEvent.getMessage();
         try {
             switch (messageFormat) {
-                case MQFMT_STRING:
+                case MQFMT_STRING: /* attach info table before body content output */
                     getConsole().createTable(TABLE_HEADER)
                             .append(
                                     String.valueOf(messageEvent.getMessageIndex()),
@@ -52,7 +52,8 @@ public class PrintStreamHandler extends CommonMessageHander<Void> {
                             ).make();
                 case MQFMT_ADMIN:
                 default:
-                    final String formatterOutput = (String) MessageConsoleFormatFactory.formatterFor(message, String.class).format();
+                    final MessageConsoleFormatFactory factory = new MessageConsoleFormatFactory(getContext());
+                    final String formatterOutput = (String) factory.formatterFor(message).format(message);
                     if (formatterOutput.length() > 0) {
                         getConsole().writeln(formatterOutput).flush();
                     }
