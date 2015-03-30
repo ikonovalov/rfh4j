@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.MQCFBS;
 import com.ibm.mq.pcf.PCFContent;
@@ -18,9 +19,9 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 25.03.15.
  */
-public final class PCFUtils {
+public final class PCFUtilService {
 
-    private PCFUtils() {
+    private PCFUtilService() {
 
     }
 
@@ -82,15 +83,28 @@ public final class PCFUtils {
         return value;
     }
 
-    public static ActivityTraceCommand activityCommandFor(PCFMessage message) {
-        String commandLevel = decodedParameter(message, MQIA_COMMAND_LEVEL);
+    /**
+     * Create ActivityTraceCommand from PCFMessage and MQMessage.
+     * @param pcfMessage
+     * @param mqMessage
+     * @return
+     */
+    public static ActivityTraceCommand activityCommandFor(PCFMessage pcfMessage, MQMessage mqMessage) {
+        String commandLevel = decodedParameter(pcfMessage, MQIA_COMMAND_LEVEL);
+        PCFMessageWrapper wrapper;
         switch(commandLevel) { /* this is WMQ version switcher */
             case "750":
-                return new ActivityTraceCommand750(message);
+                wrapper = new ActivityTraceCommand750(pcfMessage);
+                break;
             case "800":
-                return new ActivityTraceCommand800(message);
+                wrapper = new ActivityTraceCommand800(pcfMessage);
+                break;
             default:
                 throw new WrongTypeException("Unsupported command level for an activity command. Available 750, 800 but got " + commandLevel);
         }
+        // perform missed augmentation
+        wrapper.setFormat(mqMessage.format);
+        wrapper.setCorrelationIdBytes(mqMessage.correlationId);
+        return (ActivityTraceCommand) wrapper;
     }
 }

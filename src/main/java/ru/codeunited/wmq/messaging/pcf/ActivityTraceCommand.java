@@ -9,6 +9,9 @@ import java.util.List;
  * Created by ikonovalov on 25.03.15.
  */
 public interface ActivityTraceCommand {
+
+    String getCorrelationId();
+
     Date getStartDate();
 
     String getStartDateRaw();

@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.format;
 
+import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.messaging.pcf.*;
 
@@ -30,13 +31,13 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
      */
     static final class OperationFilter implements Filter {
 
-        private final Set<MQXFOperations> WHITE_LIST;
+        private final Set<MQXFOperation> WHITE_LIST;
 
         OperationFilter() {
-            final Set<MQXFOperations> whiteList = new HashSet<>();
-            whiteList.add(MQXFOperations.MQXF_GET);
-            whiteList.add(MQXFOperations.MQXF_PUT);
-            whiteList.add(MQXFOperations.MQXF_PUT1);
+            final Set<MQXFOperation> whiteList = new HashSet<>();
+            whiteList.add(MQXFOperation.MQXF_GET);
+            whiteList.add(MQXFOperation.MQXF_PUT);
+            whiteList.add(MQXFOperation.MQXF_PUT1);
             WHITE_LIST = Collections.unmodifiableSet(whiteList);
         }
 
@@ -51,13 +52,15 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
 
     @Override
-    public String formatPCFMessage(PCFMessage pcfMessage) {
+    public String formatPCFMessage(PCFMessage pcfMessage, MQMessage mqMessage) {
 
         final StringBuilder buffer = new StringBuilder(BUFFER_2Kb);
 
-        ActivityTraceCommand activityCommand = PCFUtils.activityCommandFor(pcfMessage);
+        ActivityTraceCommand activityCommand = PCFUtilService.activityCommandFor(pcfMessage, mqMessage);
 
-        buffer.append(String.format("TRR:[%s -> %s] QM:[%s] APP:[%s %d] USR:[%s] CHL:[%s:%s]\n",
+        buffer.append(String.format("COR[%s][%d] TRR[%s -> %s] QM[%s] APP[%s %d] USR[%s] CHL[%s:%s]\n",
+                activityCommand.getCorrelationId(),
+                activityCommand.getSequenceNumber(),
                 activityCommand.getStartDateRaw(), /* TRace Record - TRR time*/
                 activityCommand.getStartDateRaw(),
                 activityCommand.getQueueManager(),
@@ -77,13 +80,13 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
                 continue;
             }
 
-            buffer.append(String.format("\topr:[%s] [%s] otm:[%s] ",
+            buffer.append(String.format("\topr[%s] [%s] otm[%s] ",
                     record.getOperation().name(),
                     record.getCompCode(),
                     record.getOperationDateISO()
 
             ));
-            if (record.getOperation().anyOf(MQXFOperations.MQXF_GET, MQXFOperations.MQXF_PUT)) {
+            if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
                 MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
                 buffer.append(String.format("obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
                         //coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),

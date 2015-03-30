@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public interface ActivityTraceRecord {
 
-    MQXFOperations getOperation();
+    MQXFOperation getOperation();
 
     Integer getOperationAsInt();
 

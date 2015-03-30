@@ -1,7 +1,9 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
+import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
+import ru.codeunited.wmq.messaging.MessageTools;
 import ru.codeunited.wmq.messaging.pcf.ActivityTraceCommand;
 import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
 import ru.codeunited.wmq.messaging.pcf.PCFMessageWrapper;
@@ -36,6 +38,11 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
         if (!MQ_750.equals(commandLevel)) {
             throw new WrongTypeException("This command has different level. Required 750 but got " + commandLevel);
         }
+    }
+
+    @Override
+    public String getCorrelationId() {
+        return MessageTools.bytesToHex(super.getCorrelationIdBytes());
     }
 
     @Override

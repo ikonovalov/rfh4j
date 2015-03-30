@@ -6,10 +6,8 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.RFHConstants;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
