@@ -12,17 +12,7 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.02.15.
  */
-public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAwareFormatter implements PCFMessageFormatter<T>{
-
-    /**
-     * Used in a format() method with PCFMessage.
-     *
-     * @param message - parsed PCFMessage
-     * @param mqMessage - original MQMessage
-     * @return
-     */
-    @Override
-    public abstract T format(PCFMessage message, MQMessage mqMessage);
+public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAwareFormatter implements PCFMessageFormatter<T>, MessageFormatter<T>{
 
     @Override
     public final T format(MQMessage message) throws IOException, MQException {

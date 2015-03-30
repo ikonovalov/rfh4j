@@ -8,7 +8,7 @@ import com.ibm.mq.pcf.PCFMessage;
  * konovalov84@gmail.com
  * Created by ikonovalov on 30.03.15.
  */
-public interface PCFMessageFormatter<T> extends MessageFormatter<T> {
+public interface PCFMessageFormatter<T> {
 
     T format(PCFMessage pcfMessage, MQMessage mqMessage);
 }
