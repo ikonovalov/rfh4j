@@ -4,10 +4,7 @@ import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.messaging.pcf.*;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * codeunited.ru
@@ -22,33 +19,11 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
         super();
     }
 
-    interface Filter {
-        boolean allowed(ActivityTraceRecord record);
-    }
-
-    /**
-     * Filter for allowed operations of MQXF.
-     */
-    static final class OperationFilter implements Filter {
-
-        private final Set<MQXFOperation> WHITE_LIST;
-
-        OperationFilter() {
-            final Set<MQXFOperation> whiteList = new HashSet<>();
-            whiteList.add(MQXFOperation.MQXF_GET);
-            whiteList.add(MQXFOperation.MQXF_PUT);
-            whiteList.add(MQXFOperation.MQXF_PUT1);
-            WHITE_LIST = Collections.unmodifiableSet(whiteList);
-        }
-
-        @Override
-        public boolean allowed(ActivityTraceRecord checkIt) {
-            return WHITE_LIST.contains(checkIt.getOperation());
-        }
-
-    }
-
-    private final static Filter OPERATION_FILTER = new OperationFilter();
+    private final static ActivityRecordFilter OPERATION_FILTER = new ActivityRecordXFOperationFilter(
+            MQXFOperation.MQXF_GET,
+            MQXFOperation.MQXF_PUT,
+            MQXFOperation.MQXF_PUT1
+    );
 
 
     @Override
