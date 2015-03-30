@@ -157,26 +157,32 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
         return MQFMT_XMIT_Q_HEADER.equals(decodedParameter(MQCACH_FORMAT_NAME));
     }
 
+    @Override
     public String getXMITMessageId() {
         return decodedParameter(MQBACF_XQH_MSG_ID);
     }
 
+    @Override
     public String getXMITCorrelId() {
         return decodedParameter(MQBACF_XQH_CORREL_ID);
     }
 
+    @Override
     public String getXMITPutDate() {
         return decodedParameter(MQCACF_XQH_PUT_DATE);
     }
 
+    @Override
     public String getXMITPutTime() {
         return decodedParameter(MQCACF_XQH_PUT_TIME);
     }
 
+    @Override
     public String getXMITRemoteQueueName() {
         return decodedParameter(MQCACF_XQH_REMOTE_Q_NAME);
     }
 
+    @Override
     public String getXMITRemoteQueueMananger() {
         return decodedParameter(MQCACF_XQH_REMOTE_Q_MGR);
     }
