@@ -52,7 +52,7 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
 
     @Override
-    public String formatPCFMessage(PCFMessage pcfMessage, MQMessage mqMessage) {
+    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
 
         final StringBuilder buffer = new StringBuilder(BUFFER_2Kb);
 

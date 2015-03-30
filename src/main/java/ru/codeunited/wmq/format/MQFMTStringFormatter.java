@@ -9,7 +9,7 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFMTStringFormatter extends MQFMTContextAwareFormatter {
+public class MQFMTStringFormatter extends MQFMTContextAwareFormatter implements MessageFormatter<String> {
 
     private static final String BORDER = "<--------------MQFMT_STRING-------------------->";
 

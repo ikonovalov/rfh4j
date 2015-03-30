@@ -10,7 +10,7 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 03.02.15.
  */
-public class MQMDFormatter extends MQFMTContextAwareFormatter<String> {
+public class MQMDFormatter extends MQFMTContextAwareFormatter implements MessageFormatter<String> {
 
     private static final String BOARDER = "<------------------MQMD--------------------------->";
 

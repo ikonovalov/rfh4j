@@ -12,23 +12,24 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.02.15.
  */
-public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAwareFormatter<T> {
+public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAwareFormatter implements PCFMessageFormatter<T>{
 
     /**
      * Used in a format() method with PCFMessage.
      *
-     * @param message
-     * @param mqMessage
+     * @param message - parsed PCFMessage
+     * @param mqMessage - original MQMessage
      * @return
      */
-    public abstract T formatPCFMessage(PCFMessage message, MQMessage mqMessage);
+    @Override
+    public abstract T format(PCFMessage message, MQMessage mqMessage);
 
     @Override
     public final T format(MQMessage message) throws IOException, MQException {
         resetMQMessagePosition(message); /* going back or CC=2 and RC=6114 */
         final PCFMessage pcfMessage = new PCFMessage(message);
         resetMQMessagePosition(message);
-        return formatPCFMessage(pcfMessage, message);
+        return format(pcfMessage, message);
     }
 
     private static void resetMQMessagePosition(MQMessage message) throws EOFException {

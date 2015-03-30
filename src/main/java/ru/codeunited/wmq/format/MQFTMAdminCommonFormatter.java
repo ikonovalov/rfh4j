@@ -32,7 +32,7 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
 
     @SuppressWarnings("unchecked")
     @Override
-    public String formatPCFMessage(PCFMessage pcfMessage, MQMessage mqMessage) {
+    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
 
         final StringBuffer buffer = new StringBuffer();
 
