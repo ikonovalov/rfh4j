@@ -1,5 +1,7 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import java.util.Date;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -62,6 +64,10 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
     String getPutDate();
 
     String getPutTime();
+
+    Date getPutDateTime();
+
+    String getPutDateTimeISO();
 
     boolean isTransmissionMessage();
 }
