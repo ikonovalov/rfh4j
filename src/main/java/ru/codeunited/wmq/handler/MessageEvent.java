@@ -1,7 +1,7 @@
 package ru.codeunited.wmq.handler;
 
 import com.ibm.mq.MQMessage;
-import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
+import ru.codeunited.wmq.messaging.MQOperation;
 
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 
@@ -16,7 +16,7 @@ public class MessageEvent {
 
     private MQMessage message;
 
-    private MQXFOperation operation = MQXFOperation.MQXF_UNKNOWN;
+    private MQOperation operation = MQOperation.UNKNOWN;
 
     private final EventSource eventSource;
 
@@ -65,11 +65,11 @@ public class MessageEvent {
         this.message = message;
     }
 
-    public void setOperation(MQXFOperation operation) {
+    public void setOperation(MQOperation operation) {
         this.operation = operation;
     }
 
-    public MQXFOperation getOperation() {
+    public MQOperation getOperation() {
         return operation;
     }
 

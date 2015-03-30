@@ -6,7 +6,7 @@
 
     <groupId>ru.codeunited.wmq</groupId>
     <artifactId>rfh4j</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -82,27 +82,10 @@
             <version>1.2</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.0</version>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.1.13</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>revision</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -127,7 +110,6 @@
                 <version>2.4.1</version>
                 <!-- The configuration of the plugin -->
                 <configuration>
-                    <finalName>${project.build.finalName}-${git.branch}</finalName>
                     <!-- Specifies the configuration file of the assembly plugin -->
                     <descriptors>
                         <descriptor>src/main/assembly/assembly.xml</descriptor>

@@ -10,8 +10,6 @@ import java.util.logging.Logger;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_CONFIG;
 
-import static com.ibm.mq.constants.MQConstants.*;
-
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -48,7 +46,7 @@ public class MQFilePropertiesComposer extends MQPropertiesComposer {
             fileProperties.load(propertiesStream);
 
             /* fix port issue (String -> Integer) */
-            fileProperties.put(PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(PORT_PROPERTY)));
+            fileProperties.put(CMQC.PORT_PROPERTY, Integer.valueOf(fileProperties.getProperty(CMQC.PORT_PROPERTY)));
         } catch (IOException e) {
             LOG.severe("config parameter is passed but we got error [" + e.getMessage() + "]");
         }

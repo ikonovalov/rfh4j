@@ -26,15 +26,13 @@ public class CLIExecutionContext extends ExecutionContext {
         return commandLine.hasOption(opt);
     }
 
-    @Override
+
     public String getOption(char option) {
         return commandLine.getOptionValue(option);
     }
 
-    @Override
     public String getOption(String option) {
-        String optionValue = commandLine.getOptionValue(option);
-        return optionValue != null ? optionValue.trim() : null;
+        return commandLine.getOptionValue(option);
     }
 
     @Override

@@ -3,16 +3,21 @@ package ru.codeunited.wmq;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
+import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import ru.codeunited.wmq.commands.CommandGeneralException;
+import ru.codeunited.wmq.commands.IncompatibleOptionsException;
+import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
 
 import static com.ibm.mq.constants.CMQC.MQMO_MATCH_MSG_ID;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
 /**
  * codeunited.ru
@@ -69,6 +74,8 @@ public class MessageProducerTest extends QueueingCapability {
                 assertThat(inspector.depth(), is(messageCount));
             }
         });
+
+        cleanUp();
     }
 
     @After

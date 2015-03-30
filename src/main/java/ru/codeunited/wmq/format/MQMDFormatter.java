@@ -10,16 +10,16 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 03.02.15.
  */
-public class MQMDFormatter extends MQFMTContextAwareFormatter implements MessageFormatter<String> {
+public class MQMDFormatter extends MQFMTAbstractrFormatter<String> {
 
     private static final String BOARDER = "<------------------MQMD--------------------------->";
 
-    MQMDFormatter() {
-        super();
+    protected MQMDFormatter(MQMessage message) {
+        super(message);
     }
 
     @Override
-    public String format(final MQMessage message) throws IOException, MQException {
+    public String format() throws IOException, MQException {
         final StringBuffer buffer = new StringBuffer();
         boarder(buffer);
         buffer.append(String.format("Format: %s\n", message.format));

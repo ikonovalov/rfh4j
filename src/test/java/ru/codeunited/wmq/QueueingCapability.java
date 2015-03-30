@@ -26,8 +26,8 @@ public abstract class QueueingCapability extends CLITestSupport {
 
     protected static final int MESSAGE_ID_LENGTH = 24;
 
-    public interface QueueWork {
-        void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
+    public static interface QueueWork {
+        public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
     }
 
     /**

@@ -10,6 +10,7 @@ import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -36,7 +37,8 @@ public class MQInspectCommand extends QueueCommand {
             final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
             final String filter = ctx.getOption("lslq", "*");
             final List<Queue> queues = managerInspector.selectLocalQueues(filter);
-            for (final Queue next : queues) {
+            for (Iterator<Queue> iterator = queues.iterator(); iterator.hasNext(); ) {
+                final Queue next = iterator.next();
                 table.append(
                         next.getName(),                                 // queue name
                         next.getDepth() + "/" + next.getMaxDepth(),     // current depth / max depth
