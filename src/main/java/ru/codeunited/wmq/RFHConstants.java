@@ -23,4 +23,6 @@ public final class RFHConstants {
 
     public static final String OPT_WAIT = "wait";
 
+    public static final String OPT_FORMATTER = "formatter";
+
 }

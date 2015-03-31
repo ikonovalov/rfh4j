@@ -9,19 +9,19 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFMTStringFormatter extends MQFMTAbstractrFormatter {
+public class MQFMTStringFormatter extends MQFMTContextAwareFormatter<String> {
 
     private static final String BORDER = "<--------------MQFMT_STRING-------------------->";
 
-    protected MQFMTStringFormatter(MQMessage message) {
-        super(message);
+    protected MQFMTStringFormatter() {
+        super();
     }
 
     @Override
-    public String format() throws IOException {
+    public String format(final MQMessage message) throws IOException {
         message.seek(0); // going to begining of message
         final int size = message.getDataLength(); // all remaining data size
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer(size);
         buffer.append(String.format("Remain %d bytes", size));
         boarder(buffer);
         buffer.append(message.readStringOfByteLength(message.getDataLength()));
