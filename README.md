@@ -4,9 +4,36 @@ Try to make something like RFHUtil with Java and Blackjack.
 
 __Examples:__
 
-* ./rfh4j.sh --config default.properties --dstq Q.APPLICATION_OUT -p ~/myfile.xml | awk '{print $4}'
-* ./rfh4j.sh -Q DEFQM -c JVM.DEF.SVRCONN --dstq Q.APPLICATION_OUT -t someText
-* ./rfh4j.sh --config default.properties --dstq Q1 -s < ~/developer/projects/MQCluster/src/spring.xml
+* Connection configuration:
+    * Use default.properties: `./rfh4j.sh` (nothing else, it used by default)
+    * Specify non default config: `./rfh4j.sh --config myconn.properties`
+    * Use CLI: `./rfh4j.sh --hostname=mqhome.mydomain.org --port=1414 -Q DEFQM --userID=mqgod --password=123 -c JVM.DEF.SVRCONN`
+    * Combination: `./rfh4j.sh --config myconn.properties --hostname=mqhome.mydomain.org -c JVM.DEF.SVRCONN`
+    * Connect in binding mode: `--transport=binding`
+    * Connect in client mode (default): `--transport=client`
+     
+* Get messages
+    * Get(--srcq) and print to console(--stream) body to console `--srcq RFH.QTEST.QGENERAL1 --stream` 
+    * Get, print with wait (--wait milsec) `--srcq RFH.QTEST.QGENERAL1 --stream --wait 5000`
+    * Get, wait and save to file(--payload) (name is msgID) `--srcq RFH.QTEST.QGENERAL1 --wait 5000 --payload /tmp/`
+    
+* Put message
+    * Put (--dstq) text (--text) message: `--dstq Q.APPLICATION_OUT --text someText`
+    * Put file (-p, --payload) as payload: `--dstq Q.APPLICATION_OUT -p ~/myfile.xml`
+    * Put message as redirected stream(-s, --stream) `--config default.properties --dstq Q.APPLICATION_OUT -s < ~/developer/projects/MQCluster/src/spring.xml`
+    * Put file as payload 100 times (--times): `--dstq Q.APPLICATION_OUT -p ~/myfile.xml --times 100`
+    
+* Activity log (MQ online monitoring)
+    * Listen with redirect stream: `--srcq SYSTEM.ADMIN.TRACE.ACTIVITY.QUEUE --stream --limit -1 > /tmp/online.log`
+    * Get 50 records with spec. formatter: `--srcq SYSTEM.ADMIN.TRACE.ACTIVITY.QUEUE --stream --limit 50 --formatter=ru.codeunited.wmq.format.MQFTMAdminCommonFormatter`
+
+* Inquiry
+    * Get queues status without filter (--lslq)`./rfh4j.sh --lslq`
+    * Get queues status with filter (--lslq *wildcard*)`./rfh4j.sh --lslq TESTQ.*`
+
+
+
+
 <pre><code>
 usage: rfh4j [--all] [-c <channel>] [--config <config_file>] [--dstq <queue>] [--formatter <arg>] [-h] [-H <hostname or IP>] [--handler <handler.class> | -p <file> | -s | -t <text>] [--limit <arg>] [--lslq <pattern>] [-P <port>]  [--password <user password>] [-Q <queue manager>]  [--srcq <queue>]
        [--times <arg>] [--transport <binding|client>] [-u <user id>] [-v <arg>] [-w <milliseconds>]
