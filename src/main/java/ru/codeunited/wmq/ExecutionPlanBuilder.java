@@ -10,5 +10,5 @@ import ru.codeunited.wmq.commands.MissedParameterException;
  */
 public interface ExecutionPlanBuilder {
 
-    public CommandChain buildChain() throws MissedParameterException;
+    CommandChain buildChain() throws MissedParameterException;
 }

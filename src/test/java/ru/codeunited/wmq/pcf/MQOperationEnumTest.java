@@ -1,7 +1,7 @@
 package ru.codeunited.wmq.pcf;
 
 import org.junit.Test;
-import ru.codeunited.wmq.messaging.pcf.MQXFOperations;
+import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
@@ -16,7 +16,7 @@ public class MQOperationEnumTest {
     @Test
     public void lookupCycling() {
         for (int z = 1; z <=35; z++) {
-            MQXFOperations operations = MQXFOperations.lookup(z);
+            MQXFOperation operations = MQXFOperation.lookup(z);
             assertThat(
                     String.format("MQOperation code lookup failed. Query for %d but got %d", z, operations.code()),
                             z, equalTo(operations.code())
@@ -26,16 +26,17 @@ public class MQOperationEnumTest {
 
     @Test
     public void lookupByConstants() {
-        assertThat(MQXFOperations.lookup(1), is(MQXFOperations.MQXF_INIT));
-        assertThat(MQXFOperations.lookup(-1), is(MQXFOperations.MQXF_UNKNOWN));
-        assertThat(MQXFOperations.lookup(36), is(MQXFOperations.MQXF_UNKNOWN));
-        assertThat(MQXFOperations.lookup(10), is(MQXFOperations.MQXF_GET));
-        assertThat(MQXFOperations.lookup(35), is(MQXFOperations.MQXF_AXUNREG));
+        assertThat(MQXFOperation.lookup(1), is(MQXFOperation.MQXF_INIT));
+        assertThat(MQXFOperation.lookup(-1), is(MQXFOperation.MQXF_UNKNOWN));
+        assertThat(MQXFOperation.lookup(36), is(MQXFOperation.MQXF_UNKNOWN));
+        assertThat(MQXFOperation.lookup(10), is(MQXFOperation.MQXF_GET));
+        assertThat(MQXFOperation.lookup(35), is(MQXFOperation.MQXF_AXUNREG));
     }
 
     @Test(expected = NullPointerException.class)
     public void lookupNullAutoBoxed() {
         final Integer nulled = null;
-        assertThat(MQXFOperations.lookup(nulled), is(MQXFOperations.MQXF_UNKNOWN));
+        //noinspection ConstantConditions
+        assertThat(MQXFOperation.lookup(nulled), is(MQXFOperation.MQXF_UNKNOWN));
     }
 }

@@ -7,13 +7,14 @@ import ru.codeunited.wmq.ExecutionContext;
 import java.io.IOException;
 
 /**
+ * Formatter should be stateless and thread-safe!
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public interface MessageConsoleFormatter<T> {
+public interface MessageFormatter<T> {
 
-    T format() throws IOException, MQException;
+    T format(MQMessage message) throws IOException, MQException;
 
     void attach(ExecutionContext context);
 }

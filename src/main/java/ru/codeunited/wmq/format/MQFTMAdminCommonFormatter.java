@@ -1,15 +1,19 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQException;
+import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.pcf.*;
+import com.ibm.mq.headers.MQMD;
+import com.ibm.mq.pcf.MQCFBS;
+import com.ibm.mq.pcf.MQCFGR;
+import com.ibm.mq.pcf.PCFMessage;
+import com.ibm.mq.pcf.PCFParameter;
 
-import static com.ibm.mq.constants.MQConstants.*;
-
-import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
+
+import static com.ibm.mq.constants.MQConstants.*;
+import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
 
 /**
  * codeunited.ru
@@ -18,16 +22,18 @@ import java.util.Enumeration;
  */
 public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
-    public MQFTMAdminCommonFormatter(PCFMessage pcfMessage) {
-        super(pcfMessage);
+    public MQFTMAdminCommonFormatter() {
+        super();
     }
 
     private void boarder(final StringBuffer buffer) {
         buffer.append("<--------------MQFTM_ADMIN------------------------>").append('\n');
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public String format() throws IOException, MQException {
+    public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
+
         final StringBuffer buffer = new StringBuffer();
 
         // print MQFTM_ADMIN
@@ -37,6 +43,8 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
 
         buffer.append(String.format("Command: %d\n", pcfMessage.getCommand()));
         buffer.append(String.format("Parameters count: %d\n", paramCount));
+        buffer.append(String.format("Correlation ID: %s\n", bytesToHex(mqMessage.correlationId)));
+        buffer.append(String.format("Sequence number %s\n", decodeValue(pcfMessage.getParameter(MQIACF_SEQUENCE_NUMBER))));
 
         final Enumeration<PCFParameter> parametersEnum = pcfMessage.getParameters();
         final StringBuffer parametersBuffer = formatParameters(parametersEnum, 1);

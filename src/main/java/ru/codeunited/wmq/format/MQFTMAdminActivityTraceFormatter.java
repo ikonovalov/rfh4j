@@ -1,67 +1,37 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQException;
-import com.ibm.mq.pcf.MQCFGR;
-import com.ibm.mq.pcf.PCFMessage;
-import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.pcf.*;
 
-import java.io.IOException;
-import java.util.*;
-
-import static com.ibm.mq.constants.MQConstants.*;
-import static ru.codeunited.wmq.messaging.pcf.PCFUtils.*;
+import java.util.List;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormatter<String> {
+public class MQFTMAdminActivityTraceFormatter extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
 
-    MQFTMAdminActivityTraceFormatter(PCFMessage pcfMessage) {
-        super(pcfMessage);
+    MQFTMAdminActivityTraceFormatter() {
+        super();
     }
 
-
-    interface Filter {
-        boolean allowed(PCFParameter code);
-    }
-
-    /**
-     * Filter for allowed operations of MQXF.
-     */
-    static final class OperationFilter implements Filter {
-
-        private final Set<Integer> WHITE_LIST;
-
-        OperationFilter() {
-            final Set<Integer> whiteList = new HashSet<>();
-            whiteList.add(MQXF_PUT);
-            whiteList.add(MQXF_PUT1);
-            whiteList.add(MQXF_GET);
-            WHITE_LIST = Collections.unmodifiableSet(whiteList);
-        }
-
-        @Override
-        public boolean allowed(PCFParameter checkIt) {
-            return WHITE_LIST.contains(checkIt.getValue());
-        }
-
-    }
-
-    private final static Filter OPERATION_FILTER = new OperationFilter();
+    private final static ActivityRecordFilter OPERATION_FILTER = new ActivityRecordXFOperationFilter(
+            MQXFOperation.MQXF_GET,
+            MQXFOperation.MQXF_PUT,
+            MQXFOperation.MQXF_PUT1
+    );
 
 
     @Override
-    public String format() throws IOException, MQException {
-        final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
+    public String format(final ActivityTraceCommand activityCommand) {
 
-        ActivityTraceCommand activityCommand = PCFUtils.activityCommandFor(pcfMessage);
+        final StringBuilder buffer = new StringBuilder(BUFFER_2Kb);
 
-        buffer.append(String.format("TRR:[%s -> %s] QM:[%s] APP:[%s %d] USR:[%s] CHL:[%s:%s]\n",
+        buffer.append(String.format("COR[%s][%d] TRR[%s -> %s] QM[%s] APP[%s %d] USR[%s] CHL[%s:%s]\n",
+                activityCommand.getCorrelationId(),
+                activityCommand.getSequenceNumber(),
                 activityCommand.getStartDateRaw(), /* TRace Record - TRR time*/
                 activityCommand.getStartDateRaw(),
                 activityCommand.getQueueManager(),
@@ -76,26 +46,30 @@ public class MQFTMAdminActivityTraceFormatter extends MQPCFMessageAbstractFormat
 
         List<ActivityTraceRecord> records = activityCommand.getRecords();
         for (ActivityTraceRecord record : records) {
-            if(record.isSuccess()) {
-                buffer.append(String.format("\topr:[%s] otm:[%s] ",
-                        record.getOperation().name(),
-                        record.getOperationDateISO()
 
-                        ));
-                if (record.getOperation().anyOf(MQXFOperations.MQXF_GET, MQXFOperations.MQXF_PUT)) {
-                    MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
-                    buffer.append(String.format("obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
-                            //coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
-                            moveRecord.getResolvedLocalQueueName(),
-                            moveRecord.getMessageId(),
-                            moveRecord.getCorrelId(),
-                            moveRecord.getMessageLength(),
-                            moveRecord.getBodyAsString()
-                    ));
-                }
-                buffer.append('\n');
-                allowOutput = true;
+            if (!OPERATION_FILTER.allowed(record)) { /* skip uninteresting operations */
+                continue;
             }
+
+            buffer.append(String.format("\topr[%s] [%s] otm[%s] ",
+                    record.getOperation().name(),
+                    record.getCompCode(),
+                    record.getOperationDateISO()
+
+            ));
+            if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
+                MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
+                buffer.append(String.format("obj:[%s] mid:[%s] cid:[%s] len:[%s] dat:[%s]",
+                        //coalesce(trace, MQCACF_OBJECT_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME, MQCACF_RESOLVED_LOCAL_Q_NAME),
+                        moveRecord.getResolvedLocalQueueName(),
+                        moveRecord.getMessageId(),
+                        moveRecord.getCorrelId(),
+                        moveRecord.getMessageLength(),
+                        moveRecord.getBodyAsString()
+                ));
+            }
+            buffer.append('\n');
+            allowOutput = true;
         }
 
         /*Enumeration<PCFParameter> parametersL1 = pcfMessage.getParameters();

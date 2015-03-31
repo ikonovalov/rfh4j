@@ -3,6 +3,10 @@ package ru.codeunited.wmq.messaging.pcf.mq750;
 import com.ibm.mq.pcf.MQCFGR;
 import ru.codeunited.wmq.messaging.pcf.MQXFMessageMoveRecord;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static com.ibm.mq.constants.CMQC.MQFMT_XMIT_Q_HEADER;
 import static com.ibm.mq.constants.CMQC.MQIA_CODED_CHAR_SET_ID;
 import static com.ibm.mq.constants.CMQCFC.*;
@@ -13,6 +17,10 @@ import static com.ibm.mq.constants.CMQCFC.*;
  * Created by ikonovalov on 26.03.15.
  */
 public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 implements MQXFMessageMoveRecord {
+
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmss");
+
+    private static final SimpleDateFormat TIME_REFORMATED = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     protected MQXFMessageMoveRecord750(MQCFGR parameter) {
         super(parameter);
@@ -118,6 +126,21 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
         return decodedParameter(MQCACF_PUT_TIME);
     }
 
+    @Override
+    public Date getPutDateTime() {
+        final String gluedPutDateTime = getPutDate() + ' ' + getPutTime();
+        try {
+            return TIME_FORMAT.parse(gluedPutDateTime);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public String getPutDateTimeISO() {
+        return TIME_REFORMATED.format(getPutDateTime());
+    }
+
     public Long getHighResolutionTime() {
         return Long.valueOf(decodedParameter(MQIAMO64_HIGHRES_TIME));
     }
@@ -134,26 +157,32 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
         return MQFMT_XMIT_Q_HEADER.equals(decodedParameter(MQCACH_FORMAT_NAME));
     }
 
+    @Override
     public String getXMITMessageId() {
         return decodedParameter(MQBACF_XQH_MSG_ID);
     }
 
+    @Override
     public String getXMITCorrelId() {
         return decodedParameter(MQBACF_XQH_CORREL_ID);
     }
 
+    @Override
     public String getXMITPutDate() {
         return decodedParameter(MQCACF_XQH_PUT_DATE);
     }
 
+    @Override
     public String getXMITPutTime() {
         return decodedParameter(MQCACF_XQH_PUT_TIME);
     }
 
+    @Override
     public String getXMITRemoteQueueName() {
         return decodedParameter(MQCACF_XQH_REMOTE_Q_NAME);
     }
 
+    @Override
     public String getXMITRemoteQueueMananger() {
         return decodedParameter(MQCACF_XQH_REMOTE_Q_MGR);
     }
