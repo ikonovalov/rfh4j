@@ -4,8 +4,11 @@ import org.junit.Test;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import static ru.codeunited.wmq.messaging.pcf.MQXFOperation.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -26,17 +29,27 @@ public class MQOperationEnumTest {
 
     @Test
     public void lookupByConstants() {
-        assertThat(MQXFOperation.lookup(1), is(MQXFOperation.MQXF_INIT));
-        assertThat(MQXFOperation.lookup(-1), is(MQXFOperation.MQXF_UNKNOWN));
-        assertThat(MQXFOperation.lookup(36), is(MQXFOperation.MQXF_UNKNOWN));
-        assertThat(MQXFOperation.lookup(10), is(MQXFOperation.MQXF_GET));
-        assertThat(MQXFOperation.lookup(35), is(MQXFOperation.MQXF_AXUNREG));
+        assertThat(lookup(1), is(MQXF_INIT));
+        assertThat(lookup(-1), is(MQXF_UNKNOWN));
+        assertThat(lookup(36), is(MQXF_UNKNOWN));
+        assertThat(lookup(10), is(MQXF_GET));
+        assertThat(lookup(35), is(MQXF_AXUNREG));
     }
 
     @Test(expected = NullPointerException.class)
     public void lookupNullAutoBoxed() {
         final Integer nulled = null;
         //noinspection ConstantConditions
-        assertThat(MQXFOperation.lookup(nulled), is(MQXFOperation.MQXF_UNKNOWN));
+        assertThat(lookup(nulled), is(MQXF_UNKNOWN));
+    }
+
+    @Test
+    public void anyOfSucess() {
+        assertTrue(MQXF_BEGIN.anyOf(MQXF_INIT, MQXF_AXREG, MQXF_BEGIN));
+    }
+
+    @Test
+    public void anyOfFailure() {
+        assertFalse(MQXF_BEGIN.anyOf(MQXF_INIT, MQXF_AXREG, MQXF_BACK));
     }
 }
