@@ -3,17 +3,17 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
+import ru.codeunited.wmq.handler.*;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
-import java.io.File;
 import java.io.IOException;
 
-import static ru.codeunited.wmq.messaging.MessageTools.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru
@@ -22,8 +22,6 @@ import static ru.codeunited.wmq.messaging.MessageTools.*;
  */
 public class MQGetCommand extends QueueCommand {
 
-    public static final String GET_OPERATION_NAME = "GET";
-
     /**
      * Check input context options and raise IncompatibleOptionsException if something wrong.
      * @throws IncompatibleOptionsException
@@ -31,61 +29,38 @@ public class MQGetCommand extends QueueCommand {
     @Override
     protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
         final ExecutionContext ctx = getExecutionContext();
-        if (!ctx.hasAnyOption("stream", "payload")) {
-            raiseIncompatibeException("Option --stream or --payload are missed.");
+        if (ctx.hasntOption(OPT_STREAM, OPT_PAYLOAD)) {
+            raiseMissedParameters(new String[]{OPT_STREAM, OPT_PAYLOAD});
         }
-        if (ctx.hasOption("stream") && ctx.hasOption("all")) {
-            raiseIncompatibeException("Options --stream and --all can't run together. Use --payload instead --stream.");
-        }
-        if (ctx.hasOption("stream") && ctx.hasOption("limit") && Integer.valueOf(ctx.getOption("limit")) > 1) {
-            raiseIncompatibeException("--stream can't be used with --limit > 1");
+        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("all")) {
+            raiseIncompatibeException(String.format("Options --%1$s and --all can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD));
         }
     }
 
     @Override
-    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException {
+    protected void work() throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
         final ConsoleWriter console = getConsoleWriter();
-        final ConsoleTable table = console.createTable(
-                        TableColumnName.ACTION, TableColumnName.QMANAGER, TableColumnName.QUEUE, TableColumnName.MESSAGE_ID, TableColumnName.CORREL_ID, TableColumnName.OUTPUT);
-
-        final ExecutionContext ctx = getExecutionContext();
         final String sourceQueueName = getSourceQueueName();
 
         try {
             final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
             boolean queueHasMessages = false;
             try {
-                int limit = getMessagesCountLimit(1);
-
-                while (limit-->0) {
+                int limit = getMessagesCountLimit(1); // default is only one message per command
+                int messageCouter = 0;
+                while (isListenerMode() || limit-->0) {
+                    // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
-                    table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, bytesToHex(message.messageId), bytesToHex(message.correlationId));
-
-                    // print to std output (console)
-                    if (ctx.hasOption("stream")) { // standard output to std.out
-                        table.appendToLastRow("<stream>").flash();
-                        console.write(message);
-                    }
-
-                    // print to a file (can used with conjunction with --stream)
-                    if (ctx.hasOption("payload")) {
-                        File destination = new File(ctx.getOption("payload", fileNameForMessage(message)));
-
-                        // if payload specified as folder, then we need to append file name
-                        if (destination.exists() && destination.isDirectory()) {
-                            destination = new File(destination.getAbsoluteFile() + File.separator + fileNameForMessage(message));
-                        }
-                        writeMessageBodyToFile(message, destination);
-                        table.appendToLastRow(destination.getAbsolutePath());
-                    }
+                    handleMessage(messageCouter, message, console);
+                    messageCouter++;
                 }
 
             } catch (NoMessageAvailableException e) {
-                if (!queueHasMessages) // prevent output extra information if queue has messages.
-                    table.append(GET_OPERATION_NAME, getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]");
+                if (!queueHasMessages) { // prevent output extra information if queue has messages.
+                    handleNoMessage(console, sourceQueueName);
+                }
             }
-            table.flash();
         } catch (MQException | IOException e) {
             LOG.severe(e.getMessage());
             console.errorln(e.getMessage());
@@ -93,32 +68,49 @@ public class MQGetCommand extends QueueCommand {
         }
     }
 
-    /**
-     * Return maximum message count limit or defaultValue.
-     * @return int.
-     */
-    private int getMessagesCountLimit(int defaultValue) {
-        final ExecutionContext ctx = getExecutionContext();
-        return ctx.hasOption("limit") ? Integer.valueOf(ctx.getOption("limit")) : defaultValue;
+    void handleNoMessage(ConsoleWriter console, String sourceQueueName) throws MQException {
+        TableColumnName[] header = {
+                TableColumnName.INDEX,
+                TableColumnName.ACTION,
+                TableColumnName.QMANAGER,
+                TableColumnName.QUEUE,
+                TableColumnName.MESSAGE_ID,
+                TableColumnName.CORREL_ID,
+                TableColumnName.OUTPUT
+        };
+
+        console.createTable(header)
+                .append(String.valueOf(0), MQXFOperation.MQXF_GET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                .make();
     }
 
-    /**
-     * If passed --wait parameter.
-     * @return true if context has 'wait' option.
-     */
-    protected boolean shouldWait() {
-        return getExecutionContext().hasOption("wait");
-    }
+    void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException, NestedHandlerException {
 
-    /**
-     * Return 'wait' parameter value.
-     * @return value or -1 if 'wait' passed without argument.
-     */
-    protected int waitTime() {
-        if (getExecutionContext().getOption("wait") == null) {
-            return -1;
-        } else {
-            return Integer.valueOf(getExecutionContext().getOption("wait"));
+        // create event
+        final EventSource eventSource = new EventSource(getSourceQueueName());
+        final MessageEvent event = new MessageEvent(eventSource);
+        event.setMessageIndex(messageIndex);
+        event.setMessage(message);
+        event.setOperation(MQXFOperation.MQXF_GET);
+
+        final HandlerLookupService lookupService = new HandlerLookupService(executionContext, console);
+
+        // lookup handler
+        if (executionContext.hasOption(OPT_HANDLER)) {
+            try {
+                MessageHandler handler = lookupService.lookup(Class.forName(executionContext.getOption(OPT_HANDLER)));
+                handler.onMessage(event);
+            } catch (ClassNotFoundException e) {
+                throw new IOException(e);
+            }
+        } else if (executionContext.hasOption(OPT_STREAM)) { // standard output to std.out
+            MessageHandler handler = new PrintStreamHandler(executionContext, console);
+            handler.onMessage(event);
+
+        } else if (executionContext.hasOption(OPT_PAYLOAD)) { /* print to a file */
+            MessageHandler handler = new BodyToFileHandler(executionContext, console);
+            handler.onMessage(event);
         }
     }
+
 }

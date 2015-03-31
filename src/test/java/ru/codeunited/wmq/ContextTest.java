@@ -8,6 +8,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -70,7 +71,7 @@ public class ContextTest extends CLITestSupport{
         assertThat(ctx.hasAnyOption("wait", "lslq", "port"), is(true));
         assertThat(ctx.hasntOption("--wait"), is(true));
         assertThat(ctx.hasntOption("--wait", "port"), is(true));
-        assertThat(ctx.hasntOption("lslq", "port", "stream"), is(false));
-        assertThat(ctx.hasntOption("port", "stream"), is(true));
+        assertThat(ctx.hasntOption("lslq", "port", OPT_STREAM), is(false));
+        assertThat(ctx.hasntOption("port", OPT_STREAM), is(true));
     }
 }

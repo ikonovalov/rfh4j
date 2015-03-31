@@ -1,5 +1,6 @@
 package ru.codeunited.wmq;
 
+import static ru.codeunited.wmq.RFHConstants.*;
 import ru.codeunited.wmq.commands.*;
 
 import java.util.logging.Logger;
@@ -20,17 +21,23 @@ public class DefaultExecutionPlanBuilder implements ExecutionPlanBuilder {
     }
 
     @Override
-    public CommandChainMaker buildChain() throws MissedParameterException {
-        final CommandChainMaker chain = new CommandChainMaker(executionContext);
+    public CommandChain buildChain() throws MissedParameterException {
+        final CommandChain chain = new CommandChain(executionContext);
 
         // create connect/disconnect commands
-        if (executionContext.hasOption("qmanager") || executionContext.hasOption("config") || MQConnectCommand.isDefaultConfigAvailable()) { // need to connect to queue manager
+        if (executionContext.hasOption(OPT_QMANAGER) ||
+                executionContext.hasOption(OPT_CONFIG) || MQFilePropertiesComposer.isDefaultConfigAvailable()) { // need to connect to queue manager
             chain
                     .addCommand(new MQConnectCommand())
                     .addCommand(new MQDisconnectCommand());
         } else {
             // this is mandatory arguments (one and two)
-            throw new MissedParameterException("qmanager", "config").withMessage("And default.properties not available also.");
+            throw new MissedParameterException(OPT_QMANAGER, OPT_CONFIG).withMessage("And default.properties not available also.");
+        }
+
+        final String[] activeActions = {"srcq", "dstq", "lslq"};
+        if (executionContext.hasntOption(activeActions)) {
+            throw new MissedParameterException(activeActions);
         }
 
         // insert PUT command (if srcq not present) - simple PUT case

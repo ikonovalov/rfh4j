@@ -20,7 +20,7 @@ import static org.hamcrest.CoreMatchers.*;
  */
 public class ManagerInspectorTest extends QueueingCapability {
 
-    @Test
+    @Test(timeout = 5000)
     public void listQueuesWithoutFilter() throws Exception {
         communication(new QueueWork() {
             @Override
@@ -33,7 +33,7 @@ public class ManagerInspectorTest extends QueueingCapability {
         });
     }
 
-    @Test
+    @Test(timeout = 5000)
     public void searchRFHQueues() throws Exception {
         communication(new QueueWork() {
             @Override

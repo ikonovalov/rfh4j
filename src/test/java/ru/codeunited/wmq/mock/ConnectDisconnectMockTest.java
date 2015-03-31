@@ -5,6 +5,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.CLITestSupport;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 
 /**
  * codeunited.ru
@@ -14,10 +15,10 @@ import ru.codeunited.wmq.commands.*;
 public class ConnectDisconnectMockTest extends CLITestSupport {
 
     @Test
-    public void connectDisconnectWithMockFactory() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException {
+    public void connectDisconnectWithMockFactory() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
         final MQConnectCommand connectCommand = new MQConnectCommand(new WMQConnectionFactoryMocked());
         final MQDisconnectCommand disconnectCommand = new MQDisconnectCommand();
-        final CommandChainMaker chain = new CommandChainMaker(new CLIExecutionContext(getCommandLine_With_Qc()))
+        final CommandChain chain = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()))
                 .addCommand(connectCommand)
                 .addCommand(disconnectCommand);
         chain.execute();

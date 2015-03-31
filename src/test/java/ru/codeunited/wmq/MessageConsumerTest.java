@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.QueueInspector;
 import ru.codeunited.wmq.messaging.MessageSelector;
@@ -36,12 +37,12 @@ public class MessageConsumerTest extends QueueingCapability {
 
 
     @Before
-    public void cleanupQueue() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
+    public void cleanupQueue() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
     }
 
     @Test
-    public void accessQueueWithDefOpenOptions() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException {
+    public void accessQueueWithDefOpenOptions() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
 
         putMessages(QUEUE, MESSAGE);
 
@@ -64,7 +65,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test(timeout = 1000)
-    public void accessQueueWithWait1000() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException {
+    public void accessQueueWithWait1000() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
         putMessages(QUEUE, MESSAGE);
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
@@ -81,7 +82,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test(expected = NoMessageAvailableException.class)
-    public void accessQueueWithNoMessagesException() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException {
+    public void accessQueueWithNoMessagesException() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
@@ -98,7 +99,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test
-    public void selectMessageByMessageID() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException {
+    public void selectMessageByMessageID() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
 
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
 
@@ -128,7 +129,7 @@ public class MessageConsumerTest extends QueueingCapability {
 
 
     @Test(expected = NoMessageAvailableException.class)
-    public void selectMessageByMessageIDFail() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException {
+    public void selectMessageByMessageIDFail() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
 
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
         messageID[10] = 0;
@@ -157,7 +158,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test
-    public void discoverDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException {
+    public void discoverDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
@@ -179,7 +180,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test
-    public void discoverMaxDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException {
+    public void discoverMaxDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());

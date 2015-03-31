@@ -1,7 +1,5 @@
 package ru.codeunited.wmq.cli;
 
-import com.ibm.mq.MQMessage;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -22,14 +20,12 @@ public class ConsoleWriter implements Closeable {
 
     private static final char TAB = '\t';
 
-    private static final String BORDER = "<--------------PAYLOAD-BOARDER-------------------->";
-
     public ConsoleWriter(PrintStream printWriter, PrintStream errorWriter) {
         this.errorWriter = new PrintWriter(errorWriter);
         this.normalWriter = new PrintWriter(printWriter);
     }
 
-    public ConsoleTable createTable() {
+    public final ConsoleTable createTable() {
         return new ConsoleTable(this);
     }
 
@@ -38,7 +34,7 @@ public class ConsoleWriter implements Closeable {
      * @param head
      * @return
      */
-    public ConsoleTable createTable(TableColumnName...head) {
+    public final ConsoleTable createTable(TableColumnName...head) {
         return createTable().head(head);
     }
 
@@ -77,14 +73,6 @@ public class ConsoleWriter implements Closeable {
 
     public ConsoleWriter writeln(String string) {
         return write(string).end();
-    }
-
-    public ConsoleWriter write(MQMessage message) throws IOException {
-        writeln(BORDER);
-        writeln(message.readStringOfByteLength(message.getDataLength()));
-        writeln(BORDER);
-        end();
-        return this;
     }
 
     public ConsoleWriter error(String string) {

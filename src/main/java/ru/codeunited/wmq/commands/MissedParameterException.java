@@ -10,16 +10,18 @@ import java.util.Arrays;
 public class MissedParameterException extends Exception {
 
     // sorted char array
-    private char[] name;
+    private char[] shortNames;
 
     // sorted string array
-    private String[] longName;
+    private String[] longNames;
 
     // additional information
     private String message = "";
 
     public MissedParameterException withMessage(String message) {
-        this.message = message;
+        if (message != null) {
+            this.message = message;
+        }
         return this;
     }
 
@@ -30,15 +32,15 @@ public class MissedParameterException extends Exception {
     public MissedParameterException(String... message) {
         super();
         if (message == null || message.length == 0)
-            throw new IllegalArgumentException("Option longName can't be null or empty");
-        longName = message;
-        Arrays.sort(longName);
+            throw new IllegalArgumentException("Option longNames can't be null or empty");
+        longNames = message;
+        Arrays.sort(longNames);
     }
 
     public MissedParameterException(char... p) {
         super();
-        name = p;
-        Arrays.sort(name);
+        shortNames = p;
+        Arrays.sort(shortNames);
     }
 
     @Override
@@ -49,13 +51,13 @@ public class MissedParameterException extends Exception {
     @Override
     public String getMessage() {
         final StringBuilder missedOptions = new StringBuilder(32);
-        if (name != null) for (char c : name) { // I know that it is a bad syntax but Ruby-like
+        if (shortNames != null) for (char c : shortNames) { // I know that it is a bad syntax but Ruby-like
             missedOptions.append('[').append(c).append(']').append(' ');
         }
-        if (longName != null) for (String s : longName) {
+        if (longNames != null) for (String s : longNames) {
             missedOptions.append('[').append(s).append(']').append(' ');
         }
-        return "Option(s) " + missedOptions.toString() + " are missed. " + message;
+        return ("Option(s) " + missedOptions.toString() + " are missed. " + message).trim();
     }
 
     /**
@@ -63,14 +65,14 @@ public class MissedParameterException extends Exception {
      * @return char[] or null if long named parameters used only.
      */
     public char[] getSingleCharName() {
-        return name;
+        return shortNames;
     }
 
     /**
      * Get array of missed long named parameters
      * @return String[] or null of used single character parameters.
      */
-    public String[] getLongName() {
-        return longName;
+    public String[] getLongNames() {
+        return longNames;
     }
 }

@@ -1,12 +1,12 @@
 package ru.codeunited.wmq;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.*;
+import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
-import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  * codeunited.ru
@@ -14,19 +14,16 @@ import ru.codeunited.wmq.commands.*;
  * Created by ikonovalov on 23.10.14.
  */
 public class CLITestSupport {
-    private final Options options = CLIFactory.createOptions();
 
-    private final CommandLineParser cliParser = CLIFactory.createParser();
+    private final Parallel parallel = new Parallel();
 
-    CommandLineParser getCliParser() {
-        return cliParser;
+    protected CommandLineParser getCliParser() {
+        return CLIFactory.createParser();
     }
 
     Options getOptions() {
-        return options;
+        return CLIFactory.createOptions();
     }
-
-    private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
 
     protected CommandLine prepareCommandLine(String line) throws ParseException {
         final String[] args = line.split(" ");
@@ -34,16 +31,24 @@ public class CLITestSupport {
     }
 
     protected CommandLine prepareCommandLine(String[] args) throws ParseException {
-        return getCliParser().parse(getOptions(), args);
+        try {
+            return getCliParser().parse(getOptions(), args);
+        } catch (AlreadySelectedException ase) {
+            throw ase;
+        }
+    }
+
+    protected String connectionParameter() {
+        return "-Q DEFQM -c JVM.DEF.SVRCONN";
     }
 
     protected CommandLine getCommandLine_With_Qc() throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
+        final String[] args = connectionParameter().split(" ");
         return prepareCommandLine(args);
     }
 
     protected CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1".split(" ");
+        final String[] args = String.format("%s --dstq RFH.QTEST.QGENERAL1", connectionParameter()).split(" ");
         return prepareCommandLine(args);
     }
 
@@ -53,11 +58,35 @@ public class CLITestSupport {
      * @param command
      * @return
      */
-    protected CommandChainMaker surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Command command) {
-        final CommandChainMaker maker = new CommandChainMaker(context);
+    protected CommandChain surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Command command) {
+        final CommandChain maker = new CommandChain(context);
         final AbstractCommand cmdConnect = new MQConnectCommand();
         final AbstractCommand cmdDisconnect = new MQDisconnectCommand();
         return maker.addCommand(cmdConnect).addCommand(command).addCommand(cmdDisconnect);
+    }
+
+    /**
+     * Put message to a queue.
+     * @param destination
+     * @throws ParseException
+     * @throws MissedParameterException
+     * @throws IncompatibleOptionsException
+     * @throws CommandGeneralException
+     */
+    protected void putToQueue(String destination) throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
+        final CommandLine cl = prepareCommandLine(String.format("%3$s --dstq %1$s --text %2$s", destination, String.valueOf(System.currentTimeMillis()), connectionParameter()));
+        final ExecutionContext executionContext = new CLIExecutionContext(cl);
+        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+        executionPlanBuilder.buildChain().execute();
+
+    }
+
+    protected void branch(Parallel.Branch branch) {
+        parallel.add(branch);
+    }
+
+    protected void parallel() throws ExecutionException, InterruptedException {
+        parallel.go();
     }
 
 

@@ -2,7 +2,7 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.*;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
@@ -13,7 +13,7 @@ public class MessageConsumerImpl implements MessageConsumer {
 
     private final MQQueue queue;
 
-    private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_SYNCPOINT;
+    private final int DEFAULT_GET_OPTIONS = MQGMO_FAIL_IF_QUIESCING | MQGMO_NO_SYNCPOINT;
 
     /**
      * Create message consumer for a MQ queue.
@@ -50,7 +50,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     public MQMessage get() throws NoMessageAvailableException, MQException {
         final MQGetMessageOptions messageOptions = new MQGetMessageOptions();
-        messageOptions.options = DEFAULT_GET_OPTIONS| MQGMO_NO_WAIT;
+        messageOptions.options = DEFAULT_GET_OPTIONS | MQGMO_NO_WAIT;
         //gmo.waitInterval = MQC.MQWI_UNLIMITED;
         return get(messageOptions);
     }

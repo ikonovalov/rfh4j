@@ -5,6 +5,7 @@ import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
@@ -25,8 +26,8 @@ public abstract class QueueingCapability extends CLITestSupport {
 
     protected static final int MESSAGE_ID_LENGTH = 24;
 
-    public static interface QueueWork {
-        public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
+    public interface QueueWork {
+        void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
     }
 
     /**
@@ -37,8 +38,8 @@ public abstract class QueueingCapability extends CLITestSupport {
     public void communication(QueueWork work) throws Exception {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         try {
@@ -51,6 +52,14 @@ public abstract class QueueingCapability extends CLITestSupport {
         }
     }
 
+    private AbstractCommand prepareMQDisconnectCommand(ExecutionContext context) {
+        return new MQDisconnectCommand().setContext(context);
+    }
+
+    private AbstractCommand prepareMQConnectCommand(ExecutionContext context) {
+        return new MQConnectCommand().setContext(context);
+    }
+
     protected MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }
@@ -59,11 +68,11 @@ public abstract class QueueingCapability extends CLITestSupport {
         return new QueueInspectorImpl(queue, context.getQueueManager());
     }
 
-    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException {
+    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
@@ -78,11 +87,11 @@ public abstract class QueueingCapability extends CLITestSupport {
         return message;
     }
 
-    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException {
+    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        final Command cmd1 = prepareMQConnectCommand(context);
+        final Command cmd2 = prepareMQDisconnectCommand(context);
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(queueName, context);

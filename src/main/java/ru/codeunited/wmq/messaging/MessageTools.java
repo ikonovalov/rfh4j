@@ -2,13 +2,12 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQMessage;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import static com.ibm.mq.constants.MQConstants.*;
+import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
+import static com.ibm.mq.constants.MQConstants.MQPER_PERSISTENT;
 
 /**
  * codeunited.ru
@@ -32,6 +31,7 @@ public class MessageTools {
         final MQMessage message = new MQMessage();
         message.characterSet = charset;
         message.persistence = MQPER_PERSISTENT;
+        message.format = MQFMT_STRING;
         return message;
     }
 
@@ -88,16 +88,10 @@ public class MessageTools {
         LOG.fine("File with size " + totalBytes + "b stored in a message.");
     }
 
-    public static byte[] readMessageToBytes(MQMessage message) throws IOException {
+    public static byte[] readMessageBodyToBytes(MQMessage message) throws IOException {
         final byte[] buffer = new byte[message.getDataLength()];
         message.readFully(buffer);
         return buffer;
-    }
-
-    public static void writeMessageBodyToFile(MQMessage message, File destination) throws IOException {
-        try(final FileOutputStream fos = new FileOutputStream(destination)) {
-            fos.write(MessageTools.readMessageToBytes(message));
-        }
     }
 
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();

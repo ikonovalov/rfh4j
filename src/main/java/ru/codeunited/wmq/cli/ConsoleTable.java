@@ -24,6 +24,10 @@ public class ConsoleTable {
         this.console = console;
     }
 
+    public final ConsoleWriter console() {
+        return console;
+    }
+
     /**
      * Add new row to table.
      * @param delimited
@@ -68,7 +72,10 @@ public class ConsoleTable {
         return boarderH;
     }
 
-    public void flash() {
+    public void make() {
+        if (table.isEmpty())
+            return;
+
         final List<String[]> printableTable = new ArrayList<>(table.size() + 1);
 
         // transform head to string array
@@ -124,6 +131,9 @@ public class ConsoleTable {
 
         console.writef(boarderH);
 
+        // make
+        //console.flush();
+
         // clear data
         clear();
     }
@@ -134,7 +144,7 @@ public class ConsoleTable {
     }
 
     private String[] headAsStrings() {
-        String[] headNames = new String[head.length];
+        final String[] headNames = new String[head.length];
         for (int i = 0; i < head.length; i++) {
             TableColumnName tableColumnName = head[i];
             headNames[i] = tableColumnName.name();

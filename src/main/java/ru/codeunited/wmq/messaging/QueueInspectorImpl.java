@@ -4,7 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru

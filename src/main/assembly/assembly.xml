@@ -25,16 +25,19 @@
         -->
         <fileSet>
             <directory>${project.build.scriptSourceDirectory}</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory/>
             <includes>
                 <include>rfh4j.sh</include>
+                <include>rput.sh</include>
+                <include>rput_file.sh</include>
                 <include>default.properties</include>
+                <include>wmq.channel</include>
             </includes>
         </fileSet>
         <!-- adds jar package to the root directory of zip package -->
         <fileSet>
             <directory>${project.build.directory}</directory>
-            <outputDirectory></outputDirectory>
+            <outputDirectory/>
             <includes>
                 <include>*.jar</include>
             </includes>

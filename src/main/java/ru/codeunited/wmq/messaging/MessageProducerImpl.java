@@ -5,7 +5,7 @@ import com.ibm.mq.*;
 import java.io.IOException;
 import java.io.InputStream;
 
-import static com.ibm.mq.constants.CMQC.*;
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
