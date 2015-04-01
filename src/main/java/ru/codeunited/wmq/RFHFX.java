@@ -10,12 +10,11 @@ import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.fx.MainTab;
+import ru.codeunited.wmq.fx.ModelFactory;
 import ru.codeunited.wmq.fx.SceneController;
 
 import java.io.IOException;
 import java.net.URL;
-
-import static ru.codeunited.wmq.RFHConstants.OPT_QMANAGER;
 
 /**
  * codeunited.ru
@@ -30,9 +29,11 @@ public class RFHFX extends Application {
 
     private ExecutionContext context;
 
+    // ---------------------------------------
+    private MainTab mainTab;
+
 
     public static void main(String[] args) throws ParseException {
-
         up(args);
     }
 
@@ -41,15 +42,29 @@ public class RFHFX extends Application {
     }
 
     @Override
+    public void init() throws Exception {
+        super.init();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        super.stop();
+    }
+
+    @Override
     public void start(final Stage primaryZtage) throws Exception {
         primaryStage = primaryZtage;
         primaryStage.setTitle("RFHFX");
 
-        final String[] args = getParameters().getRaw().toArray(new String[0]);
+        final String[] args = inputCLIParameters();
         final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
         context = new CLIExecutionContext(cli);
 
         loadRootLayout();
+    }
+
+    protected String[] inputCLIParameters() {
+        return getParameters().getRaw().toArray(new String[0]);
     }
 
     public final ExecutionContext getContext() {
@@ -73,8 +88,10 @@ public class RFHFX extends Application {
         controller.attach(this);
     }
 
-    public final MainTab createMainTabView() {
-
-        return new MainTab();
+    public final MainTab mainTabView() {
+        if (mainTab == null) {
+            mainTab = ModelFactory.newInstance(context).createMainTab();
+        }
+        return mainTab;
     }
 }

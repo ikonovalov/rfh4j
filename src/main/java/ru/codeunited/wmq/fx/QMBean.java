@@ -2,6 +2,7 @@ package ru.codeunited.wmq.fx;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.util.StringConverter;
 
 /**
  * codeunited.ru
@@ -9,6 +10,21 @@ import javafx.beans.property.StringProperty;
  * Created by ikonovalov on 19.03.15.
  */
 public class QMBean {
+
+    public static class QMBeanStringConverter extends StringConverter<QMBean> {
+        @Override
+        public String toString(QMBean object) {
+            if (object == null)
+                return null;
+            return object.getName();
+        }
+
+        @Override
+        public QMBean fromString(String string) {
+            System.out.println("from String");
+            return new QMBean(string);
+        }
+    }
 
     private final StringProperty name;
 

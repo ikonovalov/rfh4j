@@ -10,12 +10,17 @@ import javafx.collections.ObservableList;
  */
 public class MainTab {
 
-    private ObservableList<QMBean> qmList = FXCollections.observableArrayList(
-            new QMBean("DEFQM")
-    );
+    private ObservableList<QMBean> qmList = FXCollections.observableArrayList();
 
+    public MainTab() {
 
-    public ObservableList<QMBean> getQmList() {
+    }
+
+    public final void addQueueManager(QMBean newManager) {
+        qmList.add(newManager);
+    }
+
+    public ObservableList<QMBean> getQueueManagersList() {
         return qmList;
     }
 }
