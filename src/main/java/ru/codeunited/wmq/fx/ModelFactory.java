@@ -1,7 +1,9 @@
 package ru.codeunited.wmq.fx;
 
+import javafx.beans.property.SimpleStringProperty;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.RFHFX;
+import ru.codeunited.wmq.fx.model.MainTab;
+import ru.codeunited.wmq.fx.model.QMBean;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_QMANAGER;
 
@@ -23,11 +25,14 @@ public class ModelFactory {
     }
 
 
-    public MainTab createMainTab() {
-        MainTab mainTab = new MainTab();
+    public MainTab createMainTab() throws QMInteractionException {
+        MainTab mainTab = new MainTab(context);
         String contextQueueManager = context.getOption(OPT_QMANAGER);
-        String[] qms = contextQueueManager.split(",");
-        mainTab.addQueueManager(new QMBean(contextQueueManager));
+
+        final QMBean qmBean = new QMBean(new SimpleStringProperty(contextQueueManager), context);
+        mainTab.addQueueManager(qmBean);
+        qmBean.connect();
+        qmBean.afterConnect();
         return mainTab;
     }
 }

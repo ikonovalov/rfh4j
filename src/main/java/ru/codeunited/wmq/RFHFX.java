@@ -9,12 +9,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
-import ru.codeunited.wmq.fx.MainTab;
-import ru.codeunited.wmq.fx.ModelFactory;
 import ru.codeunited.wmq.fx.QMInteractionException;
-import ru.codeunited.wmq.fx.SceneController;
+import ru.codeunited.wmq.fx.model.MainTab;
+import ru.codeunited.wmq.fx.ModelFactory;
+import ru.codeunited.wmq.fx.controller.SceneController;
 
-import java.io.IOException;
 import java.net.URL;
 
 /**
@@ -79,7 +78,7 @@ public class RFHFX extends Application {
         return context;
     }
 
-    public final MainTab mainTabView() {
+    public final MainTab mainTabView() throws QMInteractionException {
         if (mainTab == null) {
             mainTab = ModelFactory.newInstance(context).createMainTab();
         }
