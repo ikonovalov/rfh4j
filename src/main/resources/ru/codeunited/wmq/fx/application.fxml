@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
@@ -37,7 +38,7 @@
                                  </padding>
                               </Label>
                               <ComboBox fx:id="queueListControl" editable="true" prefHeight="25.0" prefWidth="275.0" />
-                              <Text fx:id="underQtext" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" wrappingWidth="271.7294921875" />
+                              <Text fx:id="underQtext" strokeType="OUTSIDE" strokeWidth="0.0" text="queue info" wrappingWidth="271.7294921875" />
                            </children>
                            <padding>
                               <Insets left="5.0" right="5.0" />

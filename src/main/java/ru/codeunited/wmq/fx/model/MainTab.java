@@ -9,31 +9,21 @@ import ru.codeunited.wmq.ExecutionContext;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.03.15.
  */
-public class MainTab {
+public final class MainTab {
 
-    private ExecutionContext context;
+    private final ExecutionContext context;
 
-    private ObservableList<QMBean> qmList = FXCollections.observableArrayList();
-
-    private QMBean currentQueueManager;
+    private final ObservableList<QueueManagerBean> qmList = FXCollections.observableArrayList();
 
     public MainTab(ExecutionContext context) {
         this.context = context;
     }
 
-    public QMBean getCurrentQueueManager() {
-        return currentQueueManager;
-    }
-
-    public void setCurrentQueueManager(QMBean currentQueueManager) {
-        this.currentQueueManager = currentQueueManager;
-    }
-
-    public final void addQueueManager(QMBean newManager) {
+    public void addQueueManager(QueueManagerBean newManager) {
         qmList.add(newManager);
     }
 
-    public ObservableList<QMBean> getQueueManagersList() {
+    public ObservableList<QueueManagerBean> getQueueManagersList() {
         return qmList;
     }
 }

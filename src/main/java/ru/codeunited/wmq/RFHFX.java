@@ -17,6 +17,7 @@ import ru.codeunited.wmq.fx.controller.SceneController;
 import java.net.URL;
 
 /**
+ * This is realy a part of a model.
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 11.02.15.

@@ -1,11 +1,9 @@
 package ru.codeunited.wmq.fx.model;
 
 import com.ibm.mq.MQException;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.util.StringConverter;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.fx.QMInteractionException;
@@ -17,43 +15,33 @@ import ru.codeunited.wmq.messaging.pcf.Queue;
 import java.io.IOException;
 import java.util.List;
 
+import static com.ibm.mq.constants.MQConstants.CHANNEL_PROPERTY;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.03.15.
  */
-public class QMBean {
-
-    public static class QMBeanStringConverter extends StringConverter<QMBean> {
-        @Override
-        public String toString(QMBean object) {
-            if (object == null)
-                return null;
-            return object.getName();
-        }
-
-        @Override
-        public QMBean fromString(String string) {
-            throw new IllegalStateException("Useless");
-        }
-    }
+public class QueueManagerBean {
 
     //==============================================================
 
     private final StringProperty name;
 
+    private final String channel;
+
     private final ExecutionContext context;
 
     private ManagerInspector inspector;
 
-    private ObservableList<QBean> queues;
+    private ObservableList<QueueBean> queues;
 
     //==============================================================
 
-    public QMBean(StringProperty qmname, ExecutionContext context) throws QMInteractionException {
+    public QueueManagerBean(StringProperty qmname, ExecutionContext context) throws QMInteractionException {
         this.name = qmname;
         this.context = context;
-
+        this.channel = context.getOption(CHANNEL_PROPERTY);
     }
 
     public void afterConnect() throws QMInteractionException {
@@ -76,7 +64,17 @@ public class QMBean {
         }
     }
 
-    public ObservableList<QBean> getQueues() {
+    public ReturnCode disconnect() throws QMInteractionException {
+        final CommandChain chain = new CommandChain(context);
+        chain.addCommand(new MQDisconnectCommand());
+        try {
+            return chain.execute();
+        } catch (CommandGeneralException | MissedParameterException | IncompatibleOptionsException | NestedHandlerException e) {
+            throw  new QMInteractionException("Disconnect operation failed. ", e);
+        }
+    }
+
+    public ObservableList<QueueBean> getQueues() {
         return queues;
     }
 
@@ -90,7 +88,7 @@ public class QMBean {
             List<Queue> listOfQueues = inspector.listLocalQueues();
             queues = FXCollections.observableArrayList();
             for (Queue q : listOfQueues) {
-                queues.add(new QBean(this, q, context));
+                queues.add(new QueueBean(this, q, context));
             }
         } catch (MQException | IOException e) {
             throw new QMInteractionException("Queue lookup failure. ", e);

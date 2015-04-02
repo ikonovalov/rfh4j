@@ -3,7 +3,7 @@ package ru.codeunited.wmq.fx;
 import javafx.beans.property.SimpleStringProperty;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.fx.model.MainTab;
-import ru.codeunited.wmq.fx.model.QMBean;
+import ru.codeunited.wmq.fx.model.QueueManagerBean;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_QMANAGER;
 
@@ -29,7 +29,7 @@ public class ModelFactory {
         MainTab mainTab = new MainTab(context);
         String contextQueueManager = context.getOption(OPT_QMANAGER);
 
-        final QMBean qmBean = new QMBean(new SimpleStringProperty(contextQueueManager), context);
+        final QueueManagerBean qmBean = new QueueManagerBean(new SimpleStringProperty(contextQueueManager), context);
         mainTab.addQueueManager(qmBean);
         qmBean.connect();
         qmBean.afterConnect();
