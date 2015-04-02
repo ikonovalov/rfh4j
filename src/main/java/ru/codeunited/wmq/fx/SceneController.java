@@ -31,12 +31,16 @@ public class SceneController implements Initializable {
     @FXML
     private ComboBox<QMBean> currentQM;
 
+    @FXML
+    private ComboBox<QBean> currentQ;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         System.out.println("Controller initialize()");
         globalTabPane.getTabs().size();
 
         currentQM.setConverter(new QMBean.QMBeanStringConverter());
+        currentQ.setConverter(new QBean.QMBeanStringConverter());
         currentQM.valueProperty().addListener(new ChangeListener<QMBean>() {
             @Override
             public void changed(ObservableValue<? extends QMBean> observable, QMBean oldValue, QMBean newValue) {
@@ -45,18 +49,24 @@ public class SceneController implements Initializable {
         });
     }
 
-    public final void attach(final RFHFX rfhfx) {
+    public final void attach(final RFHFX rfhfx) throws QMInteractionException {
         System.out.println("Controller attach()");
         application = rfhfx;
 
         // initialize main tab
         currentQM.setItems(rfhfx.mainTabView().getQueueManagersList());
-        currentQM.getSelectionModel().select(0);
+        currentQM.getSelectionModel().selectFirst();
 
         final CommandChain chain = new CommandChain(application.getContext());
         chain.addCommand(new MQConnectCommand());
         try {
-            chain.execute();
+            ReturnCode rc = chain.execute();
+            if (rc == ReturnCode.SUCCESS) {
+                QMBean qm = currentQM.getSelectionModel().getSelectedItem();
+                qm.afterConnect(application.getContext());
+                currentQ.setItems(qm.getQueues());
+                currentQ.getSelectionModel().selectFirst();
+            }
         } catch (CommandGeneralException | MissedParameterException | IncompatibleOptionsException | NestedHandlerException e) {
             e.printStackTrace();
         }
