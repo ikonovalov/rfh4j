@@ -14,9 +14,7 @@ import java.util.ResourceBundle;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.03.15.
  */
-public class TopSceneController {
-
-    private RFHFX application;
+public class TopSceneController extends ContextAwareController {
 
     public TopSceneController() {
         System.out.println(getClass().getName() + " is up");
@@ -29,7 +27,6 @@ public class TopSceneController {
 
     public final void attach(final RFHFX rfhfx) throws QMInteractionException {
         System.out.println("Controller attach() " + this.toString());
-        application = rfhfx;
     }
 
     public void initialize(URL location, ResourceBundle resources) {

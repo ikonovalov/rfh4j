@@ -9,6 +9,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
+import ru.codeunited.wmq.fx.FXExecutionContext;
 import ru.codeunited.wmq.fx.QMInteractionException;
 import ru.codeunited.wmq.fx.model.MainTab;
 import ru.codeunited.wmq.fx.ModelFactory;
@@ -23,8 +24,6 @@ import java.net.URL;
  * Created by ikonovalov on 11.02.15.
  */
 public class RFHFX extends Application {
-
-    private ExecutionContext context;
 
     // ---------------------------------------
     private MainTab mainTab;
@@ -53,7 +52,7 @@ public class RFHFX extends Application {
 
         final String[] args = inputCLIParameters();
         final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
-        context = new CLIExecutionContext(cli);
+        FXExecutionContext.create(cli, this);
 
         // Load root layout from fxml file.
         final FXMLLoader loader = new FXMLLoader();
@@ -75,13 +74,10 @@ public class RFHFX extends Application {
         return getParameters().getRaw().toArray(new String[0]);
     }
 
-    public final ExecutionContext getContext() {
-        return context;
-    }
 
     public final MainTab mainTabView() throws QMInteractionException {
         if (mainTab == null) {
-            mainTab = ModelFactory.newInstance(context).createMainTab();
+            mainTab = ModelFactory.newInstance().createMainTab();
         }
         return mainTab;
     }

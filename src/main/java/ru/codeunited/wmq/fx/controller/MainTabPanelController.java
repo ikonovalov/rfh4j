@@ -20,9 +20,7 @@ import java.util.ResourceBundle;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.04.15.
  */
-public class MainTabPanelController implements Initializable {
-
-    private RFHFX application;
+public class MainTabPanelController extends ContextAwareController implements Initializable {
 
     @FXML private ComboBox<QueueManagerBean> queueManagerListControl;
 
@@ -46,17 +44,18 @@ public class MainTabPanelController implements Initializable {
                 underQtext.setText("");
             }
         });
-    }
-
-    public void attach(RFHFX application) throws QMInteractionException {
-        this.application = application;
 
         // initialize converters
-        queueManagerListControl.setConverter(new QMBeanStringConverter(application));
-        queueListControl.setConverter(new QBeanStringConverter(application, queueManagerListControl));
+        queueManagerListControl.setConverter(new QMBeanStringConverter());
+        queueListControl.setConverter(new QBeanStringConverter(queueManagerListControl));
 
         // attach models
-        queueManagerListControl.setItems(application.mainTabView().getQueueManagersList());
+        try {
+            RFHFX app = context.getApplication();
+            queueManagerListControl.setItems(app.mainTabView().getQueueManagersList());
+        } catch (QMInteractionException e) {
+            e.printStackTrace();
+        }
         queueManagerListControl.getSelectionModel().selectFirst();
 
         final QueueManagerBean qm = queueManagerListControl.getSelectionModel().getSelectedItem();

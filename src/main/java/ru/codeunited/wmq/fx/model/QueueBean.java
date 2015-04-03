@@ -18,11 +18,8 @@ public class QueueBean {
 
     private final QueueManagerBean parent;
 
-    private final ExecutionContext context;
-
-    public QueueBean(QueueManagerBean parent, Queue queue, ExecutionContext context) {
+    public QueueBean(QueueManagerBean parent, Queue queue) {
         this.name = new SimpleStringProperty(queue.getName());
-        this.context = context;
         this.queue = queue;
         this.parent = parent;
     }

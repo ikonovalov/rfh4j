@@ -11,10 +11,8 @@ import ru.codeunited.wmq.fx.model.QueueManagerBean;
  */
 public class QMBeanStringConverter extends StringConverter<QueueManagerBean> {
 
-    private final RFHFX application;
+    public QMBeanStringConverter() {
 
-    public QMBeanStringConverter(RFHFX application) {
-        this.application = application;
     }
 
     @Override

@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.fx.FXExecutionContext;
 import ru.codeunited.wmq.fx.QMInteractionException;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.ManagerInspector;
@@ -30,23 +31,20 @@ public class QueueManagerBean {
 
     private final String channel;
 
-    private final ExecutionContext context;
-
     private ManagerInspector inspector;
 
-    private ObservableList<QueueBean> queues;
+    private ObservableList<QueueBean> queues = FXCollections.observableArrayList();
 
     //==============================================================
 
-    public QueueManagerBean(StringProperty qmname, ExecutionContext context) throws QMInteractionException {
+    public QueueManagerBean(StringProperty qmname) throws QMInteractionException {
         this.name = qmname;
-        this.context = context;
-        this.channel = context.getOption(CHANNEL_PROPERTY);
+        this.channel = FXExecutionContext.getInstance().getOption(CHANNEL_PROPERTY);
     }
 
     public void afterConnect() throws QMInteractionException {
         try {
-            this.inspector = new ManagerInspectorImpl(context.getQueueManager());
+            this.inspector = new ManagerInspectorImpl(FXExecutionContext.getInstance().getQueueManager());
         } catch (MQException e) {
             throw new QMInteractionException("Inspector creation failure", e);
         }
@@ -55,7 +53,7 @@ public class QueueManagerBean {
     }
 
     public ReturnCode connect() throws QMInteractionException {
-        final CommandChain chain = new CommandChain(context);
+        final CommandChain chain = new CommandChain(FXExecutionContext.getInstance());
         chain.addCommand(new MQConnectCommand());
         try {
             return chain.execute();
@@ -65,7 +63,7 @@ public class QueueManagerBean {
     }
 
     public ReturnCode disconnect() throws QMInteractionException {
-        final CommandChain chain = new CommandChain(context);
+        final CommandChain chain = new CommandChain(FXExecutionContext.getInstance());
         chain.addCommand(new MQDisconnectCommand());
         try {
             return chain.execute();
@@ -84,11 +82,10 @@ public class QueueManagerBean {
      */
     protected void reloadQueuesList() throws QMInteractionException {
         try {
-
             List<Queue> listOfQueues = inspector.listLocalQueues();
             queues = FXCollections.observableArrayList();
             for (Queue q : listOfQueues) {
-                queues.add(new QueueBean(this, q, context));
+                queues.add(new QueueBean(this, q));
             }
         } catch (MQException | IOException e) {
             throw new QMInteractionException("Queue lookup failure. ", e);

@@ -11,12 +11,10 @@ import ru.codeunited.wmq.ExecutionContext;
  */
 public final class MainTab {
 
-    private final ExecutionContext context;
-
     private final ObservableList<QueueManagerBean> qmList = FXCollections.observableArrayList();
 
-    public MainTab(ExecutionContext context) {
-        this.context = context;
+    public MainTab() {
+
     }
 
     public void addQueueManager(QueueManagerBean newManager) {
