@@ -1,81 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Text?>
-<?import ru.codeunited.wmq.fx.MainTabView?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ru.codeunited.wmq.fx.controller.SceneController">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <TabPane fx:id="globalTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.rowIndex="1">
-        <tabs>
-          <Tab closable="false" text="Main">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <VBox layoutX="4.0" layoutY="14.0" prefHeight="200.0" prefWidth="286.0">
-                           <children>
-                              <Label text="Queue manager">
-                                 <padding>
-                                    <Insets bottom="2.0" top="2.0" />
-                                 </padding>
-                              </Label>
-                              <ComboBox fx:id="queueManagerListControl" prefHeight="25.0" prefWidth="275.0" />
-                              <Label text="Queue">
-                                 <padding>
-                                    <Insets bottom="2.0" top="2.0" />
-                                 </padding>
-                              </Label>
-                              <ComboBox fx:id="queueListControl" editable="true" prefHeight="25.0" prefWidth="275.0" />
-                              <Text fx:id="underQtext" strokeType="OUTSIDE" strokeWidth="0.0" text="queue info" wrappingWidth="271.7294921875" />
-                           </children>
-                           <padding>
-                              <Insets left="5.0" right="5.0" />
-                           </padding>
-                        </VBox>
-                     </children>
-                  </AnchorPane>
-            </content>
-          </Tab>
-          <Tab text="Data">
-            <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-            </content>
-          </Tab>
-            <Tab text="MQMD">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-              </content>
-            </Tab>
-            <MainTabView text="Extra"/>
-        </tabs>
-      </TabPane>
-      <MenuBar>
-        <menus>
-          <Menu mnemonicParsing="false" text="File">
-            <items>
-              <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
-            <items>
-              <MenuItem mnemonicParsing="false" text="About" />
-            </items>
-          </Menu>
-        </menus>
-      </MenuBar>
-   </children>
+<?import ru.codeunited.wmq.fx.component.MainTabPanel?>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
+          prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="ru.codeunited.wmq.fx.controller.SceneController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="30.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <TabPane fx:id="globalTabPane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE"
+                 GridPane.rowIndex="1">
+            <tabs>
+                <Tab text="Main">
+                    <content>
+                        <MainTabPanel minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="382.0"/>
+                    </content>
+                </Tab>
+                <Tab text="Data">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                    </content>
+                </Tab>
+                <Tab text="MQMD">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"/>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="About"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
 </GridPane>

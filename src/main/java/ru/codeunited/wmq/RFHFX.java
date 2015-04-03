@@ -67,7 +67,7 @@ public class RFHFX extends Application {
         primaryZtage.setScene(scene);
         primaryZtage.show();
 
-        SceneController controller = loader.getController();
+        SceneController controller = loader.getController(); /* controller specified in the fxml */
         controller.attach(this);
     }
 
