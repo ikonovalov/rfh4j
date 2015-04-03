@@ -3,7 +3,6 @@ package ru.codeunited.wmq.fx.controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import ru.codeunited.wmq.RFHFX;
 import ru.codeunited.wmq.fx.QMInteractionException;
 
@@ -15,11 +14,11 @@ import java.util.ResourceBundle;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.03.15.
  */
-public class SceneController implements Initializable {
+public class TopSceneController {
 
     private RFHFX application;
 
-    public SceneController() {
+    public TopSceneController() {
         System.out.println(getClass().getName() + " is up");
     }
 
@@ -33,7 +32,6 @@ public class SceneController implements Initializable {
         application = rfhfx;
     }
 
-    @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }

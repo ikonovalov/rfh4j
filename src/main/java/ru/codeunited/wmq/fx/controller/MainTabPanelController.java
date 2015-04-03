@@ -3,7 +3,6 @@ package ru.codeunited.wmq.fx.controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TabPane;
 import javafx.scene.text.Text;
 import ru.codeunited.wmq.RFHFX;
 import ru.codeunited.wmq.fx.QMInteractionException;

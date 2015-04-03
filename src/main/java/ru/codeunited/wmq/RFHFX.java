@@ -12,7 +12,7 @@ import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.fx.QMInteractionException;
 import ru.codeunited.wmq.fx.model.MainTab;
 import ru.codeunited.wmq.fx.ModelFactory;
-import ru.codeunited.wmq.fx.controller.SceneController;
+import ru.codeunited.wmq.fx.controller.TopSceneController;
 
 import java.net.URL;
 
@@ -67,7 +67,7 @@ public class RFHFX extends Application {
         primaryZtage.setScene(scene);
         primaryZtage.show();
 
-        SceneController controller = loader.getController(); /* controller specified in the fxml */
+        TopSceneController controller = loader.getController(); /* controller specified in the fxml */
         controller.attach(this);
     }
 

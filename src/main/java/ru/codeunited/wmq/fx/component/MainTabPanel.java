@@ -2,7 +2,6 @@ package ru.codeunited.wmq.fx.component;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
-import ru.codeunited.wmq.RFHFX;
 
 import java.io.IOException;
 
@@ -12,8 +11,6 @@ import java.io.IOException;
  * Created by ikonovalov on 02.04.15.
  */
 public class MainTabPanel extends AnchorPane {
-
-    private RFHFX application;
 
     public MainTabPanel() throws IOException {
         System.out.println(getClass().getName() + " is up");
