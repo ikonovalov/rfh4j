@@ -1,19 +1,18 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.BuilderFactory;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
-import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
-import ru.codeunited.wmq.fx.FXExecutionContext;
-import ru.codeunited.wmq.fx.QMInteractionException;
+import ru.codeunited.wmq.fx.*;
 import ru.codeunited.wmq.fx.model.MainTab;
-import ru.codeunited.wmq.fx.ModelFactory;
-import ru.codeunited.wmq.fx.controller.TopSceneController;
 
 import java.net.URL;
 
@@ -48,6 +47,9 @@ public class RFHFX extends Application {
 
     @Override
     public void start(final Stage primaryZtage) throws Exception {
+
+        final Injector injector = Guice.createInjector(new GuiceModule());
+
         primaryZtage.setTitle("RFHFX");
 
         final String[] args = inputCLIParameters();
@@ -56,9 +58,12 @@ public class RFHFX extends Application {
 
         // Load root layout from fxml file.
         final FXMLLoader loader = new FXMLLoader();
-
         final URL url = RFHFX.class.getResource("fx/application.fxml");
+
         loader.setLocation(url);
+        loader.setControllerFactory(param -> injector.getInstance(param));
+        loader.setBuilderFactory(injector.getInstance(BuilderFactory.class));
+
         GridPane rootLayout = loader.load();
 
         // Show the scene containing the root layout.
@@ -66,8 +71,6 @@ public class RFHFX extends Application {
         primaryZtage.setScene(scene);
         primaryZtage.show();
 
-        TopSceneController controller = loader.getController(); /* controller specified in the fxml */
-        controller.attach(this);
     }
 
     protected String[] inputCLIParameters() {

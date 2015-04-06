@@ -2,10 +2,10 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import ru.codeunited.wmq.fx.component.MainTabPanel?>
+<?import ru.codeunited.wmq.fx.component.MainTabPanelImpl?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
           prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="ru.codeunited.wmq.fx.controller.TopSceneController">
+          fx:controller="ru.codeunited.wmq.fx.controller.TopSceneControllerImpl">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0"/>
     </columnConstraints>
@@ -20,7 +20,7 @@
             <tabs>
                 <Tab text="Main">
                     <content>
-                        <MainTabPanel minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="382.0"/>
+                        <MainTabPanelImpl minHeight="0.0" minWidth="0.0" prefHeight="165.0" prefWidth="382.0"/>
                     </content>
                 </Tab>
                 <Tab text="Data">
