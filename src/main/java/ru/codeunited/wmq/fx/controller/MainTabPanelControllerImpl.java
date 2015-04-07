@@ -1,16 +1,13 @@
 package ru.codeunited.wmq.fx.controller;
 
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import ru.codeunited.wmq.RFHFX;
 import ru.codeunited.wmq.fx.QMInteractionException;
-import ru.codeunited.wmq.fx.model.QBeanStringConverter;
-import ru.codeunited.wmq.fx.model.QMBeanStringConverter;
-import ru.codeunited.wmq.fx.model.QueueBean;
-import ru.codeunited.wmq.fx.model.QueueManagerBean;
+import ru.codeunited.wmq.fx.model.*;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +21,7 @@ import java.util.ResourceBundle;
  * Created by ikonovalov on 02.04.15.
  */
 @Singleton
-public final class MainTabPanelControllerImpl extends ContextAwareController implements Initializable, MainTabPanelController {
+public final class MainTabPanelControllerImpl implements MainTabPanelController {
 
     @FXML private ComboBox<QueueManagerBean> queueManagerListControl;
 
@@ -32,8 +29,10 @@ public final class MainTabPanelControllerImpl extends ContextAwareController imp
 
     @FXML private Text underQtext;
 
+    @Inject private MainTabModel mainTab;
+
     MainTabPanelControllerImpl() throws IOException {
-        System.out.println(getClass().getName() + " is up");
+
     }
 
     @Override
@@ -51,13 +50,8 @@ public final class MainTabPanelControllerImpl extends ContextAwareController imp
         queueManagerListControl.setConverter(new QMBeanStringConverter());
         queueListControl.setConverter(new QBeanStringConverter(queueManagerListControl));
 
-        // attach models
-        try {
-            RFHFX app = context.getApplication();
-            queueManagerListControl.setItems(app.mainTabView().getQueueManagersList());
-        } catch (QMInteractionException e) {
-            e.printStackTrace();
-        }
+        // attach models to controller
+        queueManagerListControl.setItems(mainTab.getQueueManagersList());
         queueManagerListControl.getSelectionModel().selectFirst();
 
         final QueueManagerBean qm = queueManagerListControl.getSelectionModel().getSelectedItem();

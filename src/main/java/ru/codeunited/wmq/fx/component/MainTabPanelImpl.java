@@ -24,9 +24,7 @@ public final class MainTabPanelImpl extends AnchorPane implements MainTabPanel {
 
     @Override
     public void initialize() {
-        System.out.println(getClass().getName() + " is up");
         FXMLLoader fxmlLoader = new FXMLLoader(MainTabPanelImpl.class.getResource("mainTab.fxml"));
-
         fxmlLoader.setRoot(this);
         fxmlLoader.setController(controller);
 

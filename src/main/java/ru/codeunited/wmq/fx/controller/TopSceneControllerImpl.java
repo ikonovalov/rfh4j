@@ -11,13 +11,15 @@ import javafx.fxml.FXML;
  * Created by ikonovalov on 19.03.15.
  */
 @Singleton
-public final class TopSceneControllerImpl extends ContextAwareController implements TopSceneController {
+public final class TopSceneControllerImpl implements TopSceneController {
 
     TopSceneControllerImpl() {
         System.out.println(TopSceneControllerImpl.class.getName() + " is up");
     }
 
-    @FXML public void closeApplication(ActionEvent event) throws Exception {
+    @Override
+    @FXML
+    public void closeApplication(ActionEvent event) throws Exception {
         // shutdown platform
         Platform.exit();
     }

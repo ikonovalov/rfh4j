@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.fx.controller;
 
+import javafx.fxml.Initializable;
 import ru.codeunited.wmq.fx.QMInteractionException;
 
 /**
@@ -7,7 +8,7 @@ import ru.codeunited.wmq.fx.QMInteractionException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 06.04.15.
  */
-public interface MainTabPanelController {
+public interface MainTabPanelController extends Initializable {
 
     void shutdownConnections() throws QMInteractionException;
 }

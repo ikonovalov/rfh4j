@@ -4,6 +4,9 @@ import org.apache.commons.cli.CommandLine;
 import ru.codeunited.wmq.RFHFX;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -11,29 +14,7 @@ import ru.codeunited.wmq.cli.CLIExecutionContext;
  */
 public class FXExecutionContext extends CLIExecutionContext {
 
-    private static FXExecutionContext INSTANCE;
-
-    private final RFHFX application;
-
-    public static synchronized FXExecutionContext create(CommandLine commandLine, RFHFX application) {
-        if (INSTANCE == null) {
-            INSTANCE = new FXExecutionContext(commandLine, application);
-        } else {
-            throw new IllegalStateException(FXExecutionContext.class.getName() + " already created.");
-        }
-        return INSTANCE;
-    }
-
-    public static FXExecutionContext getInstance() {
-        return INSTANCE;
-    }
-
-    private FXExecutionContext(CommandLine commandLine, RFHFX application) {
+    public FXExecutionContext(CommandLine commandLine) {
         super(commandLine);
-        this.application = application;
-    }
-
-    public RFHFX getApplication() {
-        return application;
     }
 }

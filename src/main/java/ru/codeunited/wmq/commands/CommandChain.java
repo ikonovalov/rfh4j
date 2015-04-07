@@ -26,7 +26,7 @@ public class CommandChain extends AbstractCommand {
             commandChain.add(index, command);
             LOG.fine("Adding " + command.getClass().getSimpleName() + " to chain...");
         } else {
-            throw new IllegalStateException("CommandMaker is in invalid state. Some basic parameters are not set.");
+            throw new IllegalStateException(getClass().getName() + " is in invalid state. Some basic parameters are not set.");
         }
         return this;
     }

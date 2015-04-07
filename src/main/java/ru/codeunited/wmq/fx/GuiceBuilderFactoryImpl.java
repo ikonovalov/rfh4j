@@ -21,12 +21,11 @@ public final class GuiceBuilderFactoryImpl implements GuiceBuilderFactory {
 
     private final BuilderFactory baseFactory;
 
-    private final Provider<Injector> injectorProvider;
+    @Inject private Provider<Injector> injectorProvider;
 
     @Inject
-    public GuiceBuilderFactoryImpl(Provider<Injector> injectorProvider, @DefaultBuilderFactory BuilderFactory baseFactory) {
+    public GuiceBuilderFactoryImpl(@DefaultBuilderFactory BuilderFactory baseFactory) {
         this.baseFactory = baseFactory;
-        this.injectorProvider = injectorProvider;
     }
 
     @Override

@@ -2,26 +2,35 @@ package ru.codeunited.wmq.fx.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.messaging.pcf.Queue;
+
+import java.util.Objects;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.04.15.
  */
-public class QueueBean {
+public final class QueueBean {
 
     private final StringProperty name;
 
-    private final Queue queue;
+    private Queue queue;
 
-    private final QueueManagerBean parent;
+    private QueueManagerBean parent;
 
-    public QueueBean(QueueManagerBean parent, Queue queue) {
-        this.name = new SimpleStringProperty(queue.getName());
-        this.queue = queue;
-        this.parent = parent;
+    public QueueBean() {
+        super();
+        name = new SimpleStringProperty();
+    }
+
+    public void initFromRealQueue(Queue queue) {
+        this.queue = Objects.requireNonNull(queue);
+        this.name.set(Objects.requireNonNull(queue.getName()));
+    }
+
+    public void setParent(QueueManagerBean parent) {
+        this.parent = Objects.requireNonNull(parent);
     }
 
     public String getName() {

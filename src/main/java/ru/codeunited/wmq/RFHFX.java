@@ -8,14 +8,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.BuilderFactory;
-import javafx.util.Callback;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.fx.*;
-import ru.codeunited.wmq.fx.model.MainTab;
-
-import java.net.URL;
+import ru.codeunited.wmq.fx.model.MainTabModelImpl;
 
 /**
  * This is realy a part of a model.
@@ -26,7 +23,7 @@ import java.net.URL;
 public class RFHFX extends Application {
 
     // ---------------------------------------
-    private MainTab mainTab;
+    private MainTabModelImpl mainTab;
 
     public static void main(String[] args) throws ParseException {
         up(args);
@@ -49,19 +46,16 @@ public class RFHFX extends Application {
     @Override
     public void start(final Stage primaryZtage) throws Exception {
 
-        final Injector injector = Guice.createInjector(new GuiceModule());
-
         primaryZtage.setTitle("RFHFX");
 
-        final String[] args = inputCLIParameters();
+        final String[] args = getParameters().getRaw().toArray(new String[0]);
         final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
-        FXExecutionContext.create(cli, this);
+
+        final Injector injector = Guice.createInjector(new GuiceModule(new FXExecutionContext(cli)));
 
         // Load root layout from fxml file.
-        final FXMLLoader loader = new FXMLLoader();
-        final URL url = RFHFX.class.getResource("fx/application.fxml");
+        final FXMLLoader loader = new FXMLLoader(getClass().getResource("fx/application.fxml"));
 
-        loader.setLocation(url);
         loader.setControllerFactory(param -> injector.getInstance(param));
         loader.setBuilderFactory(injector.getInstance(BuilderFactory.class));
 
@@ -71,18 +65,6 @@ public class RFHFX extends Application {
         final Scene scene = new Scene(rootLayout);
         primaryZtage.setScene(scene);
         primaryZtage.show();
-
     }
 
-    protected String[] inputCLIParameters() {
-        return getParameters().getRaw().toArray(new String[0]);
-    }
-
-
-    public final MainTab mainTabView() throws QMInteractionException {
-        if (mainTab == null) {
-            mainTab = ModelFactory.newInstance().createMainTab();
-        }
-        return mainTab;
-    }
 }
