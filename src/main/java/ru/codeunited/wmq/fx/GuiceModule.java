@@ -2,7 +2,6 @@ package ru.codeunited.wmq.fx;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
-import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.util.Builder;
@@ -17,7 +16,6 @@ import ru.codeunited.wmq.fx.controller.TopSceneController;
 import ru.codeunited.wmq.fx.controller.TopSceneControllerImpl;
 import ru.codeunited.wmq.fx.model.*;
 
-import javax.inject.Inject;
 
 /**
  * codeunited.ru
@@ -36,8 +34,7 @@ public class GuiceModule extends AbstractModule {
     protected void configure() {
 
         // model factory
-        bind(ModelFactory.class).to(ModelFactoryImpl.class);
-        bind(MainTabModel.class).annotatedWith(ScratchModel.class).to(MainTabModelImpl.class);
+        bind(MainTabModel.class).to(MainTabModelImpl.class);
         bind(QueueManagerBean.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueManagerBean.class));
         bind(QueueBean.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueBean.class));
 
@@ -60,14 +57,6 @@ public class GuiceModule extends AbstractModule {
     @Provides
     ExecutionContext executionContext() {
         return context;
-    }
-
-    @Provides
-    @Singleton
-    @Inject
-    MainTabModel mainTabModel(ModelFactory factory) throws QMInteractionException {
-        MainTabModel mainTabModel = factory.createMainTabModel();
-        return mainTabModel;
     }
 
 }

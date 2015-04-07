@@ -15,5 +15,7 @@ public interface MainTabModel {
      */
     void addQueueManager(QueueManagerBean newManager);
 
+    void addQueueManager(String name);
+
     ObservableList<QueueManagerBean> getQueueManagersList();
 }

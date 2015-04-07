@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 public final class TopSceneControllerImpl implements TopSceneController {
 
     TopSceneControllerImpl() {
-        System.out.println(TopSceneControllerImpl.class.getName() + " is up");
+        super();
     }
 
     @Override

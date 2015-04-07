@@ -15,6 +15,8 @@ public final class MainTabModelImpl implements MainTabModel {
 
     private final ObservableList<QueueManagerBean> qmList;
 
+    @Inject private Provider<QueueManagerBean> queueManagerBeanProvider; /* should be prototype */
+
     public MainTabModelImpl() {
         super();
         qmList = FXCollections.observableArrayList();
@@ -23,6 +25,13 @@ public final class MainTabModelImpl implements MainTabModel {
     @Override
     public void addQueueManager(QueueManagerBean newManager) {
         qmList.add(newManager);
+    }
+
+    @Override
+    public void addQueueManager(String name) {
+        QueueManagerBean qmBean = queueManagerBeanProvider.get();
+        qmBean.setName(name);
+        addQueueManager(qmBean);
     }
 
     @Override
