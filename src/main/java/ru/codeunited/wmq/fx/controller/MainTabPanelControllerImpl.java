@@ -6,9 +6,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import ru.codeunited.wmq.RFHFX;
 import ru.codeunited.wmq.fx.QMInteractionException;
+import ru.codeunited.wmq.fx.model.QBeanStringConverter;
+import ru.codeunited.wmq.fx.model.QMBeanStringConverter;
 import ru.codeunited.wmq.fx.model.QueueBean;
 import ru.codeunited.wmq.fx.model.QueueManagerBean;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -20,7 +23,8 @@ import java.util.ResourceBundle;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.04.15.
  */
-public class MainTabPanelControllerImpl extends ContextAwareController implements Initializable, MainTabPanelController {
+@Singleton
+public final class MainTabPanelControllerImpl extends ContextAwareController implements Initializable, MainTabPanelController {
 
     @FXML private ComboBox<QueueManagerBean> queueManagerListControl;
 
@@ -34,8 +38,6 @@ public class MainTabPanelControllerImpl extends ContextAwareController implement
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(getClass().getName() + " controller initialize()");
-
         queueListControl.setPromptText("[None]");
         queueListControl.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (observable.getValue() != null) {

@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.fx.controller;
+package ru.codeunited.wmq.fx.model;
 
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;

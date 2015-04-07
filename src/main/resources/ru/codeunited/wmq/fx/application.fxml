@@ -5,7 +5,7 @@
 <?import ru.codeunited.wmq.fx.component.MainTabPanelImpl?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
           prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="ru.codeunited.wmq.fx.controller.TopSceneControllerImpl">
+          fx:controller="ru.codeunited.wmq.fx.controller.TopSceneController">
     <columnConstraints>
         <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" prefWidth="200.0"/>
     </columnConstraints>

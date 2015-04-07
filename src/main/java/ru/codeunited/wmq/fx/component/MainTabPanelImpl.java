@@ -12,13 +12,18 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.04.15.
  */
-@GCustomComponent(binding = MainTabPanel.class)
-public class MainTabPanelImpl extends AnchorPane implements MainTabPanel {
+@GCustomComponent
+public final class MainTabPanelImpl extends AnchorPane implements MainTabPanel {
 
     @Inject
     private MainTabPanelController controller;
 
     public MainTabPanelImpl() {
+        super();
+    }
+
+    @Override
+    public void initialize() {
         System.out.println(getClass().getName() + " is up");
         FXMLLoader fxmlLoader = new FXMLLoader(MainTabPanelImpl.class.getResource("mainTab.fxml"));
 
@@ -31,5 +36,4 @@ public class MainTabPanelImpl extends AnchorPane implements MainTabPanel {
             throw new RuntimeException(exception);
         }
     }
-
 }

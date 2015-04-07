@@ -2,12 +2,17 @@ package ru.codeunited.wmq.fx.component;
 
 import javafx.util.Builder;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 06.04.15.
  */
-public final class MainTabPaneBuilder implements Builder<MainTabPanel> {
+@Singleton
+public final class MainTabPanelImplBuilder implements Builder<MainTabPanel> {
 
     private String minHeight;
 
@@ -17,7 +22,10 @@ public final class MainTabPaneBuilder implements Builder<MainTabPanel> {
 
     private String prefWidth;
 
-    public MainTabPaneBuilder() {
+    @Inject
+    private Provider<MainTabPanel> mainTabPanelProvider;
+
+    public MainTabPanelImplBuilder() {
         super();
     }
 
@@ -55,7 +63,13 @@ public final class MainTabPaneBuilder implements Builder<MainTabPanel> {
 
     @Override
     public MainTabPanel build() {
-        return new MainTabPanelImpl();
+        MainTabPanel panel = mainTabPanelProvider.get();
+        panel.setMinHeight(Double.valueOf(getMinHeight()));
+        panel.setMinWidth(Double.valueOf(getMinWidth()));
+        panel.setPrefHeight(Double.valueOf(getPrefHeight()));
+        panel.setPrefWidth(Double.valueOf(getPrefWidth()));
+        panel.initialize();
+        return panel;
     }
 
 }

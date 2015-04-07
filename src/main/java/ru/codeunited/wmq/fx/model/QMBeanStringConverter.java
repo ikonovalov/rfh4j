@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.fx.controller;
+package ru.codeunited.wmq.fx.model;
 
 import javafx.util.StringConverter;
 import ru.codeunited.wmq.RFHFX;

@@ -14,7 +14,7 @@ import javafx.fxml.FXML;
 public class TopSceneControllerImpl extends ContextAwareController implements TopSceneController {
 
     public TopSceneControllerImpl() {
-
+        System.out.println(TopSceneControllerImpl.class.getName() + " is up");
     }
 
     @FXML public void closeApplication(ActionEvent event) throws Exception {
