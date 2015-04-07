@@ -18,7 +18,7 @@ public final class MainTabPanelImpl extends AnchorPane implements MainTabPanel {
     @Inject
     private MainTabPanelController controller;
 
-    public MainTabPanelImpl() {
+    MainTabPanelImpl() {
         super();
     }
 

@@ -11,9 +11,9 @@ import javafx.fxml.FXML;
  * Created by ikonovalov on 19.03.15.
  */
 @Singleton
-public class TopSceneControllerImpl extends ContextAwareController implements TopSceneController {
+public final class TopSceneControllerImpl extends ContextAwareController implements TopSceneController {
 
-    public TopSceneControllerImpl() {
+    TopSceneControllerImpl() {
         System.out.println(TopSceneControllerImpl.class.getName() + " is up");
     }
 

@@ -25,7 +25,7 @@ public final class MainTabPanelImplBuilder implements Builder<MainTabPanel> {
     @Inject
     private Provider<MainTabPanel> mainTabPanelProvider;
 
-    public MainTabPanelImplBuilder() {
+    MainTabPanelImplBuilder() {
         super();
     }
 

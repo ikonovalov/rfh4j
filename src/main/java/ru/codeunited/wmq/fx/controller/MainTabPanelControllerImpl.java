@@ -32,7 +32,7 @@ public final class MainTabPanelControllerImpl extends ContextAwareController imp
 
     @FXML private Text underQtext;
 
-    public MainTabPanelControllerImpl() throws IOException {
+    MainTabPanelControllerImpl() throws IOException {
         System.out.println(getClass().getName() + " is up");
     }
 
