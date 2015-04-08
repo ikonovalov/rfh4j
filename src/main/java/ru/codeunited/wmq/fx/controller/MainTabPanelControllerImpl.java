@@ -1,10 +1,13 @@
 package ru.codeunited.wmq.fx.controller;
 
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.text.Text;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.fx.QMInteractionException;
+import ru.codeunited.wmq.fx.bus.ShutdownEvent;
 import ru.codeunited.wmq.fx.model.*;
 
 import javax.inject.Inject;
@@ -35,6 +38,8 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
 
     @Inject private MainTabModel mainTab;
 
+    @Inject private EventBus eventBus;
+
     MainTabPanelControllerImpl() throws IOException {
 
     }
@@ -45,6 +50,8 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // perform registration in the bus
+        eventBus.register(this);
 
         // add queue manager to the model
         // TODO only single queue manager now supported.
@@ -78,12 +85,17 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
         queueListControl.getSelectionModel().selectFirst();
     }
 
+    @Subscribe public void onShutdown(ShutdownEvent event) throws QMInteractionException {
+        shutdownConnections();
+    }
+
     @Override
     @FXML public void shutdownConnections() throws QMInteractionException {
         List<QueueManagerBean> qmgrs = queueManagerListControl.getItems();
         for (QueueManagerBean qmgr: qmgrs) {
             qmgr.disconnect();
         }
+        System.out.println("Connections offline");
     }
 
     @Override

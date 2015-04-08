@@ -1,7 +1,9 @@
 package ru.codeunited.wmq.fx;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.name.Names;
 import javafx.fxml.JavaFXBuilderFactory;
 import javafx.util.Builder;
@@ -57,6 +59,12 @@ public class GuiceModule extends AbstractModule {
     @Provides
     ExecutionContext executionContext() {
         return context;
+    }
+
+    @Provides
+    @Singleton /** provides EventBus singleton */
+    EventBus eventBus() {
+        return new EventBus();
     }
 
 }
