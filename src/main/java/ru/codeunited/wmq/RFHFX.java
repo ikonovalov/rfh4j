@@ -12,6 +12,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.fx.*;
+import ru.codeunited.wmq.fx.controller.TopSceneController;
 import ru.codeunited.wmq.fx.model.MainTabModelImpl;
 
 /**
@@ -55,7 +56,7 @@ public class RFHFX extends Application {
 
         // Load root layout from fxml file.
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("fx/application.fxml"));
-
+        loader.setController(injector.getInstance(TopSceneController.class));
         loader.setControllerFactory(param -> injector.getInstance(param));
         loader.setBuilderFactory(injector.getInstance(BuilderFactory.class));
 
