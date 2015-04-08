@@ -39,6 +39,10 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
 
     }
 
+    private <T> T getSelected(ComboBox<T> combo) {
+        return combo.getValue();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -67,7 +71,6 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
         final QueueManagerBean qm = queueManagerListControl.getSelectionModel().getSelectedItem();
         try {
             qm.connect();
-            qm.afterConnect();
         } catch (QMInteractionException e) {
             e.printStackTrace();
         }
@@ -75,12 +78,19 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
         queueListControl.getSelectionModel().selectFirst();
     }
 
+    @Override
     @FXML public void shutdownConnections() throws QMInteractionException {
-        // close all connections
         List<QueueManagerBean> qmgrs = queueManagerListControl.getItems();
         for (QueueManagerBean qmgr: qmgrs) {
             qmgr.disconnect();
         }
+    }
+
+    @Override
+    @FXML public void reloadQueues() throws QMInteractionException {
+        QueueManagerBean queueManagerBean = getSelected(queueManagerListControl);
+        queueListControl.setItems(queueManagerBean.reloadQueues());
+        queueListControl.getSelectionModel().selectFirst();
     }
 
 }

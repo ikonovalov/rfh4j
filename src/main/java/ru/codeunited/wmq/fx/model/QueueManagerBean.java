@@ -49,13 +49,13 @@ public class QueueManagerBean {
         this.name.set(Objects.requireNonNull(name));
     }
 
-    public void afterConnect() throws QMInteractionException {
+    private void postConnectOperations() throws QMInteractionException {
         try {
             this.inspector = new ManagerInspectorImpl(context.getQueueManager());
         } catch (MQException e) {
             throw new QMInteractionException("Inspector creation failure", e);
         }
-        reloadQueuesList();
+        reloadQueues();
 
     }
 
@@ -63,7 +63,11 @@ public class QueueManagerBean {
         final CommandChain chain = new CommandChain(context);
         chain.addCommand(new MQConnectCommand());
         try {
-            return chain.execute();
+            ReturnCode rc =  chain.execute();
+            if (rc == ReturnCode.SUCCESS) {
+                postConnectOperations();
+            }
+            return rc;
         } catch (CommandGeneralException | MissedParameterException | IncompatibleOptionsException | NestedHandlerException e) {
             throw  new QMInteractionException("Connect failed. ", e);
         }
@@ -87,7 +91,7 @@ public class QueueManagerBean {
      * Update queues list for current queue manager.
      * @throws QMInteractionException
      */
-    protected void reloadQueuesList() throws QMInteractionException {
+    public ObservableList<QueueBean> reloadQueues() throws QMInteractionException {
         try {
             List<Queue> listOfQueues = inspector.listLocalQueues();
             queues = FXCollections.observableArrayList();
@@ -100,6 +104,7 @@ public class QueueManagerBean {
         } catch (MQException | IOException e) {
             throw new QMInteractionException("Queue lookup failure. ", e);
         }
+        return queues;
     }
 
     public String getName() {

@@ -9,5 +9,10 @@ import javafx.event.ActionEvent;
  */
 public interface TopSceneController {
 
+    /**
+     * Close application.
+     * @param event
+     * @throws Exception
+     */
     void closeApplication(ActionEvent event) throws Exception;
 }

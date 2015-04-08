@@ -10,5 +10,15 @@ import ru.codeunited.wmq.fx.QMInteractionException;
  */
 public interface MainTabPanelController extends Initializable {
 
+    /**
+     * Close all QueueManagers
+     * @throws QMInteractionException
+     */
     void shutdownConnections() throws QMInteractionException;
+
+    /**
+     * Reload queues list for currently selected queue manager.
+     * @throws QMInteractionException
+     */
+    void reloadQueues() throws QMInteractionException;
 }
