@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="-1.0" prefWidth="-1.0" styleClass="theme, AnchorPaneHome" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="theme, AnchorPaneHome" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
         <VBox layoutX="4.0" layoutY="14.0" prefHeight="200.0" prefWidth="332.0">
             <children>
@@ -22,10 +27,13 @@
             <HBox prefHeight="18.0" prefWidth="322.0">
                <children>
                       <ComboBox fx:id="queueListControl" editable="true" prefHeight="25.0" prefWidth="275.0" />
-                  <Button mnemonicParsing="false" onMouseClicked="#reloadQueues" text="RQ" textAlignment="CENTER">
+                  <Button mnemonicParsing="false" onMouseClicked="#reloadQueues" textAlignment="CENTER">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
                   </Button>
                </children>
                <VBox.margin>
