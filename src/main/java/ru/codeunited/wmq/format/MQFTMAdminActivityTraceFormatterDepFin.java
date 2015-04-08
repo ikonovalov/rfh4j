@@ -30,8 +30,7 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
     private final static ActivityRecordFilter OPERATION_FILTER = new ActivityRecordXFOperationFilter(
             MQXFOperation.MQXF_GET,
             MQXFOperation.MQXF_PUT,
-            MQXFOperation.MQXF_PUT1,
-            MQXFOperation.MQXF_OPEN
+            MQXFOperation.MQXF_PUT1
     );
 
 
