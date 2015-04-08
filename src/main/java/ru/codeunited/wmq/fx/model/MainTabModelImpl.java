@@ -2,6 +2,7 @@ package ru.codeunited.wmq.fx.model;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import ru.codeunited.wmq.fx.Draft;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -15,6 +16,7 @@ public final class MainTabModelImpl implements MainTabModel {
 
     private final ObservableList<QueueManagerBean> qmList;
 
+    @Draft
     @Inject private Provider<QueueManagerBean> queueManagerBeanProvider; /* should be prototype */
 
     public MainTabModelImpl() {

@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.fx.QMInteractionException;
+import ru.codeunited.wmq.fx.Draft;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
@@ -18,8 +19,6 @@ import javax.inject.Provider;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-
-import static ru.codeunited.wmq.RFHConstants.OPT_QMANAGER;
 
 /**
  * codeunited.ru
@@ -38,7 +37,8 @@ public class QueueManagerBean {
 
     @Inject private ExecutionContext context;
 
-    @Inject private Provider<QueueBean> queueBeanProvider;
+    @Inject @Draft
+    private Provider<QueueBean> queueBeanProvider;
 
     //==============================================================
     public QueueManagerBean() {

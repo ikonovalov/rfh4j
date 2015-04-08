@@ -35,8 +35,8 @@ public class GuiceModule extends AbstractModule {
 
         // model factory
         bind(MainTabModel.class).to(MainTabModelImpl.class);
-        bind(QueueManagerBean.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueManagerBean.class));
-        bind(QueueBean.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueBean.class));
+        bind(QueueManagerBean.class).annotatedWith(Draft.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueManagerBean.class));
+        bind(QueueBean.class).annotatedWith(Draft.class).toConstructor(ReflectionUtil.getDefaultConstructor(QueueBean.class));
 
         // Component builder factories
         bind(BuilderFactory.class).annotatedWith(DefaultBuilderFactory.class).to(JavaFXBuilderFactory.class);
