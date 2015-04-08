@@ -154,7 +154,8 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     }
 
     public boolean isTransmissionMessage() {
-        return MQFMT_XMIT_Q_HEADER.equals(decodedParameter(MQCACH_FORMAT_NAME));
+        /* because MQFMT_XMIT_Q_HEADER = "MQXMIT " - with a trailing space. */
+        return "MQXMIT".equals(decodedParameter(MQCACH_FORMAT_NAME));
     }
 
     @Override
