@@ -4,6 +4,8 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
 
+import java.io.IOException;
+
 import static com.ibm.mq.constants.MQConstants.*;
 
 /**
@@ -21,6 +23,13 @@ public class QueueInspectorImpl implements QueueInspector {
         this.queue = queueManager.accessQueue(queueName, MQOO_INQUIRE | MQOO_BROWSE | MQOO_FAIL_IF_QUIESCING); // MQOO_INPUT_SHARED?
     }
 
+    public void close() throws IOException {
+        try {
+            queue.close();
+        } catch (MQException e) {
+            throw new IOException(e);
+        }
+    }
 
     @Override
     public int depth() throws MQException {

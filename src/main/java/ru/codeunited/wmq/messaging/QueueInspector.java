@@ -2,12 +2,14 @@ package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
 
+import java.io.Closeable;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public interface QueueInspector {
+public interface QueueInspector extends Closeable {
 
     int depth() throws MQException;
 
