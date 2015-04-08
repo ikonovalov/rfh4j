@@ -86,7 +86,9 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
     }
 
     @Subscribe public void onShutdown(ShutdownEvent event) throws QMInteractionException {
+        System.out.println("onShutdown <- " + event.getSource().getClass().getName());
         shutdownConnections();
+        System.out.println("Connections offline");
     }
 
     @Override
@@ -95,7 +97,6 @@ public final class MainTabPanelControllerImpl implements MainTabPanelController 
         for (QueueManagerBean qmgr: qmgrs) {
             qmgr.disconnect();
         }
-        System.out.println("Connections offline");
     }
 
     @Override

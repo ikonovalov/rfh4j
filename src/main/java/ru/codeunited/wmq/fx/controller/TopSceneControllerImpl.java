@@ -24,7 +24,6 @@ public final class TopSceneControllerImpl implements TopSceneController {
 
     @Override
     @FXML public void closeApplication(ActionEvent event) throws Exception {
-        eventBus.post(new ShutdownEvent(this));
         // shutdown platform
         Platform.exit();
     }

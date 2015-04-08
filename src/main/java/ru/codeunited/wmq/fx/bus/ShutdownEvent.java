@@ -12,4 +12,8 @@ public final class ShutdownEvent implements BusEvent {
     public ShutdownEvent(Object source) {
         this.source = source;
     }
+
+    public Object getSource() {
+        return source;
+    }
 }

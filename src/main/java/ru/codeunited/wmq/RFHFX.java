@@ -1,5 +1,6 @@
 package ru.codeunited.wmq;
 
+import com.google.common.eventbus.EventBus;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.fx.*;
+import ru.codeunited.wmq.fx.bus.ShutdownEvent;
 import ru.codeunited.wmq.fx.controller.TopSceneController;
 import ru.codeunited.wmq.fx.model.MainTabModelImpl;
 
@@ -25,6 +27,8 @@ public class RFHFX extends Application {
 
     // ---------------------------------------
     private MainTabModelImpl mainTab;
+
+    private EventBus eventBus;
 
     public static void main(String[] args) throws ParseException {
         up(args);
@@ -41,6 +45,7 @@ public class RFHFX extends Application {
 
     @Override
     public void stop() throws Exception {
+        eventBus.post(new ShutdownEvent(this)); // notify about shutdown request
         super.stop();
     }
 
@@ -53,6 +58,9 @@ public class RFHFX extends Application {
         final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
 
         final Injector injector = Guice.createInjector(new GuiceModule(new FXExecutionContext(cli)));
+
+        // set event bus instance
+        eventBus = injector.getInstance(EventBus.class);
 
         // Load root layout from fxml file.
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("fx/application.fxml"));
