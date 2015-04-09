@@ -3,6 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import ru.codeunited.wmq.fx.component.MainTabPanelImpl?>
+
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0"
           prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -39,15 +40,12 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close"/>
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Delete"/>
+                        <MenuItem mnemonicParsing="false" text="Save..."/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
                     <items>
+                        <MenuItem mnemonicParsing="false" text="Help"/>
                         <MenuItem mnemonicParsing="false" text="About"/>
                     </items>
                 </Menu>
