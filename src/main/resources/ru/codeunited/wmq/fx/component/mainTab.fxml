@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="477.0" prefWidth="557.0" styleClass="theme, AnchorPaneHome" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" styleClass="theme, AnchorPaneHome" type="javafx.scene.layout.AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
     <children>
-        <VBox layoutX="4.0" layoutY="14.0" prefHeight="463.0" prefWidth="550.0">
+        <VBox layoutX="4.0" layoutY="14.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <children>
                 <Label text="Queue manager">
                     <padding>
@@ -25,16 +25,16 @@
                         <Insets bottom="2.0" top="2.0" />
                     </padding>
                 </Label>
-                <HBox prefHeight="18.0" prefWidth="322.0">
+                <HBox prefHeight="25.0">
                     <children>
-                        <ComboBox fx:id="queueListControl" editable="true" prefHeight="25.0" prefWidth="275.0" />
-                        <Button mnemonicParsing="false" onMouseClicked="#reloadQueues" textAlignment="CENTER">
+                        <ComboBox fx:id="queueListControl" editable="true" prefWidth="275.0" />
+                        <Button ellipsisString="" mnemonicParsing="false" onMouseClicked="#reloadQueues" prefHeight="25.0" prefWidth="25.0" textAlignment="CENTER">
                             <HBox.margin>
                                 <Insets left="10.0" />
                             </HBox.margin>
-                            <graphic>
-                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
-                            </graphic>
+                     <graphic>
+                        <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic>
                         </Button>
                     </children>
                     <VBox.margin>
@@ -42,7 +42,7 @@
                     </VBox.margin>
                 </HBox>
                 <Text fx:id="underQtext" strokeType="OUTSIDE" strokeWidth="0.0" text="queue info" wrappingWidth="271.7294921875" />
-                <HBox>
+                <HBox prefHeight="40.0">
                     <children>
                         <Button mnemonicParsing="false" text="GET">
                             <HBox.margin>
@@ -59,7 +59,7 @@
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
                 </HBox>
-                <TextArea prefHeight="262.0" prefWidth="540.0">
+                <TextArea prefHeight="280.0">
                     <font>
                         <Font size="10.0" />
                     </font>
@@ -67,7 +67,7 @@
                   <Insets />
                </VBox.margin>
                 </TextArea>
-                <HBox prefHeight="22.0" prefWidth="540.0">
+                <HBox prefHeight="30.0" prefWidth="540.0">
                     <children>
                         <RadioButton mnemonicParsing="false" selected="true" text="Raw">
                             <toggleGroup>
