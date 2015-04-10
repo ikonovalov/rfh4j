@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static ru.codeunited.wmq.CLITestSupport.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.*;
 
 /**
  * codeunited.ru

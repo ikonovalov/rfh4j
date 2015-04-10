@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.commands;
 
-import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
@@ -17,7 +16,7 @@ import static org.hamcrest.CoreMatchers.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 import static ru.codeunited.wmq.RFHConstants.*;
 
 /**

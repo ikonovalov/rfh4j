@@ -1,6 +1,5 @@
 package ru.codeunited.wmq;
 
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
@@ -22,7 +21,7 @@ import java.util.logging.Logger;
 import static com.ibm.mq.constants.CMQC.MQMO_MATCH_MSG_ID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru

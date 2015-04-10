@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import static ru.codeunited.wmq.CLITestSupport.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.*;
 import static ru.codeunited.wmq.RFHConstants.*;
 
 /**

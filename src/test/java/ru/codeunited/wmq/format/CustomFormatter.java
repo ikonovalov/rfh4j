@@ -5,14 +5,13 @@ import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
-import ru.codeunited.wmq.CLITestSupport;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.mock.MQMessageMock;
 
 import java.io.IOException;
 
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 
 import static org.junit.Assert.*;

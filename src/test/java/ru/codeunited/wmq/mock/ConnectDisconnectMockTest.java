@@ -2,13 +2,11 @@ package ru.codeunited.wmq.mock;
 
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
-import ru.codeunited.wmq.CLITestSupport;
-import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
-import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru

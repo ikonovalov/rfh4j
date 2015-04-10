@@ -13,7 +13,7 @@ import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.concurrent.ExecutionException;
 
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru

@@ -1,9 +1,11 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.frame;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import org.apache.commons.cli.*;
+import ru.codeunited.wmq.ContextModule;
+import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.commands.*;
@@ -49,13 +51,4 @@ public final class CLITestSupport {
         final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
         return prepareCommandLine(args);
     }
-
-    public static CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
-        final String[] args = String.format("%s --dstq RFH.QTEST.QGENERAL1", "-Q DEFQM -c JVM.DEF.SVRCONN").split(" ");
-        return prepareCommandLine(args);
-    }
-
-
-
-
 }
