@@ -20,8 +20,6 @@ import java.util.concurrent.ExecutionException;
  */
 public final class CLITestSupport {
 
-
-
     public static CommandLineParser getCliParser() {
         return CLIFactory.createParser();
     }

@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import ru.codeunited.wmq.ContextModule;
-import ru.codeunited.wmq.GuiceContextTestRunner;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceModules;

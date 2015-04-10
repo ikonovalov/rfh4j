@@ -1,4 +1,4 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.frame;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -10,6 +10,7 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceModules;
@@ -45,6 +46,8 @@ public class GuiceContextTestRunner extends BlockJUnit4ClassRunner {
     protected Object createTest() throws Exception {
         return super.createTest();
     }
+
+
 
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {

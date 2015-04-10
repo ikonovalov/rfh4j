@@ -6,9 +6,15 @@ import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import ru.codeunited.wmq.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.frame.ContextInjection;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
+import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+
+import javax.inject.Inject;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
@@ -24,9 +30,13 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 29.11.14.
  */
+@RunWith(GuiceContextTestRunner.class)
+@GuiceModules({ContextModule.class, CommandsModule.class})
 public class GetCommandTest extends QueueingCapability {
 
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";
+
+    @Inject private ExecutionPlanBuilder executionPlanBuilder;
 
     @Test(expected = IncompatibleOptionsException.class)
     public void getIncompatibleParamsStreamAll() throws ParseException, IncompatibleOptionsException, CommandGeneralException, MissedParameterException, NestedHandlerException {
@@ -96,12 +106,9 @@ public class GetCommandTest extends QueueingCapability {
     }
 
     @Test
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN --srcq RFH.QTEST.QGENERAL1 --stream --limit -1")
     public void initListenerMode() throws MissedParameterException, ParseException {
-        CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", "-Q DEFQM -c JVM.DEF.SVRCONN", QUEUE));
-        ExecutionContext executionContext = new CLIExecutionContext(cl);
-        setup(executionContext);
 
-        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
         CommandChain chain = executionPlanBuilder.buildChain();
         List<Command> commands = chain.getCommandChain();
         MQGetCommand getCmd = (MQGetCommand) commands.get(1);
