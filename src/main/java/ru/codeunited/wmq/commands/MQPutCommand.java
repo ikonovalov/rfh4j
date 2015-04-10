@@ -5,7 +5,7 @@ import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.handler.*;
 import ru.codeunited.wmq.messaging.MessageProducer;
-import ru.codeunited.wmq.messaging.MessageProducerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import java.io.BufferedInputStream;

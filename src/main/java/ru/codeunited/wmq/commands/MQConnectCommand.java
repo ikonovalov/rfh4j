@@ -6,9 +6,7 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.MQCLIPropertiesComposer;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
-import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
-
-import javax.inject.Inject;
+import ru.codeunited.wmq.messaging.impl.WMQDefaultConnectionFactory;
 
 import static ru.codeunited.wmq.RFHConstants.*;
 import java.util.Properties;

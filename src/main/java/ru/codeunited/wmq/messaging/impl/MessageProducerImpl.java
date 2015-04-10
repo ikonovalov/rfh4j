@@ -1,6 +1,8 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.MessageTools;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -1,8 +1,9 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
+import ru.codeunited.wmq.messaging.QueueInspector;
 
 import java.io.IOException;
 

@@ -3,6 +3,8 @@ package ru.codeunited.wmq.messaging;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
+import ru.codeunited.wmq.messaging.MessageSelector;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
 /**
  * codeunited.ru

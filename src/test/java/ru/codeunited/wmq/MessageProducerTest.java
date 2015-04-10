@@ -7,6 +7,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.messaging.*;
+import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
+import ru.codeunited.wmq.messaging.impl.QueueInspectorImpl;
 
 import java.io.IOException;
 

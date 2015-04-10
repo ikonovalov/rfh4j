@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
-import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
+import ru.codeunited.wmq.messaging.impl.WMQDefaultConnectionFactory;
 
 import java.util.Properties;
 import java.util.logging.Logger;

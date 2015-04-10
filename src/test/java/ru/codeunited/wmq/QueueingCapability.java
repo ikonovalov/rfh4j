@@ -9,6 +9,11 @@ import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.*;
+import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
+import ru.codeunited.wmq.messaging.impl.QueueInspectorImpl;
 
 import java.io.IOException;
 import java.util.logging.Logger;

@@ -7,7 +7,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.handler.*;
 import ru.codeunited.wmq.messaging.MessageConsumer;
-import ru.codeunited.wmq.messaging.MessageConsumerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 

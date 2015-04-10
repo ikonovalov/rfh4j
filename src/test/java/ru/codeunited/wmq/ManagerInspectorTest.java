@@ -3,7 +3,7 @@ package ru.codeunited.wmq;
 import com.ibm.mq.MQException;
 import org.junit.Test;
 import ru.codeunited.wmq.messaging.ManagerInspector;
-import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
+import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 import ru.codeunited.wmq.messaging.pcf.Queue;
 

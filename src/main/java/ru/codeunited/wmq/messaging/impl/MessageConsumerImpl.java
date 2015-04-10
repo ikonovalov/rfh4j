@@ -1,6 +1,9 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageSelector;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
 import static com.ibm.mq.constants.MQConstants.*;
 

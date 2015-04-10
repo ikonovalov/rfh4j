@@ -1,9 +1,11 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFMessageAgent;
+import ru.codeunited.wmq.messaging.ManagerInspector;
+import ru.codeunited.wmq.messaging.QueueInspector;
 import ru.codeunited.wmq.messaging.pcf.Filter;
 import ru.codeunited.wmq.messaging.pcf.Queue;
 
