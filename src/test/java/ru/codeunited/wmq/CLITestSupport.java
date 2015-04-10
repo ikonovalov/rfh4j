@@ -29,7 +29,7 @@ public class CLITestSupport {
     }
 
     protected static Injector getStandartInjector(ExecutionContext context) {
-        return Guice.createInjector(new CommandsModule(context));
+        return Guice.createInjector(new ContextModule(context), new CommandsModule());
     }
 
     protected CommandLine prepareCommandLine(String line) throws ParseException {
@@ -66,7 +66,7 @@ public class CLITestSupport {
      * @return
      */
     protected CommandChainImpl surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Class surroundableClassAnnotation) {
-        Injector injector = Guice.createInjector(new CommandsModule(context));
+        Injector injector = getStandartInjector(context);
 
         CommandChain maker = injector.getInstance(CommandChain.class);
         Command cmdConnect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));

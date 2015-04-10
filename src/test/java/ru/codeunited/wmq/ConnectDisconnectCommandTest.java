@@ -44,7 +44,7 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
     }
 
     private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
-        Injector injector = Guice.createInjector(new CommandsModule(new CLIExecutionContext(commandLine)));
+        Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
         final MQConnectCommand connectCommand = (MQConnectCommand) injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());

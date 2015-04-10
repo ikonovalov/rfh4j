@@ -13,12 +13,6 @@ import ru.codeunited.wmq.ExecutionPlanBuilder;
  */
 public class CommandsModule extends AbstractModule {
 
-    private final ExecutionContext context;
-
-    public CommandsModule(ExecutionContext context) {
-        this.context = context;
-    }
-
     @Override
     protected void configure() {
         bind(ExecutionPlanBuilder.class).to(DefaultExecutionPlanBuilder.class);
@@ -32,10 +26,5 @@ public class CommandsModule extends AbstractModule {
         bind(Command.class).annotatedWith(InspectCommand.class).to(MQInspectCommand.class);
 
 
-    }
-
-    @Provides
-    ExecutionContext context() {
-        return context;
     }
 }
