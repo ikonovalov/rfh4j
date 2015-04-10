@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
@@ -13,6 +14,8 @@ import ru.codeunited.wmq.handler.NestedHandlerException;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
+import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc_dstq;
 import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
@@ -34,9 +37,14 @@ public class PutCommandTest extends QueueingCapability {
      * --dstq was missed.
      */
     public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
-        final CommandLine commandLine = getCommandLine_With_Qc();
+        setup(new CLIExecutionContext(getCommandLine_With_Qc()));
         // missed --dstq
-        final CommandChainImpl maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), PutCommand.class);
+        CommandChain maker = injector.getInstance(CommandChain.class)
+                .addCommand(injector.getInstance(Key.get(Command.class, ConnectCommand.class)))
+                .addCommand(injector.getInstance(Key.get(Command.class, PutCommand.class)))
+                .addCommand(injector.getInstance(Key.get(Command.class, DisconnectCommand.class)));
+
+
         boolean exceptionOccured = false;
         try {
             maker.execute();
@@ -57,15 +65,18 @@ public class PutCommandTest extends QueueingCapability {
      * -t or -p was missed.
      */
     public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
-        final CommandLine commandLine = getCommandLine_With_Qc_dstq();
-        final CommandChainImpl maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), PutCommand.class);
+        setup(getCommandLine_With_Qc_dstq());
+        CommandChain maker = injector.getInstance(CommandChain.class)
+                .addCommand(injector.getInstance(Key.get(Command.class, ConnectCommand.class)))
+                .addCommand(injector.getInstance(Key.get(Command.class, PutCommand.class)))
+                .addCommand(injector.getInstance(Key.get(Command.class, DisconnectCommand.class)));
         boolean exceptionOccured = false;
         try {
             maker.execute();
         } catch (MissedParameterException pe) {
-            final String[] ptParams = {OPT_PAYLOAD, OPT_STREAM, "text"};
+            final String[] ptParams = {OPT_PAYLOAD, OPT_STREAM, OPT_TEXT};
             assertTrue(
-                    String.format("Parameter --%s or --%s or --%s are missed, but we got another error here. [%s]", "text", OPT_PAYLOAD, OPT_STREAM, pe.getMessage()),
+                    String.format("Parameter --%s or --%s or --%s are missed, but we got another error here. [%s]", OPT_TEXT, OPT_PAYLOAD, OPT_STREAM, pe.getMessage()),
                     Arrays.equals(pe.getLongNames(), ptParams));
             exceptionOccured = true;
         }

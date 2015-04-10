@@ -8,11 +8,12 @@ import java.util.List;
  * Created by ikonovalov on 10.04.15.
  */
 public interface CommandChain extends Command {
-    CommandChainImpl addCommand(Command command);
 
-    CommandChainImpl addCommand(int index, Command command);
+    CommandChain addCommand(Command command);
 
-    CommandChainImpl addAfter(Command newCommand, Command afterThat);
+    CommandChain addCommand(int index, Command command);
+
+    CommandChain addAfter(Command newCommand, Command afterThat);
 
     List<Command> getCommandChain();
 }

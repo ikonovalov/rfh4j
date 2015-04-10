@@ -9,13 +9,14 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
-public class ChainCommandTest extends CLITestSupport {
+public class ChainCommandTest {
 
     @Test
     public void addCommandToChain() throws ParseException {

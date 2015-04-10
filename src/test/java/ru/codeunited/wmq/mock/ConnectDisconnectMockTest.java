@@ -8,12 +8,14 @@ import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
+import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 26.10.14.
  */
-public class ConnectDisconnectMockTest extends CLITestSupport {
+public class ConnectDisconnectMockTest {
 
     @Test
     public void connectDisconnectWithMockFactory() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {

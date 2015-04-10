@@ -37,7 +37,7 @@ public class RFH4J {
                 RFHFX.up(args);
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
-                final Injector injector = Guice.createInjector(new CommandsModule(context));
+                final Injector injector = Guice.createInjector(new ContextModule(context), new CommandsModule());
 
                 context.setConsoleWriter(consoleWriter);
                 final ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);

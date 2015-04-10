@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 import static com.ibm.mq.constants.CMQC.MQMO_MATCH_MSG_ID;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
+import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru
@@ -48,8 +49,7 @@ public class MessageConsumerTest extends QueueingCapability {
 
         putMessages(QUEUE, MESSAGE);
 
-        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(getCommandLine_With_Qc());
         Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command cmd2 = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
@@ -70,8 +70,7 @@ public class MessageConsumerTest extends QueueingCapability {
     public void accessQueueWithWait1000() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
         putMessages(QUEUE, MESSAGE);
 
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(getCommandLine_With_Qc());
         Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
@@ -86,7 +85,8 @@ public class MessageConsumerTest extends QueueingCapability {
     @Test(expected = NoMessageAvailableException.class)
     public void accessQueueWithNoMessagesException() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(context);
+
         Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
@@ -105,7 +105,8 @@ public class MessageConsumerTest extends QueueingCapability {
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
 
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(context);
+
         Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
@@ -136,7 +137,8 @@ public class MessageConsumerTest extends QueueingCapability {
         messageID[10] = 0;
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(context);
+
         Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
@@ -163,7 +165,8 @@ public class MessageConsumerTest extends QueueingCapability {
         cleanupQueue(QUEUE);
 
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(context);
+
         Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
@@ -185,7 +188,8 @@ public class MessageConsumerTest extends QueueingCapability {
         cleanupQueue(QUEUE);
 
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(context);
+
         Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
