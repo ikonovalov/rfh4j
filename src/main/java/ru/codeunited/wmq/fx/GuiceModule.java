@@ -26,10 +26,8 @@ import ru.codeunited.wmq.fx.model.*;
  */
 public class GuiceModule extends AbstractModule {
 
-    private final ExecutionContext context;
-
-    public GuiceModule(ExecutionContext context) {
-        this.context = context;
+    public GuiceModule() {
+        super();
     }
 
     @Override
@@ -54,11 +52,6 @@ public class GuiceModule extends AbstractModule {
         bind(MainTabPanel.class).to(MainTabPanelImpl.class);
         bind(Builder.class).annotatedWith(Names.named(MainTabPanelImpl.class.getName())).to(MainTabPanelImplBuilder.class);
         bind(MainTabPanelController.class).to(MainTabPanelControllerImpl.class);
-    }
-
-    @Provides
-    ExecutionContext executionContext() {
-        return context;
     }
 
     @Provides

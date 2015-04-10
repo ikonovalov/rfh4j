@@ -40,6 +40,14 @@ public class QueueManagerBean {
     @Inject @Draft
     private Provider<QueueBean> queueBeanProvider;
 
+    @Inject CommandChain commandChain;
+
+    @ConnectCommand
+    @Inject Command connectCommand;
+
+    @DisconnectCommand
+    @Inject Command disconnectCommand;
+
     //==============================================================
     public QueueManagerBean() {
         super();
@@ -60,10 +68,9 @@ public class QueueManagerBean {
     }
 
     public ReturnCode connect() throws QMInteractionException {
-        final CommandChain chain = new CommandChain(context);
-        chain.addCommand(new MQConnectCommand());
+        commandChain.addCommand(connectCommand);
         try {
-            ReturnCode rc =  chain.execute();
+            ReturnCode rc =  commandChain.execute();
             if (rc == ReturnCode.SUCCESS) {
                 postConnectOperations();
             }
@@ -74,10 +81,9 @@ public class QueueManagerBean {
     }
 
     public ReturnCode disconnect() throws QMInteractionException {
-        final CommandChain chain = new CommandChain(context);
-        chain.addCommand(new MQDisconnectCommand());
+        commandChain.addCommand(disconnectCommand);
         try {
-            return chain.execute();
+            return commandChain.execute();
         } catch (CommandGeneralException | MissedParameterException | IncompatibleOptionsException | NestedHandlerException e) {
             throw  new QMInteractionException("Disconnect operation failed. ", e);
         }

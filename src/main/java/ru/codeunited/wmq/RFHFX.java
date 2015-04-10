@@ -12,6 +12,7 @@ import javafx.util.BuilderFactory;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
+import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.fx.*;
 import ru.codeunited.wmq.fx.bus.ShutdownEvent;
 import ru.codeunited.wmq.fx.controller.TopSceneController;
@@ -54,10 +55,10 @@ public class RFHFX extends Application {
 
         primaryZtage.setTitle("RFHFX");
 
-        final String[] args = getParameters().getRaw().toArray(new String[0]);
-        final CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
-
-        final Injector injector = Guice.createInjector(new GuiceModule(new FXExecutionContext(cli)));
+        String[] args = getParameters().getRaw().toArray(new String[0]);
+        CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
+        ExecutionContext context = new FXExecutionContext(cli);
+        final Injector injector = Guice.createInjector(new CommandsModule(context), new GuiceModule());
 
         // set event bus instance
         eventBus = injector.getInstance(EventBus.class);
