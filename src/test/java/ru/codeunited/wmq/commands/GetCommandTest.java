@@ -17,6 +17,7 @@ import static org.hamcrest.CoreMatchers.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
 import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
@@ -83,7 +84,7 @@ public class GetCommandTest extends QueueingCapability {
     public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
-        Injector injector = getStandartInjector(executionContext);
+        setup(executionContext);
         final ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
         try {
             List<Command> commands = executionPlanBuilder.buildChain().getCommandChain();
@@ -97,9 +98,9 @@ public class GetCommandTest extends QueueingCapability {
 
     @Test
     public void initListenerMode() throws MissedParameterException, ParseException {
-        CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), QUEUE));
+        CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", "-Q DEFQM -c JVM.DEF.SVRCONN", QUEUE));
         ExecutionContext executionContext = new CLIExecutionContext(cl);
-        Injector injector = getStandartInjector(executionContext);
+        setup(executionContext);
 
         ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
         CommandChain chain = executionPlanBuilder.buildChain();
@@ -117,9 +118,9 @@ public class GetCommandTest extends QueueingCapability {
         branch(new Parallel.Branch() {
             @Override
             protected void perform() throws Exception {
-                CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 200", connectionParameter(), QUEUE));
+                CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 200", "-Q DEFQM -c JVM.DEF.SVRCONN", QUEUE));
                 ExecutionContext executionContext = new CLIExecutionContext(cl);
-                Injector injector = getStandartInjector(executionContext);
+                setup(executionContext);
 
                 ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
                 CommandChain chain = executionPlanBuilder.buildChain();

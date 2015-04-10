@@ -1,6 +1,5 @@
 package ru.codeunited.wmq;
 
-import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.ibm.mq.MQException;
@@ -17,13 +16,14 @@ import java.util.logging.Logger;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static ru.codeunited.wmq.CLITestSupport.*;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public abstract class QueueingCapability extends CLITestSupport {
+public abstract class QueueingCapability extends GuiceSupport {
 
     private static final Logger LOG = Logger.getLogger(QueueingCapability.class.getName());
 
@@ -39,8 +39,7 @@ public abstract class QueueingCapability extends CLITestSupport {
      * @throws Exception
      */
     public void communication(QueueWork work) throws Exception {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
+        setup(new CLIExecutionContext(getCommandLine_With_Qc()));
         Command connect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 

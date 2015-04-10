@@ -8,13 +8,14 @@ import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIFactory;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
-public class CLIFactoryTest extends CLITestSupport{
+public class CLIFactoryTest {
 
     @Test
     public void optionsTest() {

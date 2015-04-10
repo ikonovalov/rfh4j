@@ -12,6 +12,7 @@ import ru.codeunited.wmq.mock.MQMessageMock;
 
 import java.io.IOException;
 
+import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 
 import static org.junit.Assert.*;
@@ -22,7 +23,7 @@ import static org.hamcrest.CoreMatchers.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 31.03.15.
  */
-public class CustomFormatter extends CLITestSupport {
+public class CustomFormatter {
 
     @Test
     public void loadSucessWithBuildin1() throws ParseException, MQException, IOException {

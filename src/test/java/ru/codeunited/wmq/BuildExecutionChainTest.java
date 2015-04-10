@@ -14,6 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import static ru.codeunited.wmq.CLITestSupport.*;
 import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
@@ -21,7 +22,7 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 26.10.14.
  */
-public class BuildExecutionChainTest extends CLITestSupport {
+public class BuildExecutionChainTest {
 
     public void assertThatCommandInstanceOf(Command command, Class shouldByClass) {
         assertThat(

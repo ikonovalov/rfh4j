@@ -1,7 +1,5 @@
 package ru.codeunited.wmq.commands;
 
-import com.google.inject.Inject;
-import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import java.util.ArrayList;
