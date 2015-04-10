@@ -1,10 +1,10 @@
 package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.MQCLIPropertiesComposer;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
+import ru.codeunited.wmq.messaging.MQLink;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.impl.WMQDefaultConnectionFactory;
 
@@ -43,11 +43,11 @@ public class MQConnectCommand extends AbstractCommand {
 
         // perform connection
         try {
-            final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(connectionOptions);
-            context.setQueueManager(mqQueueManager);
+            MQLink mqLink = connectionFactory.connectQueueManager(connectionOptions);
+            context.setLink(mqLink);
             // check connection
-            if (mqQueueManager.isConnected()) {
-                LOG.fine("[" + mqQueueManager.getName() + "] connected");
+            if (mqLink.getManager().isConnected()) {
+                LOG.fine("[" + connectionOptions.getQueueManagerName() + "] connected");
             } else {
                 throw new MQConnectionException("Connection performed but queue manager looks like disconnected");
             }

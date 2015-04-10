@@ -44,7 +44,7 @@ public class PrintStreamHandler extends CommonMessageHandler<Void> {
                             .append(
                                     String.valueOf(messageEvent.getMessageIndex()),
                                     messageEvent.getOperation().name(),
-                                    getContext().getQueueManager().getName(),
+                                    getContext().getLink().getOptions().getQueueManagerName(),
                                     messageEvent.getEventSource().getName(),
                                     messageEvent.getHexMessageId(),
                                     messageEvent.getHexCorrelationId(),

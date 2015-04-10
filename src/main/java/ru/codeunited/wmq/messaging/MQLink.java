@@ -1,11 +1,13 @@
 package ru.codeunited.wmq.messaging;
 
+import java.io.Closeable;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 10.04.15.
  */
-public interface Connection {
+public interface MQLink extends Closeable {
 
     ConnectionOptions getOptions();
 

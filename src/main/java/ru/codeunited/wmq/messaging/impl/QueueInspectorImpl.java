@@ -3,6 +3,7 @@ package ru.codeunited.wmq.messaging.impl;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueue;
 import com.ibm.mq.MQQueueManager;
+import ru.codeunited.wmq.messaging.MQLink;
 import ru.codeunited.wmq.messaging.QueueInspector;
 
 import java.io.IOException;
@@ -18,10 +19,10 @@ public class QueueInspectorImpl implements QueueInspector {
 
     private final MQQueue queue;
 
-    public QueueInspectorImpl(String queueName, MQQueueManager queueManager) throws MQException {
+    public QueueInspectorImpl(String queueName, MQLink link) throws MQException {
         /** MQOO_INQUIRE -  inquire on a queue
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, MQOO_INQUIRE | MQOO_BROWSE | MQOO_FAIL_IF_QUIESCING); // MQOO_INPUT_SHARED?
+        this.queue = link.getManager().get().accessQueue(queueName, MQOO_INQUIRE | MQOO_BROWSE | MQOO_FAIL_IF_QUIESCING); // MQOO_INPUT_SHARED?
     }
 
     public void close() throws IOException {

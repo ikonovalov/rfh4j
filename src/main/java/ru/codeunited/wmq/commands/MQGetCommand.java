@@ -43,7 +43,7 @@ public class MQGetCommand extends QueueCommand {
         final String sourceQueueName = getSourceQueueName();
 
         try {
-            final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getQueueManager());
+            final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getExecutionContext().getLink());
             boolean queueHasMessages = false;
             try {
                 int limit = getMessagesCountLimit(1); // default is only one message per command
@@ -82,7 +82,7 @@ public class MQGetCommand extends QueueCommand {
         };
 
         console.createTable(header)
-                .append(String.valueOf(0), MQXFOperation.MQXF_GET.name(), getQueueManager().getName(), sourceQueueName, "[EMPTY QUEUE]")
+                .append(String.valueOf(0), MQXFOperation.MQXF_GET.name(), getExecutionContext().getLink().getOptions().getQueueManagerName(), sourceQueueName, "[EMPTY QUEUE]")
                 .make();
     }
 

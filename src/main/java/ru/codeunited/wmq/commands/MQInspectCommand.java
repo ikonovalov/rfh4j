@@ -33,7 +33,7 @@ public class MQInspectCommand extends QueueCommand {
 
         final ExecutionContext ctx = getExecutionContext();
         try {
-            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
+            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getLink());
             final String filter = ctx.getOption(OPT_LIST_QLOCAL, "*");
             final List<Queue> queues = managerInspector.selectLocalQueues(filter);
             for (final Queue next : queues) {

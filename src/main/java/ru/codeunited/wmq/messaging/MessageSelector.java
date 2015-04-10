@@ -11,4 +11,5 @@ import com.ibm.mq.MQMessage;
 public interface MessageSelector {
 
     void setup(MQGetMessageOptions messageOptions, MQMessage message);
+
 }

@@ -29,7 +29,7 @@ public class MQPutCommand extends QueueCommand {
         final ExecutionContext ctx = getExecutionContext();
 
         try {
-            final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
+            final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getExecutionContext().getLink());
 
             int repeatTimes = getMessagesCountLimit();
             int sentIndex = 0;

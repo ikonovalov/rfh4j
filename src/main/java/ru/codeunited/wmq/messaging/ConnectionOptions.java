@@ -7,7 +7,7 @@ import java.util.Properties;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
-public final class ConnectionOptions {
+public class ConnectionOptions {
 
     private final String queueManagerName;
 

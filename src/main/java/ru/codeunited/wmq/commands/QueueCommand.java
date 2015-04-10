@@ -3,6 +3,7 @@ package ru.codeunited.wmq.commands;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.messaging.MQLink;
 
 import static ru.codeunited.wmq.RFHConstants.*;
 
@@ -12,10 +13,6 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * Created by ikonovalov on 24.10.14.
  */
 public abstract class QueueCommand extends AbstractCommand {
-
-    public MQQueueManager getQueueManager() {
-        return executionContext.getQueueManager();
-    }
 
     /**
      * Create destination queue specified in --dstq parameter.

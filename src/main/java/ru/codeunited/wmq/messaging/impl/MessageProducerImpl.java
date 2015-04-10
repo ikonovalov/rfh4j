@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.messaging.MQLink;
 import ru.codeunited.wmq.messaging.MessageProducer;
 import ru.codeunited.wmq.messaging.MessageTools;
 
@@ -20,7 +21,8 @@ public class MessageProducerImpl implements MessageProducer {
 
     private final MQPutMessageOptions defaultPutSpec = new MQPutMessageOptions();
 
-    public MessageProducerImpl(String queueName, MQQueueManager queueManager) throws MQException {
+    public MessageProducerImpl(String queueName, MQLink link) throws MQException {
+        MQQueueManager queueManager = link.getManager().get();
         this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT | MQOO_FAIL_IF_QUIESCING);
         initialize();
     }
@@ -57,5 +59,14 @@ public class MessageProducerImpl implements MessageProducer {
     @Override
     public MQMessage send(String text) throws IOException, MQException {
         return send(text, defaultPutSpec);
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            this.queue.close();
+        } catch (MQException e) {
+            throw new IOException(e);
+        }
     }
 }

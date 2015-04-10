@@ -6,12 +6,14 @@ import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.messaging.MessageSelector;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 
+import java.io.Closeable;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public interface MessageConsumer {
+public interface MessageConsumer extends Closeable {
 
     /**
      * Get MQ message with specified GET_MESSAGE_OPTIONS.

@@ -1,9 +1,9 @@
 package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueueManager;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFMessageAgent;
+import ru.codeunited.wmq.messaging.MQLink;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.QueueInspector;
 import ru.codeunited.wmq.messaging.pcf.Filter;
@@ -23,11 +23,11 @@ public class ManagerInspectorImpl implements ManagerInspector {
 
     private final PCFMessageAgent pcfAgent;
 
-    private final MQQueueManager queueManager;
+    private final MQLink link;
 
-    public ManagerInspectorImpl(MQQueueManager queueManager) throws MQException {
-        this.pcfAgent = new PCFMessageAgent(queueManager);
-        this.queueManager = queueManager;
+    public ManagerInspectorImpl(MQLink link) throws MQException {
+        this.pcfAgent = new PCFMessageAgent(link.getManager().get());
+        this.link = link;
     }
 
     @Override
@@ -51,7 +51,7 @@ public class ManagerInspectorImpl implements ManagerInspector {
         final List<Queue> queues = new ArrayList<>(names.length);
         for (String queueName : names) {
             final Queue queue = new Queue(queueName);
-            try (final QueueInspector inspector = new QueueInspectorImpl(queueName, queueManager)) {
+            try (final QueueInspector inspector = new QueueInspectorImpl(queueName, link)) {
                 queue.setDepth(inspector.depth());
                 queue.setMaxDepth(inspector.maxDepth());
                 queue.setInputCount(inspector.openInputCount());
@@ -60,5 +60,10 @@ public class ManagerInspectorImpl implements ManagerInspector {
             }
         }
         return queues;
+    }
+
+    @Override
+    public void close() throws IOException {
+        // PCF Agent disconnect() are performing drop single connection with a QM
     }
 }

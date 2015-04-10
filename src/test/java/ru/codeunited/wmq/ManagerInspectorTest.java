@@ -25,7 +25,7 @@ public class ManagerInspectorTest extends QueueingCapability {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
-                final ManagerInspector inspector = new ManagerInspectorImpl(context.getQueueManager());
+                final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink());
                 final List<Queue> allQueues = inspector.listLocalQueues();
                 assertThat(allQueues, notNullValue());
                 assertThat(allQueues.isEmpty(), not(true));
@@ -38,7 +38,7 @@ public class ManagerInspectorTest extends QueueingCapability {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
-                final ManagerInspector inspector = new ManagerInspectorImpl(context.getQueueManager());
+                final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink());
                 final List<Queue> rfhQueues = inspector.selectLocalQueues("RFH.*");
                 boolean notRFHQueue = false;
                 for (Queue queue : rfhQueues) {

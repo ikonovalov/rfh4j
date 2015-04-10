@@ -52,7 +52,7 @@ public abstract class QueueingCapability extends GuiceSupport {
         try {
             work.work(context);
         } catch (RuntimeException rte){
-            context.getQueueManager().backout();
+            context.getLink().getManager().get().backout();
             throw rte;
         } finally {
             disconnect.execute();
@@ -60,11 +60,11 @@ public abstract class QueueingCapability extends GuiceSupport {
     }
 
     public static MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
-        return new MessageConsumerImpl(queue, context.getQueueManager());
+        return new MessageConsumerImpl(queue, context.getLink());
     }
 
     protected QueueInspectorImpl getMessageInspector(String queue, ExecutionContext context) throws MQException {
-        return new QueueInspectorImpl(queue, context.getQueueManager());
+        return new QueueInspectorImpl(queue, context.getLink());
     }
 
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
@@ -74,7 +74,7 @@ public abstract class QueueingCapability extends GuiceSupport {
         Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         connect.execute();
-        final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
+        final MessageProducer consumer = new MessageProducerImpl(queue, context.getLink());
         // send first message
         final MQMessage message = consumer.send(text);
         assertThat(message, notNullValue());
