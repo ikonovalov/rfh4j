@@ -58,7 +58,7 @@ public class RFHFX extends Application {
         String[] args = getParameters().getRaw().toArray(new String[0]);
         CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
         ExecutionContext context = new FXExecutionContext(cli);
-        final Injector injector = Guice.createInjector(new CommandsModule(context), new GuiceModule());
+        final Injector injector = Guice.createInjector(new ContextModule(context), new CommandsModule(), new GuiceModule());
 
         // set event bus instance
         eventBus = injector.getInstance(EventBus.class);
