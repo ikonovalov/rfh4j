@@ -108,7 +108,7 @@ public class CLIFactory {
                 .create();
 
         final Option lsLocalQueues = OptionBuilder
-                .withLongOpt("lslq")
+                .withLongOpt(OPT_LIST_QLOCAL)
                 .withArgName("pattern")
                 .withDescription("List localqueues with filter. Default value is * (means all).")
                 .withType(String.class)
@@ -147,7 +147,7 @@ public class CLIFactory {
                 .create('p');
 
         final Option textMessage = OptionBuilder
-                .withLongOpt("text")
+                .withLongOpt(OPT_TEXT)
                 .withArgName("text")
                 .withDescription("Text for message.")
                 .hasArg(YES)
@@ -167,19 +167,19 @@ public class CLIFactory {
                 .create();
 
         final Option all = OptionBuilder
-                .withLongOpt("all")
+                .withLongOpt(OPT_ALL)
                 .withDescription("Applicable to GET command")
                 .hasArg(NO)
                 .create();
 
         final Option limit = OptionBuilder
-                .withLongOpt("limit")
+                .withLongOpt(OPT_LIMIT)
                 .withDescription("Limit GET command. This is maximum messages or use negative value for infinity mode")
                 .hasArg(YES)
                 .create();
 
         final Option times = OptionBuilder
-                .withLongOpt("times")
+                .withLongOpt(OPT_TIMES)
                 .withDescription("Repeat count. Supported for MQPUT now.")
                 .hasArg(YES)
                 .create();

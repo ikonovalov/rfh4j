@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
@@ -82,7 +83,8 @@ public class GetCommandTest extends QueueingCapability {
     public void streamOrPayloadMissed() throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
         final CommandLine cl = prepareCommandLine("-Q DEFQM --srcq Q");
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+        Injector injector = getStandartInjector(executionContext);
+        final ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
         try {
             List<Command> commands = executionPlanBuilder.buildChain().getCommandChain();
             MQGetCommand getCmd = (MQGetCommand) commands.get(1);
@@ -95,12 +97,15 @@ public class GetCommandTest extends QueueingCapability {
 
     @Test
     public void initListenerMode() throws MissedParameterException, ParseException {
-        final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), QUEUE));
-        final ExecutionContext executionContext = new CLIExecutionContext(cl);
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
-        final CommandChain chain = executionPlanBuilder.buildChain();
-        final List<Command> commands = chain.getCommandChain();
-        final MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+        CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit -1", connectionParameter(), QUEUE));
+        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        Injector injector = getStandartInjector(executionContext);
+
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
+        CommandChain chain = executionPlanBuilder.buildChain();
+        List<Command> commands = chain.getCommandChain();
+        MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+
         assertThat("isListenerMode", getCmd.isListenerMode(), is(true));
         assertThat("shouldWait", getCmd.shouldWait(), is(true)); // engage MQGMO_WAIT
         assertThat("waitTime", getCmd.waitTime(), is(-1)); // engage MQWI_UNLIMITED
@@ -112,28 +117,31 @@ public class GetCommandTest extends QueueingCapability {
         branch(new Parallel.Branch() {
             @Override
             protected void perform() throws Exception {
-                final CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 3000", connectionParameter(), QUEUE));
-                final ExecutionContext executionContext = new CLIExecutionContext(cl);
-                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
-                final CommandChain chain = executionPlanBuilder.buildChain();
-                final List<Command> commands = chain.getCommandChain();
-                final MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+                CommandLine cl = prepareCommandLine(String.format("%1$s --srcq %2$s --stream --limit 2 --wait 200", connectionParameter(), QUEUE));
+                ExecutionContext executionContext = new CLIExecutionContext(cl);
+                Injector injector = getStandartInjector(executionContext);
+
+                ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
+                CommandChain chain = executionPlanBuilder.buildChain();
+                List<Command> commands = chain.getCommandChain();
+                MQGetCommand getCmd = (MQGetCommand) commands.get(1);
+
                 assertThat("isListenerMode", getCmd.isListenerMode(), is(false));
                 assertThat("shouldWait", getCmd.shouldWait(), is(true));
-                assertThat("waitTime", getCmd.waitTime(), is(3000));
+                assertThat("waitTime", getCmd.waitTime(), is(200));
 
                 chain.execute();
             }
         });
 
-        branch(new Parallel.Branch(2000) {
+        branch(new Parallel.Branch(200) {
             @Override
             protected void perform() throws Exception {
                 putToQueue(QUEUE);
             }
         });
 
-        branch(new Parallel.Branch(5000) {
+        branch(new Parallel.Branch(300) {
             @Override
             protected void perform() throws Exception {
                 putToQueue(QUEUE);
@@ -141,7 +149,6 @@ public class GetCommandTest extends QueueingCapability {
         });
 
         parallel();
-
 
     }
 

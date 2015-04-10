@@ -1,5 +1,8 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import org.apache.commons.cli.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
@@ -17,12 +20,16 @@ public class CLITestSupport {
 
     private final Parallel parallel = new Parallel();
 
-    protected CommandLineParser getCliParser() {
+    public static CommandLineParser getCliParser() {
         return CLIFactory.createParser();
     }
 
-    Options getOptions() {
+    public static Options getOptions() {
         return CLIFactory.createOptions();
+    }
+
+    protected static Injector getStandartInjector(ExecutionContext context) {
+        return Guice.createInjector(new CommandsModule(context));
     }
 
     protected CommandLine prepareCommandLine(String line) throws ParseException {
@@ -30,7 +37,7 @@ public class CLITestSupport {
         return prepareCommandLine(args);
     }
 
-    protected CommandLine prepareCommandLine(String[] args) throws ParseException {
+    public static CommandLine prepareCommandLine(String[] args) throws ParseException {
         try {
             return getCliParser().parse(getOptions(), args);
         } catch (AlreadySelectedException ase) {
@@ -38,11 +45,11 @@ public class CLITestSupport {
         }
     }
 
-    protected String connectionParameter() {
+    public static String connectionParameter() {
         return "-Q DEFQM -c JVM.DEF.SVRCONN";
     }
 
-    protected CommandLine getCommandLine_With_Qc() throws ParseException {
+    public static CommandLine getCommandLine_With_Qc() throws ParseException {
         final String[] args = connectionParameter().split(" ");
         return prepareCommandLine(args);
     }
@@ -55,14 +62,21 @@ public class CLITestSupport {
     /**
      * Create chain with Connect -> YOUR_COMMAND -> Disconnect
      * @param context
-     * @param command
+     * @param surroundableClassAnnotation
      * @return
      */
-    protected CommandChain surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Command command) {
-        final CommandChain maker = new CommandChain(context);
-        final AbstractCommand cmdConnect = new MQConnectCommand();
-        final AbstractCommand cmdDisconnect = new MQDisconnectCommand();
-        return maker.addCommand(cmdConnect).addCommand(command).addCommand(cmdDisconnect);
+    protected CommandChainImpl surroundSingleCommandWithConnectionAdvices(ExecutionContext context, Class surroundableClassAnnotation) {
+        Injector injector = Guice.createInjector(new CommandsModule(context));
+
+        CommandChain maker = injector.getInstance(CommandChain.class);
+        Command cmdConnect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command cmdDisconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
+        return maker
+                .addCommand(cmdConnect)
+                .addCommand(
+                        injector.<Command>getInstance(Key.get(Command.class, surroundableClassAnnotation))
+                )
+                .addCommand(cmdDisconnect);
     }
 
     /**
@@ -74,9 +88,10 @@ public class CLITestSupport {
      * @throws CommandGeneralException
      */
     protected void putToQueue(String destination) throws ParseException, MissedParameterException, IncompatibleOptionsException, CommandGeneralException, NestedHandlerException {
-        final CommandLine cl = prepareCommandLine(String.format("%3$s --dstq %1$s --text %2$s", destination, String.valueOf(System.currentTimeMillis()), connectionParameter()));
-        final ExecutionContext executionContext = new CLIExecutionContext(cl);
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(executionContext);
+        CommandLine cl = prepareCommandLine(String.format("%3$s --dstq %1$s --text %2$s", destination, String.valueOf(System.currentTimeMillis()), connectionParameter()));
+        ExecutionContext executionContext = new CLIExecutionContext(cl);
+        Injector injector = getStandartInjector(executionContext);
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
         executionPlanBuilder.buildChain().execute();
 
     }

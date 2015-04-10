@@ -36,8 +36,7 @@ public class PutCommandTest extends QueueingCapability {
     public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
         final CommandLine commandLine = getCommandLine_With_Qc();
         // missed --dstq
-        final MQPutCommand putCommand = new MQPutCommand();
-        final CommandChain maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
+        final CommandChainImpl maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), PutCommand.class);
         boolean exceptionOccured = false;
         try {
             maker.execute();
@@ -59,8 +58,7 @@ public class PutCommandTest extends QueueingCapability {
      */
     public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
         final CommandLine commandLine = getCommandLine_With_Qc_dstq();
-        final MQPutCommand putCommand = new MQPutCommand();
-        final CommandChain maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), putCommand);
+        final CommandChainImpl maker = surroundSingleCommandWithConnectionAdvices(new CLIExecutionContext(commandLine), PutCommand.class);
         boolean exceptionOccured = false;
         try {
             maker.execute();

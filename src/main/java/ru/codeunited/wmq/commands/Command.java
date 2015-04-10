@@ -14,7 +14,7 @@ public interface Command {
      * Set current command context.
      * @param context
      */
-    AbstractCommand setContext(ExecutionContext context);
+    Command setContext(ExecutionContext context);
 
     /**
      * Execute this command.

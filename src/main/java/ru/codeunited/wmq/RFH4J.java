@@ -1,5 +1,7 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import org.apache.commons.cli.*;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
@@ -14,13 +16,19 @@ import ru.codeunited.wmq.handler.NestedHandlerException;
  */
 public class RFH4J {
 
-    private static final Options options = CLIFactory.createOptions();
+    private final Options options = CLIFactory.createOptions();
 
-    private static final CommandLineParser cliParser = CLIFactory.createParser();
+    private final CommandLineParser cliParser = CLIFactory.createParser();
 
-    private static final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
+    private final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
 
     public static void main(String[] args) {
+        RFH4J application = new RFH4J();
+        application.start(args);
+    }
+
+    public void start(String... args) {
+
         try {
             final CommandLine cli = cliParser.parse(options, args);
             if (cli.hasOption('h') || cli.getOptions().length == 0) {
@@ -29,8 +37,10 @@ public class RFH4J {
                 RFHFX.up(args);
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
+                final Injector injector = Guice.createInjector(new CommandsModule(context));
+
                 context.setConsoleWriter(consoleWriter);
-                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context);
+                final ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
                 final CommandChain commandMaker = executionPlanBuilder.buildChain();
                 commandMaker.execute();
             }
@@ -39,6 +49,5 @@ public class RFH4J {
             consoleWriter.errorln("Error occurred. ").errorln("Details: " + e.getMessage());
             consoleWriter.end().flush();
         }
-
     }
 }

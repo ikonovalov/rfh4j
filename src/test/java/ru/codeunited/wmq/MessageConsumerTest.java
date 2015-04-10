@@ -1,5 +1,7 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
@@ -46,17 +48,17 @@ public class MessageConsumerTest extends QueueingCapability {
 
         putMessages(QUEUE, MESSAGE);
 
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command cmd2 = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         cmd1.execute();
-        final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
-        final MQMessage message = consumer.get();
+        MessageConsumer consumer = getMessageConsumer(QUEUE, context);
+        MQMessage message = consumer.get();
         assertThat(message, notNullValue());
         assertThat(message.messageId.length, is(24));
-        final String payload = message.readStringOfByteLength(message.getDataLength());
+        String payload = message.readStringOfByteLength(message.getDataLength());
         LOG.fine("Recieved payload [" + payload + "]");
         assertThat(payload, notNullValue());
         assertThat(payload.length(), equalTo(MESSAGE.length()));
@@ -69,25 +71,24 @@ public class MessageConsumerTest extends QueueingCapability {
         putMessages(QUEUE, MESSAGE);
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
-
-        cmd1.execute();
+        connectCmd.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
         final MQMessage message = consumer.get(1000);
         assertThat(message, notNullValue());
         assertThat(message.messageId.length, is(24));
-        cmd2.execute();
+        disconnectCmd.execute();
     }
 
     @Test(expected = NoMessageAvailableException.class)
     public void accessQueueWithNoMessagesException() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
-
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command connectCmd = new MQConnectCommand().setContext(context);
-        final Command disconnectCmd = new MQDisconnectCommand().setContext(context);
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
         connectCmd.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -103,10 +104,10 @@ public class MessageConsumerTest extends QueueingCapability {
 
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
 
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command connectCommand = new MQConnectCommand().setContext(context);
-        final Command disconnectCommand = new MQDisconnectCommand().setContext(context);
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         final ReturnCode connectReturn = connectCommand.execute();
         assertThat(connectReturn, sameInstance(ReturnCode.SUCCESS));
@@ -135,11 +136,11 @@ public class MessageConsumerTest extends QueueingCapability {
         messageID[10] = 0;
 
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
-
-        cmd1.execute();
+        connectCommand.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
         try {
             consumer.select(new MessageSelector() {
@@ -151,7 +152,7 @@ public class MessageConsumerTest extends QueueingCapability {
             });
 
         } finally {
-            cmd2.execute();
+            disconnectCommand.execute();
             // remove putted message
             cleanupQueue(QUEUE);
         }
@@ -161,12 +162,12 @@ public class MessageConsumerTest extends QueueingCapability {
     public void discoverDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
 
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
-
-        cmd1.execute();
+        connectCmd.execute();
         final QueueInspector consumer = getMessageInspector(QUEUE, context);
         try {
             assertThat(consumer.depth(), is(0));
@@ -175,7 +176,7 @@ public class MessageConsumerTest extends QueueingCapability {
             cleanupQueue(QUEUE);
             assertThat(consumer.depth(), is(0));
         } finally {
-            cmd2.execute();
+            disconnectCmd.execute();
         }
     }
 
@@ -183,17 +184,17 @@ public class MessageConsumerTest extends QueueingCapability {
     public void discoverMaxDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
 
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
 
-        final Command cmd1 = new MQConnectCommand().setContext(context);
-        final Command cmd2 = new MQDisconnectCommand().setContext(context);
-
-        cmd1.execute();
+        connectCmd.execute();
         final QueueInspector consumer = getMessageInspector(QUEUE, context);
         try {
             assertThat(consumer.maxDepth(), is(5000));
         } finally {
-            cmd2.execute();
+            disconnectCmd.execute();
         }
     }
 }

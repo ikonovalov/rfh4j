@@ -1,5 +1,8 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
@@ -37,30 +40,22 @@ public abstract class QueueingCapability extends CLITestSupport {
      */
     public void communication(QueueWork work) throws Exception {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
-
-        cmd1.execute();
+        connect.execute();
         try {
             work.work(context);
         } catch (RuntimeException rte){
             context.getQueueManager().backout();
             throw rte;
         } finally {
-            cmd2.execute();
+            disconnect.execute();
         }
     }
 
-    private AbstractCommand prepareMQDisconnectCommand(ExecutionContext context) {
-        return new MQDisconnectCommand().setContext(context);
-    }
-
-    private AbstractCommand prepareMQConnectCommand(ExecutionContext context) {
-        return new MQConnectCommand().setContext(context);
-    }
-
-    protected MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
+    public static MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
         return new MessageConsumerImpl(queue, context.getQueueManager());
     }
 
@@ -70,11 +65,11 @@ public abstract class QueueingCapability extends CLITestSupport {
 
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
         final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command connect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
-
-        cmd1.execute();
+        connect.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
         // send first message
         final MQMessage message = consumer.send(text);
@@ -83,15 +78,15 @@ public abstract class QueueingCapability extends CLITestSupport {
         assertThat(message.messageId.length, is(24));
         LOG.fine("Sent payload [" + text + "]");
 
-        cmd2.execute();
+        disconnect.execute();
         return message;
     }
 
-    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
+    protected static void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command cmd2 = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(queueName, context);

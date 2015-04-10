@@ -32,8 +32,8 @@ public class MQGetCommand extends QueueCommand {
         if (ctx.hasntOption(OPT_STREAM, OPT_PAYLOAD)) {
             raiseMissedParameters(new String[]{OPT_STREAM, OPT_PAYLOAD});
         }
-        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption("all")) {
-            raiseIncompatibeException(String.format("Options --%1$s and --all can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD));
+        if (ctx.hasOption(OPT_STREAM) && ctx.hasOption(OPT_ALL)) {
+            raiseIncompatibeException(String.format("Options --%1$s and --%3$s can't run together. Use --%2$s instead --%1$s.", OPT_STREAM, OPT_PAYLOAD, OPT_ALL));
         }
     }
 
@@ -48,6 +48,7 @@ public class MQGetCommand extends QueueCommand {
             try {
                 int limit = getMessagesCountLimit(1); // default is only one message per command
                 int messageCouter = 0;
+                long startTime = System.currentTimeMillis();
                 while (isListenerMode() || limit-->0) {
                     // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
@@ -55,6 +56,7 @@ public class MQGetCommand extends QueueCommand {
                     handleMessage(messageCouter, message, console);
                     messageCouter++;
                 }
+                System.out.println(">> total " + messageCouter + " in " + (System.currentTimeMillis() - startTime) + "ms");
 
             } catch (NoMessageAvailableException e) {
                 if (!queueHasMessages) { // prevent output extra information if queue has messages.
