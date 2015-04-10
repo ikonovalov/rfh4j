@@ -1,5 +1,6 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Injector;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
@@ -72,11 +73,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
     public void ConnectDisconnectContainsAndResolveWithPassedArgs() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --srcq Q");
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
+        Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
 
-        final CommandChain chain = executionPlanBuilder.buildChain();
+        CommandChain chain = executionPlanBuilder.buildChain();
 
-        final List<Command> commands = chain.getCommandChain();
+        List<Command> commands = chain.getCommandChain();
 
         // check total commands size
         assertThat("Wrong commands list size", commands.size(), is(3));
@@ -89,11 +91,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
     public void ConnectDisconnectContainsAndResolveWithConfig() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("--config def.props -c JVM.DEF.SVRCONN --srcq Q");
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
+        Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
 
-        final CommandChain chain = executionPlanBuilder.buildChain();
+        CommandChain chain = executionPlanBuilder.buildChain();
 
-        final List<Command> commands = chain.getCommandChain();
+        List<Command> commands = chain.getCommandChain();
 
         // check total commands size
         assertThat("Wrong commands list size", commands.size(), is(3)); // connect/disconnect/put
@@ -105,14 +108,18 @@ public class BuildExecutionChainTest extends CLITestSupport {
     @Test(expected = MissedParameterException.class)
     public void ConnectFailedWithoutConfig() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("--dstq RFH.QTEST.QGENERAL1 -t hello");
-        new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
+        ExecutionContext context = new CLIExecutionContext(commandLine);
+        Injector injector = getStandartInjector(context);
+        ExecutionPlanBuilder planBuilder = injector.getInstance(ExecutionPlanBuilder.class);
+        planBuilder.buildChain();
     }
 
     @Test(expected = MissedParameterException.class)
     public void ChainFailedWithoutOperationActions() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("--config def.props");
         try {
-            new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine)).buildChain();
+            Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
+            injector.getInstance(ExecutionPlanBuilder.class).buildChain();
         } catch(MissedParameterException e) {
             assertThat("Wrong exception message for missed parameters", "Option(s) [dstq] [lslq] [srcq]  are missed.", equalTo(e.getMessage()));
             throw e;
@@ -123,11 +130,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
     public void MQPutTextContainsAndResolve() throws ParseException, MissedParameterException {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1 -t Hello");
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
+        Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
 
-        final CommandChain chain = executionPlanBuilder.buildChain();
+        CommandChain chain = executionPlanBuilder.buildChain();
 
-        final List<Command> commands = chain.getCommandChain();
+        List<Command> commands = chain.getCommandChain();
 
         // check total commands size
         assertThat("Wrong commands list size", commands.size(), is(3));
@@ -149,11 +157,12 @@ public class BuildExecutionChainTest extends CLITestSupport {
         final CommandLine commandLine = prepareCommandLine("-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1 -p /tmp/some.file");
         assertTrue(commandLine.hasOption("dstq"));
 
-        final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(new CLIExecutionContext(commandLine));
+        Injector injector = getStandartInjector(new CLIExecutionContext(commandLine));
+        ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);
 
-        final CommandChain chain = executionPlanBuilder.buildChain();
+        CommandChain chain = executionPlanBuilder.buildChain();
 
-        final List<Command> commands = chain.getCommandChain();
+        List<Command> commands = chain.getCommandChain();
 
         assertThat("Wrong commands list size", commands.size(), is(3));
 

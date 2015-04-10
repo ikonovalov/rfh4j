@@ -14,7 +14,10 @@ import java.io.IOException;
 
 import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
 import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
+import static ru.codeunited.wmq.RFHConstants.OPT_TEXT;
+
 /**
+ * Thread-safe.
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 22.10.14.
@@ -37,14 +40,14 @@ public class MQPutCommand extends QueueCommand {
                     try (final FileInputStream fileStream = new FileInputStream(ctx.getOption(OPT_PAYLOAD))) {
                         sentMessage = messageProducer.send(fileStream);
                     }
-                } else if (ctx.hasOption("text")) { // just text message
-                    sentMessage = messageProducer.send(ctx.getOption("text"));
+                } else if (ctx.hasOption(OPT_TEXT)) { // just text message
+                    sentMessage = messageProducer.send(ctx.getOption(OPT_TEXT));
                 } else if (ctx.hasOption(OPT_STREAM)) {
                     try (final BufferedInputStream bufferedInputStream = new BufferedInputStream(System.in)) {
                         sentMessage = messageProducer.send(bufferedInputStream);
                     }
                 } else {
-                    throw new MissedParameterException(OPT_PAYLOAD, "text", OPT_STREAM);
+                    throw new MissedParameterException(OPT_PAYLOAD, OPT_TEXT, OPT_STREAM);
                 }
 
                 // create event

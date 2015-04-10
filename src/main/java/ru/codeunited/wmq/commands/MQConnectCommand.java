@@ -8,6 +8,8 @@ import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
 import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
 
+import javax.inject.Inject;
+
 import static ru.codeunited.wmq.RFHConstants.*;
 import java.util.Properties;
 
@@ -20,14 +22,9 @@ public class MQConnectCommand extends AbstractCommand {
 
     private final WMQConnectionFactory connectionFactory;
 
-
     public MQConnectCommand() {
+        super();
         connectionFactory = new WMQDefaultConnectionFactory();
-    }
-
-    public MQConnectCommand(ExecutionContext context) {
-        this();
-        setContext(context);
     }
 
     public MQConnectCommand(WMQConnectionFactory connectionFactory) {

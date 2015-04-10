@@ -4,6 +4,7 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
+import javax.inject.Inject;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +47,8 @@ public abstract class AbstractCommand implements Command {
     }
 
     @Override
-    public AbstractCommand setContext(ExecutionContext context) {
+    @Inject
+    public Command setContext(ExecutionContext context) {
         if (selfStateCheckFailed())
             this.executionContext = context;
         return this;

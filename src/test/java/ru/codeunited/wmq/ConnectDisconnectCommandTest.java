@@ -1,5 +1,8 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import org.apache.commons.cli.CommandLine;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
@@ -41,7 +44,8 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
     }
 
     private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
-        final MQConnectCommand connectCommand = new MQConnectCommand(new CLIExecutionContext(commandLine));
+        Injector injector = Guice.createInjector(new CommandsModule(new CLIExecutionContext(commandLine)));
+        final MQConnectCommand connectCommand = (MQConnectCommand) injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());
 
