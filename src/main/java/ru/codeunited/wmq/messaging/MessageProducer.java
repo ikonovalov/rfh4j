@@ -47,4 +47,6 @@ public interface MessageProducer extends Closeable {
      * @throws MQException
      */
     MQMessage send(String text) throws IOException, MQException;
+
+    MQMessage send(CustomSendAdjuster builder) throws IOException, MQException;
 }

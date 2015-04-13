@@ -88,7 +88,7 @@ public abstract class QueueingCapability extends GuiceSupport {
         return message;
     }
 
-    protected static void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
+    protected static void cleanupQueue(String queueName) throws Exception {
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
         Injector injector = getStandartInjector(context);
         Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));

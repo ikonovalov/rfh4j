@@ -161,7 +161,7 @@ public class GetCommandTest extends QueueingCapability {
 
     @Before
     @After
-    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
+    public void cleanUp() throws Exception {
         cleanupQueue(QUEUE);
     }
 

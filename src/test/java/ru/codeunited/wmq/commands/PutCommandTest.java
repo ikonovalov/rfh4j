@@ -30,7 +30,7 @@ public class PutCommandTest extends QueueingCapability {
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";
 
     @Before @After
-    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
+    public void cleanUp() throws Exception {
         cleanupQueue(QUEUE);
     }
 

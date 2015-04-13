@@ -49,7 +49,7 @@ public class MessageConsumerTest extends QueueingCapability {
 
 
     @Before @After
-    public void cleanupQueue() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
+    public void cleanupQueue() throws Exception {
         cleanupQueue(QUEUE);
     }
 
@@ -154,7 +154,7 @@ public class MessageConsumerTest extends QueueingCapability {
     }
 
     @Test
-    public void discoverDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
+    public void discoverDepth() throws Exception {
 
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
         setup(context);

@@ -30,7 +30,7 @@ public interface MessageConsumer extends Closeable {
 
     /**
      * Get MQ message and wait specified period of time of no message in queue right now.
-     * @param waitInterval  The maximum time (in milliseconds) get(interval) call waits for a suitable message to arrive.
+     * @param waitInterval  The maximum time (in milliseconds) get(interval) call waits for a suitable message to arrive. Negative value mean unlimited wait.
      * @return MQMessage  dequeue MQMessage.
      * @throws NoMessageAvailableException if no one message in a queue.
      * @throws MQException
