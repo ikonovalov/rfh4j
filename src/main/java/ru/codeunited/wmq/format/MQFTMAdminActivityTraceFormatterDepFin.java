@@ -85,7 +85,6 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 buffer.append(activityCommand.getApplicationName()).append(';');
                 buffer.append(activityCommand.getApplicationType()).append(';');
                 buffer.append(activityCommand.getUserId());
-                //buffer.append(decodedParameter(trace, MQBACF_MESSAGE_DATA)).append(';');
 
                 buffer.append('\n');
             }
