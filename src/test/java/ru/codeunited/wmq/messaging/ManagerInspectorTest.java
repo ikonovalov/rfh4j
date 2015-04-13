@@ -1,7 +1,15 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import ru.codeunited.wmq.ContextModule;
+import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.QueueingCapability;
+import ru.codeunited.wmq.commands.CommandsModule;
+import ru.codeunited.wmq.frame.ContextInjection;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
+import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.NoMessageAvailableException;
@@ -18,9 +26,12 @@ import static org.hamcrest.CoreMatchers.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.11.14.
  */
+@RunWith(GuiceContextTestRunner.class)
+@GuiceModules({ContextModule.class, CommandsModule.class})
 public class ManagerInspectorTest extends QueueingCapability {
 
     @Test(timeout = 5000)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void listQueuesWithoutFilter() throws Exception {
         communication(new QueueWork() {
             @Override
@@ -34,6 +45,7 @@ public class ManagerInspectorTest extends QueueingCapability {
     }
 
     @Test(timeout = 5000)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void searchRFHQueues() throws Exception {
         communication(new QueueWork() {
             @Override

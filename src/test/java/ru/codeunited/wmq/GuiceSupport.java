@@ -11,6 +11,7 @@ import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
+import javax.inject.Inject;
 import java.util.concurrent.ExecutionException;
 
 import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
@@ -32,6 +33,7 @@ public class GuiceSupport {
         return setup(new CLIExecutionContext(cli));
     }
 
+    @Inject
     public Injector setup(ExecutionContext executionContext) {
         context = executionContext;
         injector = Guice.createInjector(new ContextModule(executionContext), new CommandsModule());

@@ -1,14 +1,22 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.messaging;
 
 import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import ru.codeunited.wmq.ContextModule;
+import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.frame.ContextInjection;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
+import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.QueueInspector;
@@ -28,6 +36,8 @@ import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
+@RunWith(GuiceContextTestRunner.class)
+@GuiceModules({ContextModule.class, CommandsModule.class})
 public class MessageConsumerTest extends QueueingCapability {
 
     private static final String MESSAGE = "WebSphere MQ " + System.currentTimeMillis();
@@ -38,21 +48,19 @@ public class MessageConsumerTest extends QueueingCapability {
 
 
 
-    @Before
+    @Before @After
     public void cleanupQueue() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
         cleanupQueue(QUEUE);
     }
 
     @Test
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void accessQueueWithDefOpenOptions() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
+
+        connectCommand.execute();
 
         putMessages(QUEUE, MESSAGE);
 
-        setup(getCommandLine_With_Qc());
-        Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command cmd2 = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
-
-        cmd1.execute();
         MessageConsumer consumer = getMessageConsumer(QUEUE, context);
         MQMessage message = consumer.get();
         assertThat(message, notNullValue());
@@ -62,52 +70,44 @@ public class MessageConsumerTest extends QueueingCapability {
         assertThat(payload, notNullValue());
         assertThat(payload.length(), equalTo(MESSAGE.length()));
         assertThat(payload, equalTo(MESSAGE));
-        cmd2.execute();
+
+        disconnectCommand.execute();
     }
 
     @Test(timeout = 1000)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void accessQueueWithWait1000() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
+        connectCommand.execute();
+
         putMessages(QUEUE, MESSAGE);
 
-        setup(getCommandLine_With_Qc());
-        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-
-        connectCmd.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
         final MQMessage message = consumer.get(1000);
         assertThat(message, notNullValue());
         assertThat(message.messageId.length, is(24));
-        disconnectCmd.execute();
+
+        disconnectCommand.execute();
     }
 
     @Test(expected = NoMessageAvailableException.class)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void accessQueueWithNoMessagesException() throws ParseException, MissedParameterException, CommandGeneralException, MQException, IOException, NoMessageAvailableException, IncompatibleOptionsException, NestedHandlerException {
-        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        setup(context);
 
-        Command connectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnectCmd = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-
-        connectCmd.execute();
+        connectCommand.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
         try {
             consumer.get(10);
         } finally {
-            disconnectCmd.execute();
+            disconnectCommand.execute();
         }
     }
 
     @Test
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void selectMessageByMessageID() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
+        connectCommand.execute();
 
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
-
-        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        setup(context);
-
-        Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         final ReturnCode connectReturn = connectCommand.execute();
         assertThat(connectReturn, sameInstance(ReturnCode.SUCCESS));
@@ -130,16 +130,12 @@ public class MessageConsumerTest extends QueueingCapability {
 
 
     @Test(expected = NoMessageAvailableException.class)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void selectMessageByMessageIDFail() throws MissedParameterException, CommandGeneralException, MQException, NoMessageAvailableException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
+        connectCommand.execute();
 
         final byte[] messageID = putMessages(QUEUE, MESSAGE).messageId;
         messageID[10] = 0;
-
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        setup(context);
-
-        Command connectCommand = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnectCommand = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         connectCommand.execute();
         final MessageConsumer consumer = getMessageConsumer(QUEUE, context);
@@ -154,14 +150,11 @@ public class MessageConsumerTest extends QueueingCapability {
 
         } finally {
             disconnectCommand.execute();
-            // remove putted message
-            cleanupQueue(QUEUE);
         }
     }
 
     @Test
     public void discoverDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
-        cleanupQueue(QUEUE);
 
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
         setup(context);
@@ -184,8 +177,6 @@ public class MessageConsumerTest extends QueueingCapability {
 
     @Test
     public void discoverMaxDepth() throws MissedParameterException, CommandGeneralException, MQException, ParseException, IOException, IncompatibleOptionsException, NestedHandlerException {
-        cleanupQueue(QUEUE);
-
         ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
         setup(context);
 

@@ -15,6 +15,7 @@ import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.impl.QueueInspectorImpl;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -34,6 +35,18 @@ public abstract class QueueingCapability extends GuiceSupport {
 
     protected static final int MESSAGE_ID_LENGTH = 24;
 
+    @Inject protected CommandChain commandChain;
+
+    @ConnectCommand
+    @Inject protected Command connectCommand;
+
+    @PutCommand
+    @Inject protected Command putCommand;
+
+    @DisconnectCommand
+    @Inject protected Command disconnectCommand;
+
+
     public interface QueueWork {
         void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
     }
@@ -44,18 +57,14 @@ public abstract class QueueingCapability extends GuiceSupport {
      * @throws Exception
      */
     public void communication(QueueWork work) throws Exception {
-        setup(new CLIExecutionContext(getCommandLine_With_Qc()));
-        Command connect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
-
-        connect.execute();
+        connectCommand.execute();
         try {
             work.work(context);
         } catch (RuntimeException rte){
             context.getLink().getManager().get().backout();
             throw rte;
         } finally {
-            disconnect.execute();
+            disconnectCommand.execute();
         }
     }
 
@@ -68,21 +77,14 @@ public abstract class QueueingCapability extends GuiceSupport {
     }
 
     protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-        Injector injector = getStandartInjector(context);
-        Command connect = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
-        Command disconnect = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
-
-        connect.execute();
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getLink());
         // send first message
         final MQMessage message = consumer.send(text);
         assertThat(message, notNullValue());
         assertThat(message.messageId, notNullValue());
-        assertThat(message.messageId.length, is(24));
+        assertThat(message.messageId.length, is(MESSAGE_ID_LENGTH));
         LOG.fine("Sent payload [" + text + "]");
 
-        disconnect.execute();
         return message;
     }
 

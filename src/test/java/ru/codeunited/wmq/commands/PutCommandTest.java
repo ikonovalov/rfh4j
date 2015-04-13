@@ -29,17 +29,6 @@ public class PutCommandTest extends QueueingCapability {
 
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";
 
-    @Inject private CommandChain commandChain;
-
-    @ConnectCommand
-    @Inject private Command connectCommand;
-
-    @PutCommand
-    @Inject private Command putCommand;
-
-    @DisconnectCommand
-    @Inject private Command disconnectCommand;
-
     @Before @After
     public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
         cleanupQueue(QUEUE);
