@@ -19,10 +19,6 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int BUFFER_2Kb = 2048;
 
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmss");
-
-    private static final SimpleDateFormat TIME_REFORMATED = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-
     MQFTMAdminActivityTraceFormatterDepFin() {
         super();
     }
