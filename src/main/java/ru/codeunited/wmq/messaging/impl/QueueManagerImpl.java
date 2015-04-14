@@ -1,9 +1,12 @@
 package ru.codeunited.wmq.messaging.impl;
 
-import com.google.common.base.Objects;
+import com.google.common.base.Preconditions;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
+import ru.codeunited.wmq.messaging.MQLink;
+import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.QueueManager;
+import ru.codeunited.wmq.messaging.QueueManagerAttributes;
 
 import java.io.IOException;
 
@@ -18,8 +21,18 @@ class QueueManagerImpl implements QueueManager {
 
     private MQQueueManager manager;
 
+    private MQLink parentLink;
+
+    private ManagerInspector inspector;
+
     QueueManagerImpl(MQQueueManager manager) {
         this.manager = manager;
+    }
+
+    public void setParentLink(MQLink link) {
+        Preconditions.checkNotNull(link, "MQLink is null");
+        this.parentLink = link;
+        inspector = new ManagerInspectorImpl(this.parentLink);
     }
 
     @Override
@@ -39,6 +52,7 @@ class QueueManagerImpl implements QueueManager {
     @Override
     public void close() throws IOException {
         try {
+            inspector.close();
             manager.disconnect();
         } catch (MQException e) {
             throw new IOException(e);
@@ -71,5 +85,14 @@ class QueueManagerImpl implements QueueManager {
     @Override
     public String getName() {
         return getAttribute(MQCA_Q_MGR_NAME, MQ_Q_MGR_NAME_LENGTH);
+    }
+
+    @Override
+    public QueueManagerAttributes getAttributes() {
+        try {
+            return inspector.managerAttributes();
+        } catch (MQException | IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

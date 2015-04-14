@@ -4,17 +4,18 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFMessageAgent;
 import com.ibm.mq.pcf.PCFParameter;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import ru.codeunited.wmq.messaging.MQLink;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.QueueInspector;
+import ru.codeunited.wmq.messaging.QueueManagerAttributes;
 import ru.codeunited.wmq.messaging.pcf.InquireCommand;
 import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
 import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 
 import static com.ibm.mq.constants.MQConstants.*;
 /**
@@ -28,8 +29,12 @@ public class ManagerInspectorImpl implements ManagerInspector {
 
     private final MQLink link;
 
-    public ManagerInspectorImpl(MQLink link) throws MQException {
-        this.pcfAgent = new PCFMessageAgent(link.getManager().get());
+    public ManagerInspectorImpl(MQLink link) {
+        try {
+            this.pcfAgent = new PCFMessageAgent(link.getManager().get());
+        } catch (MQException e) {
+            throw new IllegalStateException(e);
+        }
         this.link = link;
     }
 
@@ -43,18 +48,22 @@ public class ManagerInspectorImpl implements ManagerInspector {
     }
 
     @Override
-    public void managerAttributes() throws MQException, IOException {
+    public QueueManagerAttributes managerAttributes() throws MQException, IOException {
+        QueueManagerAttributes attrs = new QueueManagerAttributes();
+
         PCFMessage request = new PCFMessage (InquireCommand.QMGR.object());
-        // MQIACF_Q_MGR_ATTRS is a MQCFIL type (IL -> integer list)
-        request.addParameter(MQIACF_Q_MGR_ATTRS, new int[]{MQIACF_ALL});
+        request.addParameter(MQIACF_Q_MGR_ATTRS, new int[]{MQIACF_ALL}); /* MQIACF_Q_MGR_ATTRS is a MQCFIL type (IL -> integer list) */
         PCFMessage[] responses = query(request);
+
         PCFMessage response = responses[0];
         Enumeration<PCFParameter> parameterEnumeration = response.getParameters();
         while(parameterEnumeration.hasMoreElements()) {
             PCFParameter parameter = parameterEnumeration.nextElement();
-            System.out.println(parameter.getParameterName() + " -> " + PCFUtilService.decodeValue(parameter));
+            Pair<Integer, String> keyPair = ImmutablePair.of(parameter.getParameter(), parameter.getParameterName());
+            Pair<Object, String> valuePair = ImmutablePair.of(parameter.getValue(), PCFUtilService.decodeValue(parameter));
+            attrs.put(keyPair, valuePair);
         }
-        System.out.println(responses.length);
+        return attrs;
     }
 
     @Override

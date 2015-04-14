@@ -5,6 +5,7 @@ import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
+import org.junit.internal.AssumptionViolatedException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
@@ -57,14 +58,19 @@ public abstract class QueueingCapability extends GuiceSupport {
      * @throws Exception
      */
     public void communication(QueueWork work) throws Exception {
+        long initinalPoint = System.currentTimeMillis();
+        long workPoint = 0;
         connectCommand.execute();
         try {
+            workPoint = System.currentTimeMillis();
             work.work(context);
-        } catch (RuntimeException rte){
+        } catch (Exception rte){
             context.getLink().getManager().get().backout();
             throw rte;
         } finally {
             disconnectCommand.execute();
+            long finalPoint = System.currentTimeMillis();
+            LOG.info("Work done in " + (finalPoint - workPoint) + "ms. Total in " + (finalPoint - initinalPoint) + " ms");
         }
     }
 
@@ -102,7 +108,7 @@ public abstract class QueueingCapability extends GuiceSupport {
                 consumer.get();
             } catch (NoMessageAvailableException e) {
                 queueNotEmpty = false;
-                System.out.println(queueName + " is cleanup");
+                LOG.info(queueName + " is cleaned up.");
             }
         }
         cmd2.execute();

@@ -45,8 +45,12 @@ public final class CLITestSupport {
         }
     }
 
-    public static CommandLine getCommandLine_With_Qc() throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
-        return prepareCommandLine(args);
+    public static CommandLine getCommandLine_With_Qc() {
+        final String[] args = "-Q DEFQM --channel JVM.DEF.SVRCONN --transport=binding".split(" ");
+        try {
+            return prepareCommandLine(args);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

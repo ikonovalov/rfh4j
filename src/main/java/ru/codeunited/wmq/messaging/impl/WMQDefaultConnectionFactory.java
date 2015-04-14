@@ -25,8 +25,10 @@ public class WMQDefaultConnectionFactory implements WMQConnectionFactory {
                 connectionOptions.getQueueManagerName(),
                 connectionOptions.getOptions()
         );
-        QueueManager queueManager = new QueueManagerImpl(mqQueueManager);
+
+        QueueManagerImpl queueManager = new QueueManagerImpl(mqQueueManager);
         MQLink link = new MQLinkImpl(connectionOptions, queueManager);
+        queueManager.setParentLink(link);
         return link;
     }
 }

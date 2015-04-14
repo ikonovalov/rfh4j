@@ -2,6 +2,7 @@ package ru.codeunited.wmq.messaging.pcf.mq750;
 
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFParameter;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 import ru.codeunited.wmq.messaging.pcf.PCFGroupParameterWrapper;
@@ -86,5 +87,14 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
     @Override
     public Integer getReasonCode() {
         return decodedParameterAsInt(MQIACF_REASON_CODE);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("operation", getOperation().name())
+                .append("operationDate", getOperationDate())
+                .append("success", isSuccess())
+                .toString();
     }
 }

@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
-import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.MessageTools;

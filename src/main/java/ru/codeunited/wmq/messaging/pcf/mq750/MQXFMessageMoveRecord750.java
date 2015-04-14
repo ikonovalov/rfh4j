@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
 import com.ibm.mq.pcf.MQCFGR;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import ru.codeunited.wmq.messaging.pcf.MQXFMessageMoveRecord;
 
 import java.text.ParseException;
@@ -162,6 +163,11 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
         return decodedParameter(MQBACF_MESSAGE_DATA);
     }
 
+    @Override
+    public <T> T getBody() {
+        return (T) decodeParameterRaw(MQBACF_MESSAGE_DATA);
+    }
+
     public boolean isTransmissionMessage() {
         /* because MQFMT_XMIT_Q_HEADER = "MQXMIT " - with a trailing space. */
         return "MQXMIT".equals(decodedParameter(MQCACH_FORMAT_NAME));
@@ -195,5 +201,15 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     @Override
     public String getXMITRemoteQueueMananger() {
         return decodedParameter(MQCACF_XQH_REMOTE_Q_MGR);
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("messageId", getMessageId())
+                .append("length", getMessageLength())
+                .append("objectName", getObjectName())
+                .appendSuper(super.toString())
+                .toString();
     }
 }

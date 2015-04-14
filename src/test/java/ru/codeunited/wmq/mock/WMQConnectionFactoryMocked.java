@@ -3,10 +3,7 @@ package ru.codeunited.wmq.mock;
 
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
-import ru.codeunited.wmq.messaging.ConnectionOptions;
-import ru.codeunited.wmq.messaging.MQLink;
-import ru.codeunited.wmq.messaging.QueueManager;
-import ru.codeunited.wmq.messaging.WMQConnectionFactory;
+import ru.codeunited.wmq.messaging.*;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -92,6 +89,11 @@ public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
 
                     @Override
                     public String getName() {
+                        return null;
+                    }
+
+                    @Override
+                    public QueueManagerAttributes getAttributes() {
                         return null;
                     }
 

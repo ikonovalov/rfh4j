@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
 import com.ibm.mq.pcf.MQCFGR;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import ru.codeunited.wmq.messaging.pcf.MQXFPutRecord;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -39,5 +40,10 @@ public class MQXFPutRecord750 extends MQXFMessageMoveRecord750 implements MQXFPu
     @Override
     public Integer getInvalidDestCount() {
         return decodedParameterAsInt(MQIACF_INVALID_DEST_COUNT);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

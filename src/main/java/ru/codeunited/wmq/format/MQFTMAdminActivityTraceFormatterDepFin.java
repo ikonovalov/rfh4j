@@ -1,11 +1,8 @@
 package ru.codeunited.wmq.format;
 
-import com.ibm.mq.MQMessage;
-import com.ibm.mq.pcf.PCFMessage;
 import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.*;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 

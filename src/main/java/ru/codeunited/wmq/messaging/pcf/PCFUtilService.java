@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.MQCFBS;
@@ -10,6 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceCommand750;
 import ru.codeunited.wmq.messaging.pcf.mq800.ActivityTraceCommand800;
 
+import java.io.EOFException;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -95,6 +98,23 @@ public final class PCFUtilService {
         if (value != null)
             value = value.trim();
         return value;
+    }
+
+    /**
+     * Create ActivityTraceCommand from MQMessage.
+     * Note: This messages are from "activity trace queue" with MQADMIN format.
+     * @param mqMessage
+     * @return
+     */
+    public static ActivityTraceCommand activityCommandFor(MQMessage mqMessage) {
+        try {
+            PCFMessage pcfMessage = new PCFMessage(mqMessage);
+            mqMessage.seek(0);
+            return activityCommandFor(pcfMessage, mqMessage);
+        } catch (MQException | IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+
     }
 
     /**

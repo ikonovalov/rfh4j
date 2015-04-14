@@ -12,6 +12,7 @@ import ru.codeunited.wmq.messaging.NoMessageAvailableException;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import static ru.codeunited.wmq.RFHConstants.*;
 
@@ -21,6 +22,8 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * Created by ikonovalov on 17.11.14.
  */
 public class MQGetCommand extends QueueCommand {
+
+    private static final Logger LOG = Logger.getLogger(MQGetCommand.class.getName());
 
     /**
      * Check input context options and raise IncompatibleOptionsException if something wrong.
@@ -56,7 +59,7 @@ public class MQGetCommand extends QueueCommand {
                     handleMessage(messageCouter, message, console);
                     messageCouter++;
                 }
-                System.out.println(">> total " + messageCouter + " in " + (System.currentTimeMillis() - startTime) + "ms");
+                LOG.fine(">> total " + messageCouter + " in " + (System.currentTimeMillis() - startTime) + "ms");
 
             } catch (NoMessageAvailableException e) {
                 if (!queueHasMessages) { // prevent output extra information if queue has messages.

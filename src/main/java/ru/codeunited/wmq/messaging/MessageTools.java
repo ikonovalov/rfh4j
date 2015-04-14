@@ -105,6 +105,12 @@ public final class MessageTools {
     final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
     // taken from http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+
+    /**
+     * Convert bytes to hex. Using upper case characters.
+     * @param bytes
+     * @return
+     */
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null || bytes.length == 0)
             return "";

@@ -22,4 +22,6 @@ public interface QueueManager extends Closeable {
     String getIdentefier();
 
     String getName();
+
+    QueueManagerAttributes getAttributes();
 }
