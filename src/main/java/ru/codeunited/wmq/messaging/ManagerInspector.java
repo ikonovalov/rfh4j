@@ -16,6 +16,8 @@ public interface ManagerInspector extends Closeable {
 
     List<Queue> listLocalQueues() throws MQException, IOException;
 
+    void managerAttributes() throws MQException, IOException;
+
     List<Queue> selectLocalQueues(String filter) throws MQException, IOException;
 
 }

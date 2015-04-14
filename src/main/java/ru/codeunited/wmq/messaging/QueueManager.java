@@ -15,4 +15,11 @@ public interface QueueManager extends Closeable {
 
     boolean isConnected();
 
+    String getDLQName();
+
+    String getDescription();
+
+    String getIdentefier();
+
+    String getName();
 }

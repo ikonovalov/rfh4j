@@ -58,15 +58,15 @@ public class InspectCommandTest {
         assertThat(context.getOption(RFHConstants.OPT_LIST_QLOCAL), is("RFH*"));
     }
 
-    @Test
-    @ContextInjection(cli = "-Q DEFQM --channel JVM.DEF.SVRCONN --lslq")
+    @Test(timeout = 1000L)
+    @ContextInjection(cli = "-Q DEFQM --channel JVM.DEF.SVRCONN --lslq --transport=binding")
     public void listAll() throws MissedParameterException, IncompatibleOptionsException, NestedHandlerException, CommandGeneralException {
         CommandChain chain = executionPlanBuilder.buildChain();
         ReturnCode rc = chain.execute();
         assertThat(rc, is(ReturnCode.SUCCESS));
     }
 
-    @Test
+    @Test(timeout = 1000L)
     @ContextInjection(cli = "-Q DEFQM --channel JVM.DEF.SVRCONN --lslq RFH*")
     public void listWithFilter() throws MissedParameterException, IncompatibleOptionsException, NestedHandlerException, CommandGeneralException {
         CommandChain chain = executionPlanBuilder.buildChain();

@@ -30,16 +30,30 @@ import static org.hamcrest.CoreMatchers.*;
 @GuiceModules({ContextModule.class, CommandsModule.class})
 public class ManagerInspectorTest extends QueueingCapability {
 
-    @Test(timeout = 5000)
+    @Test
     @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
+    public void inquireQMGRParameters() throws Exception {
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+                try (ManagerInspector managerInspector = new ManagerInspectorImpl(context.getLink())) {
+                    managerInspector.managerAttributes();
+                }
+            }
+        });
+    }
+
+    @Test(timeout = 5000)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN --transport=binding")
     public void listQueuesWithoutFilter() throws Exception {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
-                final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink());
-                final List<Queue> allQueues = inspector.listLocalQueues();
-                assertThat(allQueues, notNullValue());
-                assertThat(allQueues.isEmpty(), not(true));
+                try (final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink())) {
+                    final List<Queue> allQueues = inspector.listLocalQueues();
+                    assertThat(allQueues, notNullValue());
+                    assertThat(allQueues.isEmpty(), not(true));
+                }
             }
         });
     }
@@ -50,17 +64,17 @@ public class ManagerInspectorTest extends QueueingCapability {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
-                final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink());
-                final List<Queue> rfhQueues = inspector.selectLocalQueues("RFH.*");
-                boolean notRFHQueue = false;
-                for (Queue queue : rfhQueues) {
-                    System.out.println(queue);
-                    if (!queue.getName().startsWith("RFH.")) {
-                        notRFHQueue = true;
-                        break;
+                try (final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink())) {
+                    final List<Queue> rfhQueues = inspector.selectLocalQueues("RFH.*");
+                    boolean notRFHQueue = false;
+                    for (Queue queue : rfhQueues) {
+                        if (!queue.getName().startsWith("RFH.")) {
+                            notRFHQueue = true;
+                            break;
+                        }
                     }
+                    assertThat("Not RFH queue encountered at the search", notRFHQueue, not(true));
                 }
-                assertThat("Not RFH queue encountered at the search", notRFHQueue, not(true));
             }
         });
     }

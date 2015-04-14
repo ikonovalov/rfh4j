@@ -56,6 +56,20 @@ public final class PCFUtilService {
                 return MQConstants.lookup(value, "MQOT_.*");
             case MQIACF_MSG_TYPE:
                 return MQConstants.lookup(value, "MQMT_.*");
+            case MQIA_AUTHORITY_EVENT:
+                return MQConstants.lookup(value, "MQEVR_.*");
+            case MQIA_ACCOUNTING_CONN_OVERRIDE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_CONN_OVERRIDE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_TRACE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_RECORDING:
+                return MQConstants.lookup(value, "MQRECORDING_.*");
+            case MQIA_ADOPTNEWMCA_CHECK:
+                return MQConstants.lookup(value, "MQADOPT_CHECK_.*");
+            case MQIA_ADOPTNEWMCA_TYPE:
+                return MQConstants.lookup(value, "MQADOPT_TYPE_.*");
             default:
                 return pcfParameter.getStringValue();
         }

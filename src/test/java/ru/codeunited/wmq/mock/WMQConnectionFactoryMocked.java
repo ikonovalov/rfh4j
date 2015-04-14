@@ -76,6 +76,26 @@ public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
                     }
 
                     @Override
+                    public String getDLQName() {
+                        return null;
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return null;
+                    }
+
+                    @Override
+                    public String getIdentefier() {
+                        return null;
+                    }
+
+                    @Override
+                    public String getName() {
+                        return null;
+                    }
+
+                    @Override
                     public void close() throws IOException {
                         try {
                             manager.disconnect();

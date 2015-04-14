@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.frame;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
@@ -12,15 +11,12 @@ import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
-import ru.codeunited.wmq.frame.ContextInjection;
-import ru.codeunited.wmq.frame.GuiceModules;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.*;
 import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
@@ -52,13 +48,13 @@ public class GuiceContextTestRunner extends BlockJUnit4ClassRunner {
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         ContextInjection injection = method.getMethod().getAnnotation(ContextInjection.class);
-        if (nonNull(injection)) {
+        if (injection != null) {
             if (StringUtils.isNotBlank(injection.cli())) {
                 String cli = injection.cli();
                 try {
                     ExecutionContext context = new CLIExecutionContext(prepareCommandLine(cli));
                     GuiceModules modAnnotation = test.getClass().getAnnotation(GuiceModules.class);
-                    if (nonNull(modAnnotation)) {
+                    if (modAnnotation != null) {
                         Class<? extends Module>[] moduleClasses = modAnnotation.value();
                         List<Module> instantinatedModules = new ArrayList<>(moduleClasses.length);
                         for (Class moduleClass : moduleClasses) {

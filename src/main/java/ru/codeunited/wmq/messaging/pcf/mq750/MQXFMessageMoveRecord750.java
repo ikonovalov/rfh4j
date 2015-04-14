@@ -18,7 +18,7 @@ import static com.ibm.mq.constants.CMQCFC.*;
  */
 public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 implements MQXFMessageMoveRecord {
 
-    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmss");
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("yyyyMMdd HHmmssSS");
 
     private static final SimpleDateFormat TIME_REFORMATED = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
