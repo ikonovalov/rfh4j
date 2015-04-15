@@ -9,6 +9,7 @@ import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQHeaderIterator;
 import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.tuple.Pair;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,14 +29,17 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 import static org.junit.Assume.*;
+import static org.mockito.Mockito.*;
 
 /**
  * codeunited.ru
@@ -52,10 +56,73 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
 
     private final String ACTIVITY_QUEUE = "SYSTEM.ADMIN.TRACE.ACTIVITY.QUEUE";
 
+    private final String CAPTURED_MESSAGE =
+            "524648200000000200000054000000" +
+            "01000004B82020202020202020000000" +
+            "00000004B80000002C3C7573723E3C6D" +
+            "795661722064743D22737472696E6722" +
+            "3E5331333C2F6D795661723E3C2F7573" +
+            "723E20202049206C696B652057656253" +
+            "7068657265204D51";
+
     @After @Before
     public void cleanUp() throws Exception {
         cleanupQueue(THE_QUEUE);
-        //cleanupQueue(ACTIVITY_QUEUE);
+        cleanupQueue(ACTIVITY_QUEUE);
+    }
+
+    @Test
+    public void parseHeaders() throws MQHeaderException {
+
+        byte[] payload = new BigInteger(CAPTURED_MESSAGE, 16).toByteArray();
+
+        MQXFMessageMoveRecord record = mock(MQXFMessageMoveRecord.class);
+        when(record.getFormat()).thenReturn(MQFMT_RF_HEADER_2);
+        when(record.getEncoding()).thenReturn(1);
+        when(record.getCCSID()).thenReturn(1208);
+        when(record.getDataRaw()).thenReturn(payload);
+
+        TraceData traceData = TraceDataImpl.create(record);
+        List<MQHeader> headerList = traceData.getHeaders();
+        assertThat("Wrong header list size", headerList.size(), is(1));
+        assertThat("Wrong header type", headerList.get(0), instanceOf(MQRFH2.class));
+
+        Object body = traceData.getBody();
+        assertThat(body, instanceOf(byte[].class));
+    }
+
+    @Test(expected = MQHeaderException.class)
+    public void corruptedMessage() throws MQHeaderException {
+        byte[] payload = new BigInteger(CAPTURED_MESSAGE, 16).toByteArray();
+        payload[10] = 100;
+        MQXFMessageMoveRecord record = mock(MQXFMessageMoveRecord.class);
+        when(record.getFormat()).thenReturn(MQFMT_RF_HEADER_2);
+        when(record.getEncoding()).thenReturn(1);
+        when(record.getCCSID()).thenReturn(1208);
+        when(record.getDataRaw()).thenReturn(payload);
+
+        TraceData traceData = TraceDataImpl.create(record);
+
+        traceData.getHeaders();
+    }
+
+    @Test
+    public void emptyDataRowAndParse() throws MQHeaderException {
+        byte[] payload = null;
+        MQXFMessageMoveRecord record = mock(MQXFMessageMoveRecord.class);
+        when(record.getFormat()).thenReturn(MQFMT_RF_HEADER_2);
+        when(record.getEncoding()).thenReturn(1);
+        when(record.getCCSID()).thenReturn(1208);
+        when(record.getDataRaw()).thenReturn(payload);
+
+        TraceData traceData = TraceDataImpl.create(record);
+
+        List<MQHeader> headerList = traceData.getHeaders();
+        assertThat("Header list is null, should be empty", headerList, notNullValue());
+        assertThat("Wrong header list size", headerList.size(), is(0));
+
+        Object body = traceData.getBody();
+        assertThat(body == null, is(true));
     }
 
     /**
@@ -70,7 +137,7 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
         /* Skip if it's not                     */
         communication(new QueueWork() {
             @Override
-            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+            public void work(ExecutionContext context) throws Exception {
                 QueueManager qm = context.getLink().getManager();
                 Pair<Object, String> valuePair = qm.getAttributes().get("MQIA_ACTIVITY_TRACE");
                 assumeTrue("Activity trace disabled for " + qm.getName(), valuePair.getLeft().equals(1));
@@ -80,7 +147,7 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
         // put test messages and get activity
         communication(new QueueWork() {
             @Override
-            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+            public void work(ExecutionContext context) throws Exception {
                 try (final MessageProducer producer = new MessageProducerImpl(THE_QUEUE, context.getLink());
                      final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink())) {
 
@@ -116,9 +183,23 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
                                     LOG.info("Got\n" + putRecord.getMessageId() + (thisMessage ? "+" : "-"));
                                     if (thisMessage) {
                                         LOG.fine(putRecord.toString());
-                                        byte[] body = putRecord.getDataRaw();
 
-                                        DataInput dataInput = new DataInputStream(new ByteArrayInputStream(body));
+                                        byte[] dataRaw = putRecord.getDataRaw();
+
+                                        assertThat("Body is null", dataRaw, notNullValue());
+                                        assertThat("Body is empty", dataRaw.length > 0, is(true));
+
+                                        TraceData traceData = putRecord.getData();
+
+                                        List<MQHeader> listOfHeaders = traceData.getHeaders();
+                                        assertThat("Wrong header list size", listOfHeaders.size(), is(1));
+
+                                        Object capturedBody = traceData.getBody();
+                                        assertThat("Original message was MQFMT_NONE, so body should be threated as bytes", capturedBody, instanceOf(byte[].class));
+
+
+
+                                        /*DataInput dataInput = new DataInputStream(new ByteArrayInputStream(body));
                                         try {
                                             String format = putRecord.getFormat();
                                             MQRFH2 mqrfh2 = new MQRFH2(dataInput);
@@ -127,12 +208,14 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
                                             System.out.println("struct len " + stuctLen + " total len " + body.length);
                                         } catch (MQDataException e) {
                                             e.printStackTrace();
-                                        }
+                                        }*/
                                     }
                                 }
                             }
                         } catch (NoMessageAvailableException noMessage) {
                             dontStop = false;
+                        } catch (MQHeaderException e) {
+                            throw new RuntimeException(e);
                         }
                     }
 
@@ -148,7 +231,7 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
         communication(new QueueWork() {
 
             @Override
-            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+            public void work(ExecutionContext context) throws Exception {
                 try (
                         final MessageProducer producer = new MessageProducerImpl(THE_QUEUE, context.getLink());
                         final MessageConsumer consumer = new MessageConsumerImpl(THE_QUEUE, context.getLink())

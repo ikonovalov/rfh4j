@@ -71,6 +71,8 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
     <T> T getDataRaw();
 
+    TraceData getData();
+
     Integer getTraceDataLength();
 
     boolean isTransmissionMessage();

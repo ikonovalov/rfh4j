@@ -49,7 +49,7 @@ public abstract class QueueingCapability extends GuiceSupport {
 
 
     public interface QueueWork {
-        void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
+        void work(ExecutionContext context) throws Exception;
     }
 
     /**
