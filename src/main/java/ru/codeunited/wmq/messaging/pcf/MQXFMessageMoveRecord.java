@@ -69,7 +69,9 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
     String getPutDateTimeISO();
 
-    <T> T getBody();
+    <T> T getDataRaw();
+
+    Integer getTraceDataLength();
 
     boolean isTransmissionMessage();
 

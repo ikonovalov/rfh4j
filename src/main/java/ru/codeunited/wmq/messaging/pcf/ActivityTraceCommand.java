@@ -53,8 +53,6 @@ public interface ActivityTraceCommand {
 
     String getTraceDetail();
 
-    Integer getTraceDataLength();
-
     String getPlatform();
 
     List<ActivityTraceRecord> getRecords();

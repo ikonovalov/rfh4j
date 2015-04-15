@@ -116,10 +116,11 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
                                     LOG.info("Got\n" + putRecord.getMessageId() + (thisMessage ? "+" : "-"));
                                     if (thisMessage) {
                                         LOG.fine(putRecord.toString());
-                                        byte[] body = putRecord.getBody();
+                                        byte[] body = putRecord.getDataRaw();
 
                                         DataInput dataInput = new DataInputStream(new ByteArrayInputStream(body));
                                         try {
+                                            String format = putRecord.getFormat();
                                             MQRFH2 mqrfh2 = new MQRFH2(dataInput);
                                             int stuctLen = mqrfh2.getStrucLength();
                                             System.out.println(Arrays.asList(mqrfh2.getFolderStrings()));

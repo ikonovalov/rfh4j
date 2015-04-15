@@ -145,11 +145,6 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
     }
 
     @Override
-    public Integer getTraceDataLength() {
-        return decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
-    }
-
-    @Override
     public String getPlatform() {
         return decodedParameter(MQIA_PLATFORM);
     }

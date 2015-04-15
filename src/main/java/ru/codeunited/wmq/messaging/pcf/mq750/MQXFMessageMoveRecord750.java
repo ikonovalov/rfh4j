@@ -164,8 +164,13 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     }
 
     @Override
-    public <T> T getBody() {
+    public <T> T getDataRaw() {
         return (T) decodeParameterRaw(MQBACF_MESSAGE_DATA);
+    }
+
+    @Override
+    public Integer getTraceDataLength() {
+        return decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
     }
 
     public boolean isTransmissionMessage() {
