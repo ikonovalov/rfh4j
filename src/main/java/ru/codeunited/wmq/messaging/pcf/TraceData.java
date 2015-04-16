@@ -3,6 +3,7 @@ package ru.codeunited.wmq.messaging.pcf;
 import com.google.common.base.Optional;
 import com.ibm.mq.headers.MQHeader;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 /**
@@ -20,5 +21,11 @@ public interface TraceData {
      * @return body of the captured message. Class of the body may be byte[] or String. It depends of MQFMT_NONE or MQFMT_STRING respectively.
      */
     <T> Optional<T> getBody();
+
+    Optional<String> getBodyAsString() throws UnsupportedEncodingException;
+
+    Optional<byte[]> getBodyAsBytes();
+
+    Optional<String> getBodyFormat();
 
 }

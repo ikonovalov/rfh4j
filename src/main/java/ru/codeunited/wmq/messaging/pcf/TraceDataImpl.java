@@ -1,13 +1,17 @@
 package ru.codeunited.wmq.messaging.pcf;
 
 import com.google.common.base.Optional;
+import com.ibm.mq.headers.CCSID;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQHeaderIterator;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru
@@ -78,5 +82,49 @@ public class TraceDataImpl implements TraceData {
     @Override
     public  <T> Optional<T> getBody(){
         return Optional.fromNullable((T)body);
+    }
+
+    @Override
+    public Optional<String> getBodyAsString() throws UnsupportedEncodingException {
+        Optional<Object> body = getBody();
+        if (body.isPresent()) {
+            if (body.get() instanceof byte[]) {
+                String bodyAsString = new String((byte[])body.get(), CCSID.getCodepage(record.getCCSID()));
+                return Optional.of(bodyAsString);
+            } else {
+                return getBody();
+            }
+        } else {
+            return Optional.absent();
+        }
+    }
+
+    @Override
+    public Optional<byte[]> getBodyAsBytes() {
+        Optional<Object> body = getBody();
+        if (body.isPresent() ) {
+            if (body.get() instanceof String) {
+                String bodyString = (String) body.get();
+                return Optional.of(bodyString.getBytes());
+            } else {
+                return getBody();
+            }
+        }
+        else {
+            return Optional.absent();
+        }
+    }
+
+    @Override
+    public Optional<String> getBodyFormat() {
+        if (getBody().isPresent()) {
+            if (getBody().get() instanceof String) {
+                return Optional.of(MQFMT_STRING);
+            } else {
+                return Optional.of(MQFMT_NONE);
+            }
+        } else {
+            return Optional.absent();
+        }
     }
 }
