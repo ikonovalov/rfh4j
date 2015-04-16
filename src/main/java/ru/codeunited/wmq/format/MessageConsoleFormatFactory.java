@@ -51,7 +51,7 @@ public class MessageConsoleFormatFactory implements FormatterFactory{
                     formatter = new MQFMTStringFormatter();
                     break;
                 case MQFMT_ADMIN:
-                    formatter = new MQFTMAdminFormatFactory(context).formatterFor(message);
+                    formatter = new MQFMTAdminFormatFactory(context).formatterFor(message);
                     break;
                 default:
                     formatter = new MQFMTStringFormatter();

@@ -27,14 +27,14 @@ public class CustomFormatter {
     @Test
     public void loadSucessWithBuildin1() throws ParseException, MQException, IOException {
         final CommandLine cl = prepareCommandLine(
-                String.format("-Q DEFQM --%s --all --formatter=ru.codeunited.wmq.format.MQFTMAdminCommonFormatter", OPT_STREAM)
+                String.format("-Q DEFQM --%s --all --formatter=ru.codeunited.wmq.format.MQFMTAdminCommonFormatter", OPT_STREAM)
         );
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MessageConsoleFormatFactory factory = new MessageConsoleFormatFactory(executionContext);
 
         final MQMessage message = MQMessageMock.createMQFMTAdminMessage();
 
-        assertThat(factory.formatterFor(message), instanceOf(ru.codeunited.wmq.format.MQFTMAdminCommonFormatter.class));
+        assertThat(factory.formatterFor(message), instanceOf(MQFMTAdminCommonFormatter.class));
     }
 
     @Test
@@ -55,7 +55,7 @@ public class CustomFormatter {
     @Test(expected = CustomFormatterException.class)
     public void loadFailureWithBuildin() throws ParseException, MQException, IOException {
         final CommandLine cl = prepareCommandLine(
-                String.format("-Q DEFQM --%s --all --formatter=ru.codeunited.wmq.format.MQFTMAdminCommonFormatter1", OPT_STREAM)
+                String.format("-Q DEFQM --%s --all --formatter=ru.codeunited.wmq.format.MQFMTAdminCommonFormatter1", OPT_STREAM)
         );
         final ExecutionContext executionContext = new CLIExecutionContext(cl);
         final MessageConsoleFormatFactory factory = new MessageConsoleFormatFactory(executionContext);

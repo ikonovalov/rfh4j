@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import static com.ibm.mq.constants.MQConstants.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -123,20 +122,13 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
      * Really hard thing.
      * @throws Exception
      */
-    @Test(timeout = 120000L)
+    @Test(timeout = 10000L)
     @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN --transport=client") /* use CLIENT mode to prevent hiding trace */
     public void lookupActivity() throws Exception {
 
         /* check that activity trace enabled    */
         /* Skip if it's not                     */
-        communication(new QueueWork() {
-            @Override
-            public void work(ExecutionContext context) throws Exception {
-                QueueManager qm = context.getLink().getManager();
-                Pair<Object, String> valuePair = qm.getAttributes().get("MQIA_ACTIVITY_TRACE");
-                assumeTrue("Activity trace disabled for " + qm.getName(), valuePair.getLeft().equals(1));
-            }
-        });
+        assumeActivityLogEnable();
 
         // put test messages and get activity
         communication(new QueueWork() {

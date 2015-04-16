@@ -11,11 +11,11 @@ import java.util.List;
  * Created by ikonovalov on 02.02.15.
  */
 @Singleton
-public class MQFTMAdminActivityTraceFormatter extends MQActivityTraceFormatter<String> {
+public class MQFMTAdminActivityTraceFormatter extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
 
-    MQFTMAdminActivityTraceFormatter() {
+    MQFMTAdminActivityTraceFormatter() {
         super();
     }
 

@@ -5,6 +5,7 @@ import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.internal.AssumptionViolatedException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
@@ -23,6 +24,7 @@ import java.util.logging.Logger;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
 import static ru.codeunited.wmq.frame.CLITestSupport.*;
 
 /**
@@ -50,6 +52,22 @@ public abstract class QueueingCapability extends GuiceSupport {
 
     public interface QueueWork {
         void work(ExecutionContext context) throws Exception;
+    }
+
+    /**
+     * Check that ACTIVITY TRACE log on the current QM is enabled.
+     * @throws Exception
+     */
+    protected void assumeActivityLogEnable() throws Exception {
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws Exception {
+                try(QueueManager qm = context.getLink().getManager()) {
+                    Pair<Object, String> valuePair = qm.getAttributes().get("MQIA_ACTIVITY_TRACE");
+                    assumeTrue("Activity trace disabled for " + qm.getName(), valuePair.getLeft().equals(1));
+                }
+            }
+        });
     }
 
     /**

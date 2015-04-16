@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.format;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 import com.google.inject.name.Names;
 
 /**
@@ -12,6 +13,15 @@ public class FormatterModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(MessageFormatter.class).annotatedWith(Names.named(MQFMTStringFormatter.class.getName())).to(MQFMTStringFormatter.class);
+        bind(MessageFormatter.class)
+                .annotatedWith(Names.named(MQFMTStringFormatter.class.getName())).to(MQFMTStringFormatter.class);
+
+        /* ActivityTraceFormatter<String> => MQFTMAdminActivityTraceFormatterDepFin */
+        bind(new TypeLiteral<ActivityTraceFormatter<String>>(){})
+                .annotatedWith(Names.named(MQFMTAdminActivityTraceFormatterDepFin.class.getName())).to(MQFMTAdminActivityTraceFormatterDepFin.class);
+
+        /* ActivityTraceFormatter<String> => MQFTMAdminActivityTraceFormatter */
+        bind(new TypeLiteral<ActivityTraceFormatter<String>>(){})
+                .annotatedWith(Names.named(MQFMTAdminActivityTraceFormatter.class.getName())).to(MQFMTAdminActivityTraceFormatter.class);
     }
 }

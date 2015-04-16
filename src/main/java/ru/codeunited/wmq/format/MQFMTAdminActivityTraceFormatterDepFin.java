@@ -1,12 +1,15 @@
 package ru.codeunited.wmq.format;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.StringUtils;
+import ru.codeunited.wmq.messaging.HeaderUtilService;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import javax.inject.Singleton;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -19,11 +22,13 @@ import static com.ibm.mq.constants.MQConstants.*;
  * Created by ikonovalov on 02.02.15.
  */
 @Singleton
-public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceFormatter<String> {
+public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
 
-    MQFTMAdminActivityTraceFormatterDepFin() {
+    private static final int MAX_BODY_LENGTH = 256;
+
+    MQFMTAdminActivityTraceFormatterDepFin() {
         super();
     }
 
@@ -84,35 +89,49 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 buffer.append(moveRecord.getMessageLength()).append(';');
                 buffer.append(activityCommand.getApplicationName()).append(';');
                 buffer.append(activityCommand.getApplicationType()).append(';');
-                buffer.append(activityCommand.getUserId());
+                buffer.append(activityCommand.getUserId()).append(";");
 
-                // print captured data (it has two slots: headerdata, bodydata)
+                // print captured data (it has four slots: headerdata x3, bodydata x1)
                 TraceData traceData = moveRecord.getData();
                 final String format = moveRecord.getFormat();
                 final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
                 final Optional<Object> bodyOpt = traceData.getBody();
+
+                final String[] capturedOutBlock = new String[4];
+                Arrays.fill(capturedOutBlock, "");
+
                 switch (format) {
                     case MQFMT_RF_HEADER_2:
                         if (listOfHeadersOpt.isPresent()) {
                             MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
+                            capturedOutBlock[0] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "id");
+                            capturedOutBlock[1] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "type");
+                            capturedOutBlock[2] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "status");
 
                             if (bodyOpt.isPresent()) {
-
+                                if (MQFMT_STRING.equals(mqrfh2.getFormat())) {
+                                    String realBody = trimBodyToMaxSize(bodyOpt);
+                                    capturedOutBlock[3] = realBody;
+                                } else {
+                                    capturedOutBlock[3] = "[bytes]";
+                                }
                             }
                         }
                         break;
                     case MQFMT_NONE:
                         if (bodyOpt.isPresent()) {
-                            buffer.append(";[bytes]");
+                            capturedOutBlock[3] = "[bytes]";
                         }
                         break;
                     case MQFMT_STRING:
                         if (bodyOpt.isPresent()) {
-
+                            String realBody = trimBodyToMaxSize(bodyOpt);
+                            capturedOutBlock[3] = realBody;
                         }
                         break;
                     default:
                 }
+                buffer.append(Joiner.on(";").join(capturedOutBlock));
                 // end of printing captured data
 
                 buffer.append('\n');
@@ -125,6 +144,14 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
             buffer.setLength(0);
         }
         return buffer.toString().trim();
+    }
+
+    protected static String trimBodyToMaxSize(Optional<Object> bodyOpt) {
+        String realBody = (String) bodyOpt.get();
+        if (realBody.length() > MAX_BODY_LENGTH) {
+            realBody = realBody.substring(0, MAX_BODY_LENGTH) + "...";
+        }
+        return realBody;
     }
 
     protected static String extractQueueName(MQXFMessageMoveRecord moveRecord) {

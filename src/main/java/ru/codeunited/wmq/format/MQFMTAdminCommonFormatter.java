@@ -22,9 +22,9 @@ import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
  * Created by ikonovalov on 02.02.15.
  */
 @Singleton
-public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
+public class MQFMTAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
-    public MQFTMAdminCommonFormatter() {
+    public MQFMTAdminCommonFormatter() {
         super();
     }
 
