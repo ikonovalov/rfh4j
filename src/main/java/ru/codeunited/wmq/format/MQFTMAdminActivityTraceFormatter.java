@@ -2,6 +2,7 @@ package ru.codeunited.wmq.format;
 
 import ru.codeunited.wmq.messaging.pcf.*;
 
+import javax.inject.Singleton;
 import java.util.List;
 
 /**
@@ -9,6 +10,7 @@ import java.util.List;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
+@Singleton
 public class MQFTMAdminActivityTraceFormatter extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;
@@ -71,21 +73,6 @@ public class MQFTMAdminActivityTraceFormatter extends MQActivityTraceFormatter<S
             buffer.append('\n');
             allowOutput = true;
         }
-
-        /*Enumeration<PCFParameter> parametersL1 = pcfMessage.getParameters();
-        while (parametersL1.hasMoreElements()) {
-            final PCFParameter parameter = parametersL1.nextElement();
-
-            // process activity trace elements (MQGACF_ACTIVITY_TRACE is always grouped as MQCFGR)
-            MQCFGR trace = (MQCFGR) parameter; // => MQGACF_ACTIVITY_TRACE
-
-            final PCFParameter mqiacfOperation = parameterOf(trace, MQIACF_OPERATION_ID);
-            if (parameterOf(trace, MQIACF_COMP_CODE).getValue().equals(MQCC_OK) // => skip failed operations
-                    && OPERATION_FILTER.allowed(mqiacfOperation)) { // => skip not interesting operations
-
-            }
-
-        }*/
         if (!allowOutput) { // drop buffer in it contains nothing interesting.
             buffer.setLength(0);
         }

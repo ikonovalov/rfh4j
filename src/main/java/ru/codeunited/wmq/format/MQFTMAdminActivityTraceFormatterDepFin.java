@@ -6,6 +6,7 @@ import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.*;
 
+import javax.inject.Singleton;
 import java.util.List;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -17,6 +18,7 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
+@Singleton
 public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceFormatter<String> {
 
     private static final int BUFFER_2Kb = 2048;

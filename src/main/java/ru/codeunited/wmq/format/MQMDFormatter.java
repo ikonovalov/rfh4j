@@ -3,6 +3,7 @@ package ru.codeunited.wmq.format;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 
 /**
@@ -10,6 +11,7 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 03.02.15.
  */
+@Singleton
 public class MQMDFormatter extends MQFMTContextAwareFormatter<String> {
 
     private static final String BOARDER = "<------------------MQMD--------------------------->";

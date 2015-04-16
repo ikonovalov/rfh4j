@@ -8,6 +8,7 @@ import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 
+import javax.inject.Singleton;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -20,6 +21,7 @@ import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
+@Singleton
 public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
     public MQFTMAdminCommonFormatter() {

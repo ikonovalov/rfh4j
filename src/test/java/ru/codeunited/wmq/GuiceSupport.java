@@ -29,10 +29,6 @@ public class GuiceSupport {
 
     private final Parallel parallel = new Parallel();
 
-    public Injector setup(CommandLine cli) {
-        return setup(new CLIExecutionContext(cli));
-    }
-
     @Inject
     public Injector setup(ExecutionContext executionContext) {
         context = executionContext;

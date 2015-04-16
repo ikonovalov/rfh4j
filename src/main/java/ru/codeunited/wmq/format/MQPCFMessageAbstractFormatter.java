@@ -12,6 +12,7 @@ import java.io.IOException;
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.02.15.
  */
+// @Singleton
 public abstract class MQPCFMessageAbstractFormatter<T> extends MQFMTContextAwareFormatter implements PCFMessageFormatter<T> {
 
     @Override
