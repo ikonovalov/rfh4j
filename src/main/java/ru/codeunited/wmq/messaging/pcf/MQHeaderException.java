@@ -5,7 +5,7 @@ package ru.codeunited.wmq.messaging.pcf;
  * konovalov84@gmail.com
  * Created by ikonovalov on 15.04.15.
  */
-public class MQHeaderException extends Exception {
+public class MQHeaderException extends RuntimeException {
     public MQHeaderException(String message) {
         super(message);
     }

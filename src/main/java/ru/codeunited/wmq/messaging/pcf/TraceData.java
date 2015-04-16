@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import com.google.common.base.Optional;
 import com.ibm.mq.headers.MQHeader;
 
 import java.util.List;
@@ -11,7 +12,13 @@ import java.util.List;
  */
 public interface TraceData {
 
-    List<MQHeader> getHeaders() throws MQHeaderException;
+    Optional<List<MQHeader>> getHeaders();
 
-    <T> T getBody() throws MQHeaderException;
+    /**
+     * Get body of the trace activity record (applicable for MQXF_PUT/MQXF_GET operations)
+     * @param <T>
+     * @return body of the captured message. Class of the body may be byte[] or String. It depends of MQFMT_NONE or MQFMT_STRING respectively.
+     */
+    <T> Optional<T> getBody();
+
 }

@@ -1,15 +1,14 @@
 package ru.codeunited.wmq.messaging;
 
+import com.google.common.base.Optional;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.MQPutMessageOptions;
-import com.ibm.mq.headers.MQDataException;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQHeaderIterator;
 import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.tuple.Pair;
-import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,21 +24,17 @@ import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.pcf.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
 import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-import static org.junit.Assume.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * codeunited.ru
@@ -83,12 +78,12 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
         when(record.getDataRaw()).thenReturn(payload);
 
         TraceData traceData = TraceDataImpl.create(record);
-        List<MQHeader> headerList = traceData.getHeaders();
+        List<MQHeader> headerList = traceData.getHeaders().get();
         assertThat("Wrong header list size", headerList.size(), is(1));
         assertThat("Wrong header type", headerList.get(0), instanceOf(MQRFH2.class));
 
-        Object body = traceData.getBody();
-        assertThat(body, instanceOf(byte[].class));
+        Optional<Object> bodyOpt = traceData.getBody();
+        assertThat(bodyOpt.get(), instanceOf(byte[].class));
     }
 
     @Test(expected = MQHeaderException.class)
@@ -117,12 +112,11 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
 
         TraceData traceData = TraceDataImpl.create(record);
 
-        List<MQHeader> headerList = traceData.getHeaders();
-        assertThat("Header list is null, should be empty", headerList, notNullValue());
-        assertThat("Wrong header list size", headerList.size(), is(0));
+        Optional<List<MQHeader>> headerListOpt = traceData.getHeaders();
+        assertThat("Header list shoube be absent", headerListOpt.isPresent(), is(false));
 
-        Object body = traceData.getBody();
-        assertThat(body == null, is(true));
+        Optional<Object> body = traceData.getBody();
+        assertThat(body.isPresent(), is(false));
     }
 
     /**
@@ -191,10 +185,10 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
 
                                         TraceData traceData = putRecord.getData();
 
-                                        List<MQHeader> listOfHeaders = traceData.getHeaders();
+                                        List<MQHeader> listOfHeaders = traceData.getHeaders().get();
                                         assertThat("Wrong header list size", listOfHeaders.size(), is(1));
 
-                                        Object capturedBody = traceData.getBody();
+                                        Object capturedBody = traceData.getBody().get();
                                         assertThat("Original message was MQFMT_NONE, so body should be threated as bytes", capturedBody, instanceOf(byte[].class));
 
 

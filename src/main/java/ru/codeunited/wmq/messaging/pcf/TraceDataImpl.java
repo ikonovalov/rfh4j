@@ -1,14 +1,12 @@
 package ru.codeunited.wmq.messaging.pcf;
 
-import com.ibm.mq.headers.MQDataException;
+import com.google.common.base.Optional;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQHeaderIterator;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,11 +14,11 @@ import java.util.List;
  * konovalov84@gmail.com
  * Created by ikonovalov on 15.04.15.
  */
-public final class TraceDataImpl implements TraceData {
+public class TraceDataImpl implements TraceData {
 
     private final MQXFMessageMoveRecord record;
 
-    private List<MQHeader> headerList = Collections.emptyList();
+    private List<MQHeader> headerList;
 
     private Object body;
 
@@ -31,17 +29,12 @@ public final class TraceDataImpl implements TraceData {
 
 
     public static TraceData create(MQXFMessageMoveRecord record) {
-        TraceData traceData = new TraceDataImpl(record);
+        TraceDataImpl traceData = new TraceDataImpl(record);
+        traceData.initialize();
         return traceData;
     }
 
-    private boolean isArrangeRequired() {
-        return headerList == null || headerList.size() == 0 || body == null;
-    }
-
-    private void arrange() throws MQHeaderException {
-
-        if (!isArrangeRequired()) return;
+    private void initialize() {
 
         final byte[] data = record.getDataRaw();
 
@@ -65,7 +58,7 @@ public final class TraceDataImpl implements TraceData {
                 headerList.add(headerIterator.nextHeader());
             }
 
-            // parse body
+            // parse body (type is depends of last header format field)
             body = headerIterator.getBody();
 
         } catch (Exception e) {
@@ -78,14 +71,12 @@ public final class TraceDataImpl implements TraceData {
     }
 
     @Override
-    public List<MQHeader> getHeaders() throws MQHeaderException {
-        arrange();
-        return headerList;
+    public Optional<List<MQHeader>> getHeaders(){
+        return Optional.fromNullable(headerList);
     }
 
     @Override
-    public <T> T getBody() throws MQHeaderException {
-        arrange();
-        return (T) body;
+    public  <T> Optional<T> getBody(){
+        return Optional.fromNullable((T)body);
     }
 }
