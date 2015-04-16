@@ -1,9 +1,14 @@
 package ru.codeunited.wmq.format;
 
+import com.google.common.base.Optional;
+import com.ibm.mq.headers.MQHeader;
+import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import java.util.List;
+
+import static com.ibm.mq.constants.MQConstants.*;
 
 
 
@@ -78,6 +83,35 @@ public class MQFTMAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 buffer.append(activityCommand.getApplicationName()).append(';');
                 buffer.append(activityCommand.getApplicationType()).append(';');
                 buffer.append(activityCommand.getUserId());
+
+                // print captured data (it has two slots: headerdata, bodydata)
+                TraceData traceData = moveRecord.getData();
+                final String format = moveRecord.getFormat();
+                final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
+                final Optional<Object> bodyOpt = traceData.getBody();
+                switch (format) {
+                    case MQFMT_RF_HEADER_2:
+                        if (listOfHeadersOpt.isPresent()) {
+                            MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
+
+                            if (bodyOpt.isPresent()) {
+
+                            }
+                        }
+                        break;
+                    case MQFMT_NONE:
+                        if (bodyOpt.isPresent()) {
+                            buffer.append(";[bytes]");
+                        }
+                        break;
+                    case MQFMT_STRING:
+                        if (bodyOpt.isPresent()) {
+
+                        }
+                        break;
+                    default:
+                }
+                // end of printing captured data
 
                 buffer.append('\n');
             }
