@@ -1,11 +1,13 @@
 package ru.codeunited.wmq.format;
 
+import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.RFHConstants;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.io.IOException;
 
@@ -17,16 +19,19 @@ import static com.ibm.mq.constants.MQConstants.*;
  * Created by ikonovalov on 02.02.15.
  */
 @Singleton
-public class MessageConsoleFormatFactory implements FormatterFactory {
+public class RootMessageFormatFactory implements FormatterFactory {
 
     private ExecutionContext context;
 
     @Inject @AdminMessageFormatFactory
     private FormatterFactory adminFormatFactory;
 
+    @Inject
+    private Provider<Injector> injectorProvider;
+
 
     @Inject
-    public MessageConsoleFormatFactory(ExecutionContext context) {
+    public RootMessageFormatFactory(ExecutionContext context) {
         this.context = context;
     }
 
@@ -65,7 +70,8 @@ public class MessageConsoleFormatFactory implements FormatterFactory {
                     formatter = new MQFMTStringFormatter();
             }
         }
-        formatter.attach(context);
+        // TODO Formatters are not actually connected to Guice. So overinject them.
+        injectorProvider.get().injectMembers(formatter);
         return formatter;
     }
 

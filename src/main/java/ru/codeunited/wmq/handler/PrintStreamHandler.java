@@ -6,8 +6,7 @@ import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.format.FormatterFactory;
-import ru.codeunited.wmq.format.GeneralFormatFactory;
-import ru.codeunited.wmq.format.MessageConsoleFormatFactory;
+import ru.codeunited.wmq.format.RootFormatFactory;
 import ru.codeunited.wmq.cli.TableColumnName;
 
 import javax.inject.Inject;
@@ -34,7 +33,7 @@ public class PrintStreamHandler extends CommonMessageHandler<Void> {
             TableColumnName.OUTPUT
     };
 
-    @Inject @GeneralFormatFactory
+    @Inject @RootFormatFactory
     private FormatterFactory formatterFactory;
 
     @Inject

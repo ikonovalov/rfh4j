@@ -1,11 +1,13 @@
 package ru.codeunited.wmq.format;
 
+import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.ExecutionContext;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.io.IOException;
 import static com.ibm.mq.constants.MQConstants.*;
@@ -19,6 +21,9 @@ import static com.ibm.mq.constants.MQConstants.*;
 class MQFMTAdminFormatFactory implements FormatterFactory {
 
     private final ExecutionContext context;
+
+    @Inject
+    private Provider<Injector> injectorProvider;
 
     @Inject
     MQFMTAdminFormatFactory(ExecutionContext context) {
@@ -37,7 +42,6 @@ class MQFMTAdminFormatFactory implements FormatterFactory {
             default:
                 formatter = new MQFMTAdminCommonFormatter();
         }
-        formatter.attach(context);
         return formatter;
     }
 
