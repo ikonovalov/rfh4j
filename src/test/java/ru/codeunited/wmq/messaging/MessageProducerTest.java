@@ -33,7 +33,7 @@ import static org.junit.Assert.assertThat;
  * Created by ikonovalov on 19.11.14.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class MessageProducerTest extends QueueingCapability {
 
     private static final String QUEUE = "RFH.QTEST.PUT1";

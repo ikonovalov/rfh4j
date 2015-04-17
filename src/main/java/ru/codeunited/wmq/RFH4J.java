@@ -8,6 +8,7 @@ import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 /**
  * codeunited.ru
@@ -35,7 +36,7 @@ public class RFH4J {
                 CLIFactory.showHelp();
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
-                final Injector injector = Guice.createInjector(new ContextModule(context), new CommandsModule());
+                final Injector injector = Guice.createInjector(new ContextModule(context), new CommandsModule(), new MessagingModule());
 
                 context.setConsoleWriter(consoleWriter);
                 final ExecutionPlanBuilder executionPlanBuilder = injector.getInstance(ExecutionPlanBuilder.class);

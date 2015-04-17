@@ -3,7 +3,6 @@ package ru.codeunited.wmq.format;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.MQPutMessageOptions;
-import com.ibm.mq.headers.MQHeader;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -19,16 +18,17 @@ import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.messaging.*;
 import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
-import ru.codeunited.wmq.messaging.pcf.*;
+import ru.codeunited.wmq.messaging.pcf.ActivityTraceCommand;
+import ru.codeunited.wmq.messaging.pcf.MQHeaderException;
+import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertThat;
 
 /**
@@ -37,7 +37,7 @@ import static org.junit.Assert.assertThat;
  * Created by ikonovalov on 16.04.15.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class, FormatterModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, FormatterModule.class, MessagingModule.class})
 public class DebugDepFinFormatter extends QueueingCapability {
 
     private static final Logger LOG = Logger.getLogger(DebugDepFinFormatter.class.getName());

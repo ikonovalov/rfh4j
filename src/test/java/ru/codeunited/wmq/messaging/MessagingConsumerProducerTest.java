@@ -41,7 +41,7 @@ import static org.mockito.Mockito.when;
  * Created by ikonovalov on 13.04.15.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class MessagingConsumerProducerTest extends QueueingCapability {
 
     private static final Logger LOG = Logger.getLogger(MessagingConsumerProducerTest.class.getName());

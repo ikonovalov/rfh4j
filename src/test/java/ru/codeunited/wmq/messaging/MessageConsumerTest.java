@@ -37,7 +37,7 @@ import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
  * Created by ikonovalov on 17.11.14.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class MessageConsumerTest extends QueueingCapability {
 
     private static final String MESSAGE = "WebSphere MQ " + System.currentTimeMillis();

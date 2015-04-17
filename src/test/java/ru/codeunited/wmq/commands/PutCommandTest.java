@@ -1,19 +1,18 @@
 package ru.codeunited.wmq.commands;
 
-import com.ibm.mq.MQException;
 import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import ru.codeunited.wmq.ContextModule;
-import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.QueueingCapability;
 import ru.codeunited.wmq.frame.ContextInjection;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
-import javax.inject.Inject;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
@@ -24,7 +23,7 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * Created by ikonovalov on 24.10.14.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class PutCommandTest extends QueueingCapability {
 
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";

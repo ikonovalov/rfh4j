@@ -9,7 +9,9 @@ import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.format.FormatterModule;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 import java.util.concurrent.ExecutionException;
 
@@ -29,7 +31,7 @@ public final class CLITestSupport {
     }
 
     public static Injector getStandartInjector(ExecutionContext context) {
-        return Guice.createInjector(new ContextModule(context), new CommandsModule());
+        return Guice.createInjector(new ContextModule(context), new CommandsModule(), new MessagingModule(), new FormatterModule());
     }
 
     public static CommandLine prepareCommandLine(String line) throws ParseException {

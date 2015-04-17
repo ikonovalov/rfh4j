@@ -7,6 +7,7 @@ import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 import javax.inject.Inject;
 
@@ -23,7 +24,7 @@ import static org.junit.Assert.assertThat;
  * Created by ikonovalov on 10.04.15.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class InspectCommandTest {
 
     @Inject private ExecutionPlanBuilder executionPlanBuilder;

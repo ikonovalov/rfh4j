@@ -13,6 +13,7 @@ import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * Created by ikonovalov on 29.11.14.
  */
 @RunWith(GuiceContextTestRunner.class)
-@GuiceModules({ContextModule.class, CommandsModule.class})
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class GetCommandTest extends QueueingCapability {
 
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";

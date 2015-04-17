@@ -25,6 +25,5 @@ public class CommandsModule extends AbstractModule {
         bind(Command.class).annotatedWith(GetCommand.class).to(MQGetCommand.class);
         bind(Command.class).annotatedWith(InspectCommand.class).to(MQInspectCommand.class);
 
-
     }
 }

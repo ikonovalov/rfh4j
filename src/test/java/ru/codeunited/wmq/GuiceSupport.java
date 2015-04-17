@@ -9,7 +9,9 @@ import ru.codeunited.wmq.commands.CommandGeneralException;
 import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.format.FormatterModule;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 import javax.inject.Inject;
 import java.util.concurrent.ExecutionException;
@@ -32,7 +34,7 @@ public class GuiceSupport {
     @Inject
     public Injector setup(ExecutionContext executionContext) {
         context = executionContext;
-        injector = Guice.createInjector(new ContextModule(executionContext), new CommandsModule());
+        injector = Guice.createInjector(new ContextModule(executionContext), new CommandsModule(), new FormatterModule(), new MessagingModule());
         return injector;
     }
 

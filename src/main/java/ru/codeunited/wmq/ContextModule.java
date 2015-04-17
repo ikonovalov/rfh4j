@@ -2,6 +2,7 @@ package ru.codeunited.wmq;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import ru.codeunited.wmq.messaging.MQLink;
 
 /**
  * codeunited.ru
