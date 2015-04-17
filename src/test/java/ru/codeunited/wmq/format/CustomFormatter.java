@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.format;
 
+import com.google.inject.ProvisionException;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import org.apache.commons.cli.CommandLine;
@@ -65,11 +66,62 @@ public class CustomFormatter {
         assertThat(factory.formatterFor(message), instanceOf(MQFMTAdminActivityTraceFormatter.class));
     }
 
-    @Test(expected = CustomFormatterException.class)
+    @Test(expected = ProvisionException.class) // (expected = CustomFormatterException.class) it was before that we move passed formatter under the guice
     @ContextInjection(cli = "-Q DEFQM --stream --all --formatter=ru.codeunited.wmq.format.MQFMTStringFormatterBad")
     public void loadFailureWithBuildin() throws ParseException, MQException, IOException {
         final MQMessage message = MQMessageMock.createMQFMTAdminMessage();
         factory.formatterFor(message);
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all --formatter=ru.codeunited.wmq.format.MQFMTAdminActivityTraceFormatter")
+    public void loadSucessSameInstancePassed() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.createMQFMTAdminMessage();
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
+        assertThat(inst1, instanceOf(MQFMTAdminActivityTraceFormatter.class));
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all")
+    public void loadSucessSameInstanceMessageDrivenMQFMTAdmin() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.createMQFMTAdminMessage();
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all")
+    public void loadSucessSameInstanceMessageDrivenMQFMTNone() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.createMQFMTNoneMessage();
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all")
+    public void loadSucessSameInstanceMessageDrivenMQFMTString() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.createMQFMTStringMessage();
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all")
+    public void loadSucessSameInstanceMessageDrivenDLHFormat() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.createMQFMTDLHMessage();
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
     }
 
 }

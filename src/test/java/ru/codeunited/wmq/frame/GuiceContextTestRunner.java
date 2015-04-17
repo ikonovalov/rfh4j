@@ -5,10 +5,12 @@ import com.google.inject.Injector;
 import com.google.inject.Module;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.experimental.theories.Theories;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.model.Statement;
+import org.junit.runners.model.TestClass;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 
@@ -26,8 +28,6 @@ import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
  */
 public class GuiceContextTestRunner extends BlockJUnit4ClassRunner {
 
-
-
     /**
      * Creates a BlockJUnit4ClassRunner to run {@code klass}
      *
@@ -37,13 +37,6 @@ public class GuiceContextTestRunner extends BlockJUnit4ClassRunner {
     public GuiceContextTestRunner(Class<?> klass) throws InitializationError {
         super(klass);
     }
-
-    @Override
-    protected Object createTest() throws Exception {
-        return super.createTest();
-    }
-
-
 
     @Override
     protected Statement methodInvoker(FrameworkMethod method, Object test) {

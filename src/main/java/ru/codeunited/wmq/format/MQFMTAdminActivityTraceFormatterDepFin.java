@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.HeaderUtilService;
 import ru.codeunited.wmq.messaging.pcf.*;
 
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +30,8 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int MAX_BODY_LENGTH = 256;
 
+    private String passedOptions;
+
     MQFMTAdminActivityTraceFormatterDepFin() {
         super();
     }
@@ -37,6 +41,11 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
             MQXFOperation.MQXF_PUT,
             MQXFOperation.MQXF_PUT1
     );
+
+    @Inject
+    public void setPassedOptions(@PassedFormatterOptions @Nullable String options) {
+        passedOptions = options;
+    }
 
 
     @Override

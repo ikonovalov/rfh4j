@@ -16,5 +16,4 @@ public interface MessageFormatter<T> {
 
     T format(MQMessage message) throws IOException, MQException;
 
-    void attach(ExecutionContext context);
 }
