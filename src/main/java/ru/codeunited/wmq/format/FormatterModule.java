@@ -13,6 +13,10 @@ public class FormatterModule extends AbstractModule {
 
     @Override
     protected void configure() {
+
+        bind(FormatterFactory.class).annotatedWith(GeneralFormatFactory.class).to(MessageConsoleFormatFactory.class);
+        bind(FormatterFactory.class).annotatedWith(AdminMessageFormatFactory.class).to(MQFMTAdminFormatFactory.class);
+
         bind(MessageFormatter.class)
                 .annotatedWith(Names.named(MQFMTStringFormatter.class.getName())).to(MQFMTStringFormatter.class);
 

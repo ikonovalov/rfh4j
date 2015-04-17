@@ -5,6 +5,8 @@ import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.RFHConstants;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -14,15 +16,21 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MessageConsoleFormatFactory implements FormatterFactory{
+@Singleton
+public class MessageConsoleFormatFactory implements FormatterFactory {
 
     private ExecutionContext context;
 
+    @Inject @AdminMessageFormatFactory
+    private FormatterFactory adminFormatFactory;
+
+
+    @Inject
     public MessageConsoleFormatFactory(ExecutionContext context) {
         this.context = context;
     }
 
-    protected boolean requeireSpecFromatter() {
+    private boolean requeireSpecFromatter() {
         return context.hasOption(RFHConstants.OPT_FORMATTER);
     }
 
@@ -51,7 +59,7 @@ public class MessageConsoleFormatFactory implements FormatterFactory{
                     formatter = new MQFMTStringFormatter();
                     break;
                 case MQFMT_ADMIN:
-                    formatter = new MQFMTAdminFormatFactory(context).formatterFor(message);
+                    formatter = adminFormatFactory.formatterFor(message);
                     break;
                 default:
                     formatter = new MQFMTStringFormatter();

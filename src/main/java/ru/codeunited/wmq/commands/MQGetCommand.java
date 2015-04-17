@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
@@ -109,11 +110,11 @@ public class MQGetCommand extends QueueCommand {
                 throw new IOException(e);
             }
         } else if (executionContext.hasOption(OPT_STREAM)) { // standard output to std.out
-            MessageHandler handler = new PrintStreamHandler(executionContext, console);
+            MessageHandler handler = injectorProvider.get().getInstance(Key.get(MessageHandler.class, PrintStream.class));
             handler.onMessage(event);
 
         } else if (executionContext.hasOption(OPT_PAYLOAD)) { /* print to a file */
-            MessageHandler handler = new BodyToFileHandler(executionContext, console);
+            MessageHandler handler = injectorProvider.get().getInstance(Key.get(MessageHandler.class, BodyToFile.class));
             handler.onMessage(event);
         }
     }

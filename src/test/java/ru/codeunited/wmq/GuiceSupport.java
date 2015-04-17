@@ -10,6 +10,7 @@ import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
 import ru.codeunited.wmq.format.FormatterModule;
+import ru.codeunited.wmq.handler.HandlerModule;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.MessagingModule;
 
@@ -34,7 +35,13 @@ public class GuiceSupport {
     @Inject
     public Injector setup(ExecutionContext executionContext) {
         context = executionContext;
-        injector = Guice.createInjector(new ContextModule(executionContext), new CommandsModule(), new FormatterModule(), new MessagingModule());
+        injector = Guice.createInjector(
+                new ContextModule(executionContext),
+                new CommandsModule(),
+                new FormatterModule(),
+                new MessagingModule(),
+                new HandlerModule()
+        );
         return injector;
     }
 

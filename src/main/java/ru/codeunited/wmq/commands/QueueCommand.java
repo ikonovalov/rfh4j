@@ -1,9 +1,13 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.messaging.MQLink;
+
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import static ru.codeunited.wmq.RFHConstants.*;
 
@@ -13,6 +17,9 @@ import static ru.codeunited.wmq.RFHConstants.*;
  * Created by ikonovalov on 24.10.14.
  */
 public abstract class QueueCommand extends AbstractCommand {
+
+    @Inject
+    protected Provider<Injector> injectorProvider;
 
     /**
      * Create destination queue specified in --dstq parameter.

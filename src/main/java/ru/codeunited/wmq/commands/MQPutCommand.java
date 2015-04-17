@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
@@ -58,7 +59,7 @@ public class MQPutCommand extends QueueCommand {
                 event.setOperation(MQXFOperation.MQXF_PUT);
 
                 // publish event
-                MessageHandler handler = new PrintStreamHandler(ctx, getConsoleWriter());
+                MessageHandler handler = injectorProvider.get().getInstance(Key.get(MessageHandler.class, PrintStream.class));
                 handler.onMessage(event);
 
                 sentIndex++;

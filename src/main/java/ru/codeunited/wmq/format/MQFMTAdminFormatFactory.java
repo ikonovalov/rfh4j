@@ -5,6 +5,8 @@ import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.ExecutionContext;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.IOException;
 import static com.ibm.mq.constants.MQConstants.*;
 
@@ -13,10 +15,12 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 08.02.15.
  */
+@Singleton
 class MQFMTAdminFormatFactory implements FormatterFactory {
 
     private final ExecutionContext context;
 
+    @Inject
     MQFMTAdminFormatFactory(ExecutionContext context) {
         this.context = context;
     }
