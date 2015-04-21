@@ -2,20 +2,27 @@ package ru.codeunited.wmq.format;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQRFH2;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import ru.codeunited.wmq.messaging.HeaderUtilService;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Time;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static com.ibm.mq.constants.MQConstants.*;
-
 
 
 /**
@@ -30,7 +37,11 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int MAX_BODY_LENGTH = 256;
 
-    private String passedOptions;
+    private Optional<String> passedOptionsStr = Optional.absent();
+
+    private Optional<List<Pair<String, String>>> passedOptionsList = Optional.absent();
+
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     MQFMTAdminActivityTraceFormatterDepFin() {
         super();
@@ -44,115 +55,176 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     @Inject
     public void setPassedOptions(@PassedFormatterOptions @Nullable String options) {
-        passedOptions = options;
+        if (options == null) {
+            return;
+        }
+        try {
+            if (lock.writeLock().tryLock(1, TimeUnit.SECONDS)) {
+                passedOptionsStr = Optional.of(options);
+                List<Pair<String, String>> listOfPairs = new ArrayList<>();
+                String parseStr = options.replace("[", "").replace("]", "").trim();
+                Iterable<String> pairsAsString = Splitter.on(';').trimResults().split(parseStr);
+                for (String pairStr : pairsAsString) {
+                    Iterator<String> splittedPairIterator = Splitter.on('.').split(pairStr).iterator();
+                    listOfPairs.add(new ImmutablePair<>(splittedPairIterator.next(), splittedPairIterator.next()));
+                }
+                passedOptionsList = Optional.of(Collections.unmodifiableList(listOfPairs));
+            } else {
+                throw new TimeoutException();
+            }
+        } catch (InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    private Optional<List<Pair<String, String>>> getPassedOptions() {
+        Optional<List<Pair<String, String>>> list = Optional.absent();
+        try {
+            if (lock.readLock().tryLock(1, TimeUnit.SECONDS)) {
+                list = passedOptionsList;
+            } else {
+                throw new TimeoutException();
+            }
+        } catch (InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
+        }
+        return list;
     }
 
 
     @Override
     public String format(final ActivityTraceCommand activityCommand) {
-        final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
+        try {
+            if (lock.readLock().tryLock(1, TimeUnit.SECONDS)) {
 
-        boolean allowOutput = false;
+                final StringBuffer buffer = new StringBuffer(BUFFER_2Kb);
 
-        List<ActivityTraceRecord> records = activityCommand.getRecords();
+                boolean allowOutput = false;
 
-        for (ActivityTraceRecord record : records) {
-            if (!record.isSuccess() || !OPERATION_FILTER.allowed(record)) // skip failed
-                continue;
-            if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
-                MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
-                buffer.append(moveRecord.getPutDateTimeISO()).append(';');
+                List<ActivityTraceRecord> records = activityCommand.getRecords();
 
-                boolean xmitExchange = moveRecord.isTransmissionMessage();
+                for (ActivityTraceRecord record : records) {
+                    if (!record.isSuccess() || !OPERATION_FILTER.allowed(record)) // skip failed
+                        continue;
+                    if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
+                        MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
+                        buffer.append(moveRecord.getPutDateTimeISO()).append(';');
 
-                buffer.append( /* append message id */
-                        xmitExchange ?
-                                moveRecord.getXMITMessageId() :
-                                moveRecord.getMessageId()
-                ).append(';');
+                        boolean xmitExchange = moveRecord.isTransmissionMessage();
 
-                buffer.append( /* append queue name */
-                        xmitExchange ?
-                                String.format("%s;%s;",
-                                        extractQueueName(moveRecord),
-                                        moveRecord.getXMITRemoteQueueName()
-                                ) :
-                                String.format("%s;;",
-                                        extractQueueName(moveRecord)
-                                )
-                );
+                        buffer.append( /* append message id */
+                                xmitExchange ?
+                                        moveRecord.getXMITMessageId() :
+                                        moveRecord.getMessageId()
+                        ).append(';');
 
-                buffer.append(moveRecord.getOperation().name()).append(';'); /* append operation name */
+                        buffer.append( /* append queue name */
+                                xmitExchange ?
+                                        String.format("%s;%s;",
+                                                extractQueueName(moveRecord),
+                                                moveRecord.getXMITRemoteQueueName()
+                                        ) :
+                                        String.format("%s;;",
+                                                extractQueueName(moveRecord)
+                                        )
+                        );
 
-                buffer.append( /* append queuemanager name */
-                        xmitExchange ?
-                                String.format("%s;%s;",
-                                        extractQManagerName(moveRecord),
-                                        moveRecord.getXMITRemoteQueueMananger()
-                                ) :
-                                String.format("%s;;",
-                                        extractQManagerName(moveRecord)
-                                )
-                );
+                        buffer.append(moveRecord.getOperation().name()).append(';'); /* append operation name */
 
-                buffer.append(moveRecord.getMessageLength()).append(';');
-                buffer.append(activityCommand.getApplicationName()).append(';');
-                buffer.append(activityCommand.getApplicationType()).append(';');
-                buffer.append(activityCommand.getUserId()).append(";");
+                        buffer.append( /* append queuemanager name */
+                                xmitExchange ?
+                                        String.format("%s;%s;",
+                                                extractQManagerName(moveRecord),
+                                                moveRecord.getXMITRemoteQueueMananger()
+                                        ) :
+                                        String.format("%s;;",
+                                                extractQManagerName(moveRecord)
+                                        )
+                        );
 
-                // print captured data (it has four slots: headerdata x3, bodydata x1)
-                TraceData traceData = moveRecord.getData();
-                final String format = moveRecord.getFormat();
-                final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
-                final Optional<Object> bodyOpt = traceData.getBody();
+                        buffer.append(moveRecord.getMessageLength()).append(';');
+                        buffer.append(activityCommand.getApplicationName()).append(';');
+                        buffer.append(activityCommand.getApplicationType()).append(';');
+                        buffer.append(activityCommand.getUserId()).append(";");
 
-                final String[] capturedOutBlock = new String[4];
-                Arrays.fill(capturedOutBlock, "");
+                        // ================================================================================
+                        // print captured data (it has four slots: headerdata xDynamic, bodydata x1 (last))
+                        TraceData traceData = moveRecord.getData();
+                        final String format = moveRecord.getFormat();
+                        final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
+                        final Optional<Object> bodyOpt = traceData.getBody();
 
-                switch (format) {
-                    case MQFMT_RF_HEADER_2:
-                        if (listOfHeadersOpt.isPresent()) {
-                            MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
-                            capturedOutBlock[0] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "id");
-                            capturedOutBlock[1] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "type");
-                            capturedOutBlock[2] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, "usr", "status");
+                        final String[] capturedOutBlock = passedOptionsList.isPresent() ? new String[passedOptionsList.get().size() + 1] : new String[1];
+                        Arrays.fill(capturedOutBlock, "");
 
-                            if (bodyOpt.isPresent()) {
-                                if (MQFMT_STRING.equals(mqrfh2.getFormat())) {
-                                    String realBody = trimBodyToMaxSize(bodyOpt);
-                                    capturedOutBlock[3] = realBody;
-                                } else {
-                                    capturedOutBlock[3] = "[bytes]";
+                        switch (format) {
+                            case MQFMT_RF_HEADER_2:
+                                if (listOfHeadersOpt.isPresent()) {
+                                    MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
+                                    if (passedOptionsList.isPresent()) {
+                                        moveRFH2toCaptureBlock(capturedOutBlock, mqrfh2);
+                                    }
+
+                                    if (bodyOpt.isPresent()) {
+                                        if (MQFMT_STRING.equals(mqrfh2.getFormat())) {
+                                            String realBody = trimBodyToMaxSize(bodyOpt);
+                                            moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                        } else {
+                                            moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                        }
+                                    }
                                 }
-                            }
+                                break;
+                            case MQFMT_NONE:
+                            case MQFMT_ADMIN:
+                                if (bodyOpt.isPresent()) {
+                                    moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                }
+                                break;
+                            case MQFMT_STRING:
+                                if (bodyOpt.isPresent()) {
+                                    String realBody = trimBodyToMaxSize(bodyOpt);
+                                    moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                }
+                                break;
+                            default:
                         }
-                        break;
-                    case MQFMT_NONE:
-                        if (bodyOpt.isPresent()) {
-                            capturedOutBlock[3] = "[bytes]";
-                        }
-                        break;
-                    case MQFMT_STRING:
-                        if (bodyOpt.isPresent()) {
-                            String realBody = trimBodyToMaxSize(bodyOpt);
-                            capturedOutBlock[3] = realBody;
-                        }
-                        break;
-                    default:
+                        buffer.append(Joiner.on(";").join(capturedOutBlock));
+                        // end of printing captured data
+
+                        buffer.append('\n');
+                    }
+
+                    allowOutput = true;
                 }
-                buffer.append(Joiner.on(";").join(capturedOutBlock));
-                // end of printing captured data
 
-                buffer.append('\n');
+                if (!allowOutput) { // drop buffer in it contains nothing interesting.
+                    buffer.setLength(0);
+                }
+                return buffer.toString().trim();
+            } else {
+                throw new TimeoutException();
             }
-
-            allowOutput = true;
+        } catch (InterruptedException | TimeoutException e) {
+            throw new RuntimeException(e);
+        } finally {
+            lock.readLock().unlock();
         }
+    }
 
-        if (!allowOutput) { // drop buffer in it contains nothing interesting.
-            buffer.setLength(0);
+    public void moveBodyToCaptureBlock(String[] capturedOutBlock, String realBody) {
+        capturedOutBlock[capturedOutBlock.length - 1] = realBody;
+    }
+
+    public void moveRFH2toCaptureBlock(String[] capturedOutBlock, MQRFH2 mqrfh2) {
+        int index = 0;
+        for (Pair<String, String> folderAndField : passedOptionsList.get()) {
+            capturedOutBlock[index++] = HeaderUtilService.getStringFromRHF2FolderSafe(mqrfh2, folderAndField.getLeft(), folderAndField.getRight());
         }
-        return buffer.toString().trim();
     }
 
     protected static String trimBodyToMaxSize(Optional<Object> bodyOpt) {
@@ -164,7 +236,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
     }
 
     protected static String extractQueueName(MQXFMessageMoveRecord moveRecord) {
-        return coalesce(moveRecord.getObjectName(),moveRecord.getResolvedQueueName(), moveRecord.getResolvedLocalQueueName());
+        return coalesce(moveRecord.getObjectName(), moveRecord.getResolvedQueueName(), moveRecord.getResolvedLocalQueueName());
     }
 
     protected static String extractQManagerName(MQXFMessageMoveRecord moveRecord) {

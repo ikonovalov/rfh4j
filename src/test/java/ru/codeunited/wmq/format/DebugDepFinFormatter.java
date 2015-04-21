@@ -98,7 +98,7 @@ public class DebugDepFinFormatter extends QueueingCapability {
                                 LOG.info("\n" + out);
                             }
                             if (StringUtils.isNotEmpty(out) && out.contains(sendMessageId.toLowerCase())) { // skip empty (restricted rows)
-                                assertThat(out, containsString(";i15;t15;s15;[bytes]"));
+                                assertThat(out, containsString(";[bytes]"));
 
                             }
                         } catch (NoMessageAvailableException noMessage) {
