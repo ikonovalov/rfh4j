@@ -3,13 +3,10 @@ package ru.codeunited.wmq.format;
 import com.google.inject.ProvisionException;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import ru.codeunited.wmq.ContextModule;
-import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceContextTestRunner;
@@ -20,11 +17,9 @@ import ru.codeunited.wmq.mock.MQMessageMock;
 import javax.inject.Inject;
 import java.io.IOException;
 
-import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
-import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
-
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.assertThat;
 
 /**
  * codeunited.ru

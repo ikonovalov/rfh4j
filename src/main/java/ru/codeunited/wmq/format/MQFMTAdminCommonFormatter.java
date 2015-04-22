@@ -2,7 +2,6 @@ package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.headers.MQMD;
 import com.ibm.mq.pcf.MQCFBS;
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFMessage;

@@ -2,9 +2,7 @@ package ru.codeunited.wmq.commands;
 
 import com.google.inject.Injector;
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.messaging.MQLink;
 
 import javax.inject.Inject;
 import javax.inject.Provider;

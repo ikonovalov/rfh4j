@@ -13,4 +13,6 @@ public interface MQLink extends Closeable {
 
     QueueManager getManager();
 
+    boolean isConnected();
+
 }

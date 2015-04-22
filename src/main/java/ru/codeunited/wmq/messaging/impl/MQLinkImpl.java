@@ -36,4 +36,9 @@ final class MQLinkImpl implements MQLink {
     public void close() throws IOException {
         manager.close();
     }
+
+    @Override
+    public boolean isConnected() {
+        return manager.isConnected();
+    }
 }

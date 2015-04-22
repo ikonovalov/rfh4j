@@ -2,18 +2,13 @@ package ru.codeunited.wmq.frame;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import org.apache.commons.cli.*;
 import ru.codeunited.wmq.ContextModule;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
-import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.format.FormatterModule;
-import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.MessagingModule;
-
-import java.util.concurrent.ExecutionException;
 
 /**
  * codeunited.ru

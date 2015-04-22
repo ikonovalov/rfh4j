@@ -4,10 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.MQLink;
-import ru.codeunited.wmq.messaging.QueueManager;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
-import ru.codeunited.wmq.messaging.impl.MQLinkImpl;
-import ru.codeunited.wmq.messaging.impl.QueueManagerImpl;
 
 /**
  * This is a not thread-safe implementation.

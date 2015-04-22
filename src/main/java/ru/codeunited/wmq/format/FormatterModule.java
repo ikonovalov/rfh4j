@@ -1,11 +1,9 @@
 package ru.codeunited.wmq.format;
 
 import com.google.inject.*;
-import com.google.inject.name.Names;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.RFHConstants;
 
-import javax.inject.Named;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

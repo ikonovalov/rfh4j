@@ -46,8 +46,7 @@ public class MQGetCommand extends QueueCommand {
         final ConsoleWriter console = getConsoleWriter();
         final String sourceQueueName = getSourceQueueName();
 
-        try {
-            final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getExecutionContext().getLink());
+        try(final MessageConsumer messageConsumer = new MessageConsumerImpl(sourceQueueName, getExecutionContext().getLink())) {
             boolean queueHasMessages = false;
             try {
                 int limit = getMessagesCountLimit(1); // default is only one message per command
@@ -74,7 +73,7 @@ public class MQGetCommand extends QueueCommand {
         }
     }
 
-    void handleNoMessage(ConsoleWriter console, String sourceQueueName) throws MQException {
+    void handleNoMessage(ConsoleWriter console, String sourceQueueName) {
         TableColumnName[] header = {
                 TableColumnName.INDEX,
                 TableColumnName.ACTION,

@@ -3,8 +3,6 @@ package ru.codeunited.wmq.handler;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 
-import javax.inject.Inject;
-
 /**
  * codeunited.ru
  * konovalov84@gmail.com

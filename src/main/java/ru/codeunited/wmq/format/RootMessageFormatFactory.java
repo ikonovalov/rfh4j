@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.format;
 
 import com.google.inject.Injector;
-import com.google.inject.name.Named;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
@@ -11,10 +10,9 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.ibm.mq.constants.MQConstants.*;
+import static com.ibm.mq.constants.MQConstants.MQFMT_ADMIN;
+import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
 
 /**
  * codeunited.ru

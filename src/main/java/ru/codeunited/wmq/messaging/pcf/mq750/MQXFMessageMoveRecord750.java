@@ -205,8 +205,7 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
 
     @Override
     public TraceData getData() {
-        TraceData data = TraceDataImpl.create(this);
-        return data;
+        return TraceDataImpl.create(this);
     }
 
     @Override

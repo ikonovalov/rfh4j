@@ -14,6 +14,7 @@ import static org.mockito.Mockito.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 26.10.14.
  */
+@SuppressWarnings("UnusedParameters")
 public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
 
     public MQQueueManager connectQueueManager(String queueManagerName, Properties properties) {
@@ -106,6 +107,11 @@ public class WMQConnectionFactoryMocked implements WMQConnectionFactory {
                         }
                     }
                 };
+            }
+
+            @Override
+            public boolean isConnected() {
+                return false;
             }
 
             @Override

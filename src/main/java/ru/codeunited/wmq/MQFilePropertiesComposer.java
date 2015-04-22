@@ -1,16 +1,13 @@
 package ru.codeunited.wmq;
 
-import com.ibm.mq.constants.CMQC;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
+import static com.ibm.mq.constants.MQConstants.PORT_PROPERTY;
 import static ru.codeunited.wmq.RFHConstants.OPT_CONFIG;
-
-import static com.ibm.mq.constants.MQConstants.*;
 
 /**
  * codeunited.ru

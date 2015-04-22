@@ -8,7 +8,6 @@ import com.ibm.mq.MQPutMessageOptions;
 import com.ibm.mq.headers.MQHeader;
 import com.ibm.mq.headers.MQHeaderIterator;
 import com.ibm.mq.headers.MQRFH2;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,12 +101,11 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
 
     @Test
     public void emptyDataRowAndParse() throws MQHeaderException {
-        byte[] payload = null;
         MQXFMessageMoveRecord record = mock(MQXFMessageMoveRecord.class);
         when(record.getFormat()).thenReturn(MQFMT_RF_HEADER_2);
         when(record.getEncoding()).thenReturn(1);
         when(record.getCCSID()).thenReturn(1208);
-        when(record.getDataRaw()).thenReturn(payload);
+        when(record.getDataRaw()).thenReturn(null);
 
         TraceData traceData = TraceDataImpl.create(record);
 

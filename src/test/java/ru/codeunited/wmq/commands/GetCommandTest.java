@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.commands;
 
-import com.ibm.mq.MQException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.After;
@@ -18,15 +17,15 @@ import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.MessagingModule;
 
 import javax.inject.Inject;
-
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.*;
-
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static ru.codeunited.wmq.RFHConstants.OPT_PAYLOAD;
+import static ru.codeunited.wmq.RFHConstants.OPT_STREAM;
 import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
-import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
  * codeunited.ru

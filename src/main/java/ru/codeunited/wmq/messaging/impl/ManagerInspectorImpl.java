@@ -56,6 +56,7 @@ public class ManagerInspectorImpl implements ManagerInspector {
         PCFMessage[] responses = query(request);
 
         PCFMessage response = responses[0];
+        @SuppressWarnings("unchecked")
         Enumeration<PCFParameter> parameterEnumeration = response.getParameters();
         while(parameterEnumeration.hasMoreElements()) {
             PCFParameter parameter = parameterEnumeration.nextElement();

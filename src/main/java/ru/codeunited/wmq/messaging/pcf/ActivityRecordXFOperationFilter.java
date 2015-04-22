@@ -14,9 +14,7 @@ public class ActivityRecordXFOperationFilter implements ActivityRecordFilter {
     public ActivityRecordXFOperationFilter(MQXFOperation... whiteOperations) {
         final Set<MQXFOperation> whiteList = new HashSet<>();
         if (whiteOperations != null)
-            for (MQXFOperation oper : whiteOperations) {
-                whiteList.add(oper);
-            }
+            Collections.addAll(whiteList, whiteOperations);
         WHITE_LIST = Collections.unmodifiableSet(whiteList);
     }
 

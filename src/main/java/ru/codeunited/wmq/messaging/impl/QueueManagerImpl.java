@@ -42,11 +42,7 @@ class QueueManagerImpl implements QueueManager {
 
     @Override
     public boolean isConnected() {
-        if (manager != null) {
-            return manager.isConnected();
-        } else {
-            return false;
-        }
+        return manager != null && manager.isConnected();
     }
 
     @Override

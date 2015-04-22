@@ -18,12 +18,9 @@ import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.messaging.*;
 import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
-import ru.codeunited.wmq.messaging.pcf.ActivityTraceCommand;
 import ru.codeunited.wmq.messaging.pcf.MQHeaderException;
-import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -67,7 +64,7 @@ public class DebugDepFinFormatter extends QueueingCapability {
             public void work(ExecutionContext context) throws Exception {
                 try (
                         final MessageProducer producer = new MessageProducerImpl(THE_QUEUE, context.getLink());
-                        final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink());
+                        final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink())
                 ) {
                     final MQMessage sentMessage = producer.send(new CustomSendAdjuster() {
                         @Override
@@ -124,7 +121,7 @@ public class DebugDepFinFormatter extends QueueingCapability {
             public void work(ExecutionContext context) throws Exception {
                 try (
                         final MessageProducer producer = new MessageProducerImpl(THE_QUEUE, context.getLink());
-                        final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink());
+                        final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink())
                 ) {
                     final MQMessage sentMessage = producer.send(new CustomSendAdjuster() {
                         @Override

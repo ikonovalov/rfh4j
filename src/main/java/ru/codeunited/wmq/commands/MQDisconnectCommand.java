@@ -1,9 +1,7 @@
 package ru.codeunited.wmq.commands;
 
-import com.ibm.mq.MQException;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.messaging.MQLink;
-import ru.codeunited.wmq.messaging.QueueManager;
 
 import java.io.IOException;
 
@@ -18,23 +16,11 @@ public class MQDisconnectCommand extends AbstractCommand {
     public void work() throws CommandGeneralException {
         final ExecutionContext context = getExecutionContext();
         final MQLink link  = context.getLink();
-        final QueueManager mqQueueManager = link.getManager();
-
-        if (mqQueueManager != null && mqQueueManager.isConnected()) {
-            try {
-                mqQueueManager.close();
-
-                // check disconnection
-                if (mqQueueManager.isConnected()) {
-                    throw new CommandGeneralException(link.getOptions().getQueueManagerName() + " still connected but was performed disconnect.");
-                }
-                LOG.fine("[" + link.getOptions().getQueueManagerName() + "] disconnected");
-
-            } catch (IOException e) {
-                LOG.severe(e.getMessage());
-                getConsoleWriter().errorln(e.getMessage());
-                throw new CommandGeneralException(e);
-            }
+        try {
+            if (link != null)
+                link.close();
+        } catch (IOException e) {
+            throw new CommandGeneralException(e);
         }
     }
 }

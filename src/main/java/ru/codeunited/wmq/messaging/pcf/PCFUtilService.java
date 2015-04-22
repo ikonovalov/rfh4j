@@ -3,7 +3,6 @@ package ru.codeunited.wmq.messaging.pcf;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.headers.MQRFH2;
 import com.ibm.mq.pcf.MQCFBS;
 import com.ibm.mq.pcf.PCFContent;
 import com.ibm.mq.pcf.PCFMessage;
@@ -12,10 +11,8 @@ import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceCommand750;
 import ru.codeunited.wmq.messaging.pcf.mq800.ActivityTraceCommand800;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.NoSuchElementException;
 
 import static com.ibm.mq.constants.MQConstants.*;
 

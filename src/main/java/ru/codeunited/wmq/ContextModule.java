@@ -3,10 +3,7 @@ package ru.codeunited.wmq;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import org.apache.commons.cli.CommandLineParser;
-import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.messaging.MQLink;
 
 /**
  * codeunited.ru

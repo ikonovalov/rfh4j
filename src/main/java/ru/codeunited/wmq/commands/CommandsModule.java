@@ -1,9 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import ru.codeunited.wmq.DefaultExecutionPlanBuilder;
-import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.ExecutionPlanBuilder;
 
 /**

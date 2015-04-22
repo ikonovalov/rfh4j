@@ -4,15 +4,13 @@ import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.lang3.tuple.Pair;
-import org.junit.internal.AssumptionViolatedException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
-import ru.codeunited.wmq.handler.NestedHandlerException;
-import ru.codeunited.wmq.messaging.*;
 import ru.codeunited.wmq.messaging.MessageConsumer;
 import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+import ru.codeunited.wmq.messaging.QueueManager;
 import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.impl.QueueInspectorImpl;
@@ -25,7 +23,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeTrue;
-import static ru.codeunited.wmq.frame.CLITestSupport.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.frame.CLITestSupport.getStandartInjector;
 
 /**
  * codeunited.ru
@@ -100,7 +99,7 @@ public abstract class QueueingCapability extends GuiceSupport {
         return new QueueInspectorImpl(queue, context.getLink());
     }
 
-    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
+    protected MQMessage putMessages(String queue, String text) throws IOException, MQException {
         final MessageProducer consumer = new MessageProducerImpl(queue, context.getLink());
         // send first message
         final MQMessage message = consumer.send(text);

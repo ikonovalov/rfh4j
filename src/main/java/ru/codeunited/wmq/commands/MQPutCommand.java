@@ -29,9 +29,7 @@ public class MQPutCommand extends QueueCommand {
     public void work() throws CommandGeneralException, MissedParameterException, NestedHandlerException {
         final ExecutionContext ctx = getExecutionContext();
 
-        try {
-            final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getExecutionContext().getLink());
-
+        try(final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getExecutionContext().getLink())) {
             int repeatTimes = getMessagesCountLimit();
             int sentIndex = 0;
             while (repeatTimes-->0) {

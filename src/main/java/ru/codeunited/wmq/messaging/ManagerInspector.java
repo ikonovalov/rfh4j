@@ -6,7 +6,6 @@ import ru.codeunited.wmq.messaging.pcf.Queue;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * codeunited.ru
