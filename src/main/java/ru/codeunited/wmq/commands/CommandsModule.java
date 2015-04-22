@@ -1,9 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Provides;
 import ru.codeunited.wmq.DefaultExecutionPlanBuilder;
-import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.ExecutionPlanBuilder;
 
 /**
@@ -24,7 +22,6 @@ public class CommandsModule extends AbstractModule {
         bind(Command.class).annotatedWith(PutCommand.class).to(MQPutCommand.class);
         bind(Command.class).annotatedWith(GetCommand.class).to(MQGetCommand.class);
         bind(Command.class).annotatedWith(InspectCommand.class).to(MQInspectCommand.class);
-
 
     }
 }

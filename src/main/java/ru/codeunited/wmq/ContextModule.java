@@ -2,6 +2,8 @@ package ru.codeunited.wmq;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
+import com.google.inject.Singleton;
+import ru.codeunited.wmq.cli.ConsoleWriter;
 
 /**
  * codeunited.ru
@@ -25,4 +27,10 @@ public class ContextModule extends AbstractModule {
     ExecutionContext context() {
         return context;
     }
+
+    @Provides @Singleton
+    ConsoleWriter consoleWriter() {
+        return new ConsoleWriter(System.out, System.err);
+    }
+
 }

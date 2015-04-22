@@ -1,6 +1,10 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.messaging.MQLink;
+import ru.codeunited.wmq.messaging.CustomSendAdjuster;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.MessageTools;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,7 +22,8 @@ public class MessageProducerImpl implements MessageProducer {
 
     private final MQPutMessageOptions defaultPutSpec = new MQPutMessageOptions();
 
-    public MessageProducerImpl(String queueName, MQQueueManager queueManager) throws MQException {
+    public MessageProducerImpl(String queueName, MQLink link) throws MQException {
+        MQQueueManager queueManager = link.getManager().get();
         this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT | MQOO_FAIL_IF_QUIESCING);
         initialize();
     }
@@ -27,24 +32,23 @@ public class MessageProducerImpl implements MessageProducer {
         defaultPutSpec.options = defaultPutSpec.options | MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
     }
 
-    private void putWithOptions(MQQueue mqQueue, MQMessage mqMessage, MQPutMessageOptions options) throws MQException {
-        mqQueue.put(mqMessage, options);
+    private MQMessage putWithOptions(MQMessage mqMessage, MQPutMessageOptions options) throws MQException {
+        queue.put(mqMessage, options);
+        return mqMessage;
     }
 
     @Override
     public MQMessage send(String messageText, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStringToMessage(messageText, message);
-        putWithOptions(queue, message, options);
-        return message;
+        return putWithOptions(message, options);
     }
 
     @Override
     public MQMessage send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
         final MQMessage message = MessageTools.createUTFMessage();
         MessageTools.writeStreamToMessage(stream, message);
-        putWithOptions(queue, message, options);
-        return message;
+        return putWithOptions(message, options);
     }
 
     @Override
@@ -55,5 +59,24 @@ public class MessageProducerImpl implements MessageProducer {
     @Override
     public MQMessage send(String text) throws IOException, MQException {
         return send(text, defaultPutSpec);
+    }
+
+    @Override
+    public MQMessage send(CustomSendAdjuster builder) throws IOException, MQException {
+        final MQMessage message = MessageTools.createEmptyMessage();
+        final MQPutMessageOptions pmo = new MQPutMessageOptions();
+        builder.setup(message);
+        builder.setup(pmo);
+        putWithOptions(message, defaultPutSpec);
+        return message;
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            this.queue.close();
+        } catch (MQException e) {
+            throw new IOException(e);
+        }
     }
 }

@@ -1,11 +1,14 @@
 package ru.codeunited.wmq.format;
 
+import com.google.inject.Injector;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.pcf.PCFMessage;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.handler.MessageEvent;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
 import java.io.IOException;
 import static com.ibm.mq.constants.MQConstants.*;
 
@@ -14,11 +17,16 @@ import static com.ibm.mq.constants.MQConstants.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 08.02.15.
  */
-class MQFTMAdminFormatFactory implements FormatterFactory {
+@Singleton
+class MQFMTAdminFormatFactory implements FormatterFactory {
 
     private final ExecutionContext context;
 
-    MQFTMAdminFormatFactory(ExecutionContext context) {
+    @Inject
+    private Provider<Injector> injectorProvider;
+
+    @Inject
+    MQFMTAdminFormatFactory(ExecutionContext context) {
         this.context = context;
     }
 
@@ -29,12 +37,11 @@ class MQFTMAdminFormatFactory implements FormatterFactory {
         final MQPCFMessageAbstractFormatter formatter;
         switch (commandCode) {
             case MQCMD_ACTIVITY_TRACE:
-                formatter = new MQFTMAdminActivityTraceFormatter();
+                formatter = new MQFMTAdminActivityTraceFormatter();
                 break;
             default:
-                formatter = new MQFTMAdminCommonFormatter();
+                formatter = new MQFMTAdminCommonFormatter();
         }
-        formatter.attach(context);
         return formatter;
     }
 

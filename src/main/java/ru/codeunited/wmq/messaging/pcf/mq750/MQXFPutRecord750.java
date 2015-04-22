@@ -40,4 +40,9 @@ public class MQXFPutRecord750 extends MQXFMessageMoveRecord750 implements MQXFPu
     public Integer getInvalidDestCount() {
         return decodedParameterAsInt(MQIACF_INVALID_DEST_COUNT);
     }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

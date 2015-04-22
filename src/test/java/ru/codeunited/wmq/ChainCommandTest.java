@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru

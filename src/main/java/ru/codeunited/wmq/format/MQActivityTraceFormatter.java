@@ -10,6 +10,7 @@ import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
  * konovalov84@gmail.com
  * Created by ikonovalov on 31.03.15.
  */
+// @Singleton
 public abstract class MQActivityTraceFormatter<T> extends MQPCFMessageAbstractFormatter<T> implements ActivityTraceFormatter<T> {
 
     @Override

@@ -1,11 +1,12 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.handler.*;
 import ru.codeunited.wmq.messaging.MessageProducer;
-import ru.codeunited.wmq.messaging.MessageProducerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.pcf.MQXFOperation;
 
 import java.io.BufferedInputStream;
@@ -28,9 +29,7 @@ public class MQPutCommand extends QueueCommand {
     public void work() throws CommandGeneralException, MissedParameterException, NestedHandlerException {
         final ExecutionContext ctx = getExecutionContext();
 
-        try {
-            final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getQueueManager());
-
+        try(final MessageProducer messageProducer = new MessageProducerImpl(getDestinationQueueName(), getExecutionContext().getLink())) {
             int repeatTimes = getMessagesCountLimit();
             int sentIndex = 0;
             while (repeatTimes-->0) {
@@ -58,7 +57,7 @@ public class MQPutCommand extends QueueCommand {
                 event.setOperation(MQXFOperation.MQXF_PUT);
 
                 // publish event
-                MessageHandler handler = new PrintStreamHandler(ctx, getConsoleWriter());
+                MessageHandler handler = injectorProvider.get().getInstance(Key.get(MessageHandler.class, PrintStream.class));
                 handler.onMessage(event);
 
                 sentIndex++;

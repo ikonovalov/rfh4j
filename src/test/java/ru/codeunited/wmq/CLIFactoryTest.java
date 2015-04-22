@@ -8,7 +8,7 @@ import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIFactory;
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru

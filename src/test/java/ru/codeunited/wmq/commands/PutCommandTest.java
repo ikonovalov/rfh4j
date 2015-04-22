@@ -1,53 +1,51 @@
 package ru.codeunited.wmq.commands;
 
-import com.google.inject.Key;
-import com.ibm.mq.MQException;
-import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import ru.codeunited.wmq.ContextModule;
 import ru.codeunited.wmq.QueueingCapability;
-import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.frame.ContextInjection;
+import ru.codeunited.wmq.frame.GuiceContextTestRunner;
+import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
-import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc;
-import static ru.codeunited.wmq.CLITestSupport.getCommandLine_With_Qc_dstq;
 import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 24.10.14.
  */
+@RunWith(GuiceContextTestRunner.class)
+@GuiceModules({ContextModule.class, CommandsModule.class, MessagingModule.class})
 public class PutCommandTest extends QueueingCapability {
 
     private final static String QUEUE = "RFH.QTEST.QGENERAL1";
 
-    @Before
-    @After
-    public void cleanUp() throws MissedParameterException, IncompatibleOptionsException, CommandGeneralException, MQException, ParseException, NestedHandlerException {
+    @Before @After
+    public void cleanUp() throws Exception {
         cleanupQueue(QUEUE);
     }
 
+    /** --dstq was missed. */
     @Test
-    /**
-     * --dstq was missed.
-     */
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
     public void testInsufficientParams$dstq() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
-        setup(new CLIExecutionContext(getCommandLine_With_Qc()));
-        // missed --dstq
-        CommandChain maker = injector.getInstance(CommandChain.class)
-                .addCommand(injector.getInstance(Key.get(Command.class, ConnectCommand.class)))
-                .addCommand(injector.getInstance(Key.get(Command.class, PutCommand.class)))
-                .addCommand(injector.getInstance(Key.get(Command.class, DisconnectCommand.class)));
+        commandChain
+                .addCommand(connectCommand)
+                .addCommand(putCommand)
+                .addCommand(disconnectCommand);
 
 
         boolean exceptionOccured = false;
         try {
-            maker.execute();
+            commandChain.execute();
         } catch (MissedParameterException pe) {
             final String[] dstqParam = {"dstq"};
             assertTrue(
@@ -60,19 +58,18 @@ public class PutCommandTest extends QueueingCapability {
         }
     }
 
+    /** -t or -p was missed. */
     @Test
-    /**
-     * -t or -p was missed.
-     */
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN --dstq RFH.QTEST.QGENERAL1")
     public void testInsufficientParams$p_t() throws ParseException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
-        setup(getCommandLine_With_Qc_dstq());
-        CommandChain maker = injector.getInstance(CommandChain.class)
-                .addCommand(injector.getInstance(Key.get(Command.class, ConnectCommand.class)))
-                .addCommand(injector.getInstance(Key.get(Command.class, PutCommand.class)))
-                .addCommand(injector.getInstance(Key.get(Command.class, DisconnectCommand.class)));
+        commandChain
+                .addCommand(connectCommand)
+                .addCommand(putCommand)
+                .addCommand(disconnectCommand);
+
         boolean exceptionOccured = false;
         try {
-            maker.execute();
+            commandChain.execute();
         } catch (MissedParameterException pe) {
             final String[] ptParams = {OPT_PAYLOAD, OPT_STREAM, OPT_TEXT};
             assertTrue(

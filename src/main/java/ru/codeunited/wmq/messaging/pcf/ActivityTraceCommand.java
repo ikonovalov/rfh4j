@@ -4,12 +4,17 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * Application activity trace message.
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 25.03.15.
  */
 public interface ActivityTraceCommand {
 
+    /**
+     * Initialized with the ConnectionId of the application.
+     * @return
+     */
     String getCorrelationId();
 
     Date getStartDate();
@@ -47,8 +52,6 @@ public interface ActivityTraceCommand {
     String connectionName();
 
     String getTraceDetail();
-
-    Integer getTraceDataLength();
 
     String getPlatform();
 

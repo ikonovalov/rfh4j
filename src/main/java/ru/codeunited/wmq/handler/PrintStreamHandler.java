@@ -1,12 +1,15 @@
 package ru.codeunited.wmq.handler;
 
+import com.google.inject.Singleton;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.format.MessageConsoleFormatFactory;
+import ru.codeunited.wmq.format.FormatterFactory;
+import ru.codeunited.wmq.format.RootFormatFactory;
 import ru.codeunited.wmq.cli.TableColumnName;
 
+import javax.inject.Inject;
 import java.io.IOException;
 
 import static com.ibm.mq.constants.CMQC.MQFMT_ADMIN;
@@ -17,6 +20,7 @@ import static com.ibm.mq.constants.CMQC.MQFMT_STRING;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
+@Singleton
 public class PrintStreamHandler extends CommonMessageHandler<Void> {
 
     private static final TableColumnName[] TABLE_HEADER = {
@@ -29,6 +33,10 @@ public class PrintStreamHandler extends CommonMessageHandler<Void> {
             TableColumnName.OUTPUT
     };
 
+    @Inject @RootFormatFactory
+    private FormatterFactory formatterFactory;
+
+    @Inject
     public PrintStreamHandler(ExecutionContext context, ConsoleWriter console) {
         super(context, console);
     }
@@ -44,7 +52,7 @@ public class PrintStreamHandler extends CommonMessageHandler<Void> {
                             .append(
                                     String.valueOf(messageEvent.getMessageIndex()),
                                     messageEvent.getOperation().name(),
-                                    getContext().getQueueManager().getName(),
+                                    getContext().getLink().getOptions().getQueueManagerName(),
                                     messageEvent.getEventSource().getName(),
                                     messageEvent.getHexMessageId(),
                                     messageEvent.getHexCorrelationId(),
@@ -52,8 +60,7 @@ public class PrintStreamHandler extends CommonMessageHandler<Void> {
                             ).make();
                 case MQFMT_ADMIN:
                 default:
-                    final MessageConsoleFormatFactory factory = new MessageConsoleFormatFactory(getContext());
-                    final String formatterOutput = (String) factory.formatterFor(message).format(message);
+                    final String formatterOutput = (String) formatterFactory.formatterFor(message).format(message);
                     if (formatterOutput.length() > 0) {
                         getConsole().writeln(formatterOutput).flush();
                     }

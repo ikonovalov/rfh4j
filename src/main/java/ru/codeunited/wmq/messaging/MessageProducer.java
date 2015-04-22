@@ -4,6 +4,7 @@ import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.MQPutMessageOptions;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -12,7 +13,7 @@ import java.io.InputStream;
  * konovalov84@gmail.com
  * Created by ikonovalov on 30.10.14.
  */
-public interface MessageProducer {
+public interface MessageProducer extends Closeable {
 
     /**
      * Send message with a string payload
@@ -46,4 +47,6 @@ public interface MessageProducer {
      * @throws MQException
      */
     MQMessage send(String text) throws IOException, MQException;
+
+    MQMessage send(CustomSendAdjuster builder) throws IOException, MQException;
 }

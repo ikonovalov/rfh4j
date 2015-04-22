@@ -1,15 +1,14 @@
-package ru.codeunited.wmq;
+package ru.codeunited.wmq.frame;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.google.inject.Key;
 import org.apache.commons.cli.*;
-import ru.codeunited.wmq.cli.CLIExecutionContext;
+import ru.codeunited.wmq.ContextModule;
+import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
-import ru.codeunited.wmq.commands.*;
-import ru.codeunited.wmq.handler.NestedHandlerException;
-
-import java.util.concurrent.ExecutionException;
+import ru.codeunited.wmq.commands.CommandsModule;
+import ru.codeunited.wmq.format.FormatterModule;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 /**
  * codeunited.ru
@@ -17,8 +16,6 @@ import java.util.concurrent.ExecutionException;
  * Created by ikonovalov on 23.10.14.
  */
 public final class CLITestSupport {
-
-
 
     public static CommandLineParser getCliParser() {
         return CLIFactory.createParser();
@@ -29,7 +26,7 @@ public final class CLITestSupport {
     }
 
     public static Injector getStandartInjector(ExecutionContext context) {
-        return Guice.createInjector(new ContextModule(context), new CommandsModule());
+        return Guice.createInjector(new ContextModule(context), new CommandsModule(), new MessagingModule(), new FormatterModule());
     }
 
     public static CommandLine prepareCommandLine(String line) throws ParseException {
@@ -45,17 +42,12 @@ public final class CLITestSupport {
         }
     }
 
-    public static CommandLine getCommandLine_With_Qc() throws ParseException {
-        final String[] args = "-Q DEFQM -c JVM.DEF.SVRCONN".split(" ");
-        return prepareCommandLine(args);
+    public static CommandLine getCommandLine_With_Qc() {
+        final String[] args = "-Q DEFQM --channel JVM.DEF.SVRCONN --transport=binding".split(" ");
+        try {
+            return prepareCommandLine(args);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
-
-    public static CommandLine getCommandLine_With_Qc_dstq() throws ParseException {
-        final String[] args = String.format("%s --dstq RFH.QTEST.QGENERAL1", "-Q DEFQM -c JVM.DEF.SVRCONN").split(" ");
-        return prepareCommandLine(args);
-    }
-
-
-
-
 }

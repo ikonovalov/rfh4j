@@ -1,6 +1,12 @@
-package ru.codeunited.wmq.messaging;
+package ru.codeunited.wmq.messaging.impl;
 
 import com.ibm.mq.*;
+import ru.codeunited.wmq.messaging.MQLink;
+import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageSelector;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+
+import java.io.IOException;
 
 import static com.ibm.mq.constants.MQConstants.*;
 
@@ -18,14 +24,14 @@ public class MessageConsumerImpl implements MessageConsumer {
     /**
      * Create message consumer for a MQ queue.
      * @param queueName - name of a queue
-     * @param queueManager - connected queue manager.
+     * @param link - connected queue manager.
      * @throws MQException - if something goes wrong.
      */
-    public MessageConsumerImpl(String queueName, MQQueueManager queueManager) throws MQException {
+    public MessageConsumerImpl(String queueName, MQLink link) throws MQException {
         /** MQOO_INPUT_AS_Q_DEF -- open queue to get message
          *  using queue-define default.
          *  MQOO_FAIL_IF_QUIESCING -- access fail if queue manager is quiescing. **/
-        this.queue = queueManager.accessQueue(queueName, MQOO_FAIL_IF_QUIESCING | MQOO_INPUT_AS_Q_DEF);
+        this.queue = link.getManager().get().accessQueue(queueName, MQOO_FAIL_IF_QUIESCING | MQOO_INPUT_AS_Q_DEF);
     }
 
     private MQMessage get(MQMessage message, MQGetMessageOptions getMessageOptions) throws NoMessageAvailableException, MQException {
@@ -73,5 +79,14 @@ public class MessageConsumerImpl implements MessageConsumer {
         final MQMessage message = new MQMessage();
         selector.setup(messageOptions, message);
         return get(message, messageOptions);
+    }
+
+    @Override
+    public void close() throws IOException {
+        try {
+            this.queue.close();
+        } catch (MQException e) {
+            throw new IOException(e);
+        }
     }
 }

@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import ru.codeunited.wmq.messaging.ConnectionOptions;
 import ru.codeunited.wmq.messaging.WMQConnectionFactory;
-import ru.codeunited.wmq.messaging.WMQDefaultConnectionFactory;
+import ru.codeunited.wmq.messaging.impl.WMQDefaultConnectionFactory;
 
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -33,7 +33,7 @@ public class ConnectToQMTest implements TestEnvironmentSetting {
     @Test
     public void doConnect() throws MQException {
         final WMQConnectionFactory connectionFactory = new WMQDefaultConnectionFactory();
-        final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(new ConnectionOptions(QMGR_NAME).withOptions(properties));
+        final MQQueueManager mqQueueManager = connectionFactory.connectQueueManager(new ConnectionOptions(QMGR_NAME).withOptions(properties)).getManager().get();
         assertThat(mqQueueManager, notNullValue());
         assertTrue("Connection lost.", mqQueueManager.isConnected());
         LOG.info("Connected to " + QMGR_NAME);

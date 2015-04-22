@@ -9,11 +9,15 @@ import ru.codeunited.wmq.commands.CommandGeneralException;
 import ru.codeunited.wmq.commands.CommandsModule;
 import ru.codeunited.wmq.commands.IncompatibleOptionsException;
 import ru.codeunited.wmq.commands.MissedParameterException;
+import ru.codeunited.wmq.format.FormatterModule;
+import ru.codeunited.wmq.handler.HandlerModule;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
+import javax.inject.Inject;
 import java.util.concurrent.ExecutionException;
 
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru
@@ -28,13 +32,16 @@ public class GuiceSupport {
 
     private final Parallel parallel = new Parallel();
 
-    public Injector setup(CommandLine cli) {
-        return setup(new CLIExecutionContext(cli));
-    }
-
+    @Inject
     public Injector setup(ExecutionContext executionContext) {
         context = executionContext;
-        injector = Guice.createInjector(new ContextModule(executionContext), new CommandsModule());
+        injector = Guice.createInjector(
+                new ContextModule(executionContext),
+                new CommandsModule(),
+                new FormatterModule(),
+                new MessagingModule(),
+                new HandlerModule()
+        );
         return injector;
     }
 

@@ -17,4 +17,21 @@ public class MQMessageMock {
         return message;
     }
 
+    public static MQMessage createMQFMTNoneMessage() {
+        MQMessage message = mock(MQMessage.class);
+        message.format = MQFMT_NONE;
+        return message;
+    }
+
+    public static MQMessage createMQFMTStringMessage() {
+        MQMessage message = mock(MQMessage.class);
+        message.format = MQFMT_STRING;
+        return message;
+    }
+
+    public static MQMessage createMQFMTDLHMessage() {
+        MQMessage message = mock(MQMessage.class);
+        message.format = MQFMT_DEAD_LETTER_HEADER;
+        return message;
+    }
 }

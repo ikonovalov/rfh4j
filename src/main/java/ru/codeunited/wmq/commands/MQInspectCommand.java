@@ -2,12 +2,10 @@ package ru.codeunited.wmq.commands;
 
 import com.ibm.mq.MQException;
 import ru.codeunited.wmq.ExecutionContext;
-import ru.codeunited.wmq.RFHConstants;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.ManagerInspector;
-import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
+import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
 import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
@@ -35,7 +33,7 @@ public class MQInspectCommand extends QueueCommand {
 
         final ExecutionContext ctx = getExecutionContext();
         try {
-            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
+            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getLink());
             final String filter = ctx.getOption(OPT_LIST_QLOCAL, "*");
             final List<Queue> queues = managerInspector.selectLocalQueues(filter);
             for (final Queue next : queues) {

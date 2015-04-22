@@ -14,7 +14,7 @@ import static com.ibm.mq.constants.MQConstants.MQPER_PERSISTENT;
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
-public class MessageTools {
+public final class MessageTools {
 
     private static final int DEFAULT_CHARACTER_SET = 1208;
 
@@ -22,17 +22,25 @@ public class MessageTools {
 
     private static Logger LOG = Logger.getLogger(MessageTools.class.getName());
 
+    private MessageTools() {
+        super();
+    }
+
     /**
      * Create MQMessage with specified characterSet.
      * @param charset for example 1208 (UTF-8)
      * @return MQMessage
      */
     public static MQMessage createMessage(int charset) {
-        final MQMessage message = new MQMessage();
+        final MQMessage message = createEmptyMessage();
         message.characterSet = charset;
         message.persistence = MQPER_PERSISTENT;
         message.format = MQFMT_STRING;
         return message;
+    }
+
+    public static MQMessage createEmptyMessage() {
+        return new MQMessage();
     }
 
     /**
@@ -94,9 +102,15 @@ public class MessageTools {
         return buffer;
     }
 
-    final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+    final private static char[] hexArray = "0123456789ABCDEF".toCharArray();
 
     // taken from http://stackoverflow.com/questions/9655181/convert-from-byte-array-to-hex-string-in-java
+
+    /**
+     * Convert bytes to hex. Using uppercase characters.
+     * @param bytes
+     * @return
+     */
     public static String bytesToHex(byte[] bytes) {
         if (bytes == null || bytes.length == 0)
             return "";

@@ -14,7 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import static ru.codeunited.wmq.CLITestSupport.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.*;
 import static ru.codeunited.wmq.RFHConstants.*;
 
 /**
@@ -30,7 +30,7 @@ public class BuildExecutionChainTest {
                 command, instanceOf(shouldByClass));
     }
 
-    public void assertThatCommandInstanceOf(List<Command> command, Class...shouldByClass) {
+    public static void assertThatCommandInstanceOf(List<Command> command, Class...shouldByClass) {
         final List<Class> commandClasses = Arrays.asList(shouldByClass);
         assertThat("Command list is null", command, notNullValue());
         assertThat("Command list size is empty", command.size(), not(0));

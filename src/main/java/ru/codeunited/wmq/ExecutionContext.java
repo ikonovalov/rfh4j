@@ -1,7 +1,7 @@
 package ru.codeunited.wmq;
 
-import com.ibm.mq.MQQueueManager;
 import ru.codeunited.wmq.cli.ConsoleWriter;
+import ru.codeunited.wmq.messaging.MQLink;
 
 /**
  * codeunited.ru
@@ -15,7 +15,7 @@ public abstract class ExecutionContext {
      */
     private ConsoleWriter consoleWriter = new ConsoleWriter(System.out);
 
-    private MQQueueManager queueManager;
+    private MQLink mqLink;
 
     public void setConsoleWriter(ConsoleWriter consoleWriter) {
         this.consoleWriter = consoleWriter;
@@ -26,19 +26,21 @@ public abstract class ExecutionContext {
     }
 
     /**
-     * Set active queue manager.
-     * @param queueManager
+     * Get MQ link
+     * @since 1.5.0
+     * @return MQLink
      */
-    public final void setQueueManager(MQQueueManager queueManager) {
-        this.queueManager = queueManager;
+    public MQLink getLink() {
+        return mqLink;
     }
 
     /**
-     * Get current active WebSpehere MQ queue manager.
-     * @return
+     * Set MQ link
+     * @since 1.5.0
+     * @param mqLink
      */
-    public final MQQueueManager getQueueManager() {
-        return queueManager;
+    public void setLink(MQLink mqLink) {
+        this.mqLink = mqLink;
     }
 
     /**

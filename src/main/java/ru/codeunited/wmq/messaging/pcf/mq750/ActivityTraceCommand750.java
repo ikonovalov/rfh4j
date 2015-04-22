@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
-import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.MessageTools;
@@ -143,11 +142,6 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
             default:
                 return "UNKNOWN";
         }
-    }
-
-    @Override
-    public Integer getTraceDataLength() {
-        return decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
     }
 
     @Override

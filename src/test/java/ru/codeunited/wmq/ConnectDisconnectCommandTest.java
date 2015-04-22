@@ -1,6 +1,5 @@
 package ru.codeunited.wmq;
 
-import com.google.inject.Injector;
 import com.google.inject.Key;
 import org.apache.commons.cli.CommandLine;
 import org.junit.Test;
@@ -9,7 +8,7 @@ import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import static org.junit.Assert.assertTrue;
-import static ru.codeunited.wmq.CLITestSupport.prepareCommandLine;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru

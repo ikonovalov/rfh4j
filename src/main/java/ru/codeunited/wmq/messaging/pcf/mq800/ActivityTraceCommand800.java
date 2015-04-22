@@ -5,7 +5,6 @@ import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
 import ru.codeunited.wmq.messaging.pcf.WrongTypeException;
 import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceCommand750;
-import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceRecord750;
 
 import java.util.ArrayList;
 import java.util.List;
