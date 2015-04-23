@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
-import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.Closeable;
 import java.io.IOException;

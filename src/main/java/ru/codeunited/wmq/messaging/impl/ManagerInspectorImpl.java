@@ -12,7 +12,7 @@ import ru.codeunited.wmq.messaging.QueueInspector;
 import ru.codeunited.wmq.messaging.QueueManagerAttributes;
 import ru.codeunited.wmq.messaging.pcf.InquireCommand;
 import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
-import ru.codeunited.wmq.messaging.pcf.Queue;
+import ru.codeunited.wmq.messaging.Queue;
 
 import java.io.IOException;
 import java.util.*;

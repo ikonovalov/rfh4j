@@ -6,7 +6,7 @@ import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.messaging.ManagerInspector;
 import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
-import ru.codeunited.wmq.messaging.pcf.Queue;
+import ru.codeunited.wmq.messaging.Queue;
 
 import java.io.IOException;
 import java.util.List;
