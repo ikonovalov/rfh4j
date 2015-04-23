@@ -35,9 +35,9 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int MAX_BODY_LENGTH = 256;
 
-    private Optional<String> passedOptionsStr = Optional.absent();
+    private volatile Optional<String> passedOptionsStr = Optional.absent();
 
-    private Optional<List<Pair<String, String>>> passedOptionsList = Optional.absent();
+    private volatile Optional<List<Pair<String, String>>> passedOptionsList = Optional.absent();
 
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
@@ -58,7 +58,6 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         }
         try {
             if (lock.writeLock().tryLock(1, TimeUnit.SECONDS)) {
-                passedOptionsStr = Optional.of(options);
                 List<Pair<String, String>> listOfPairs = new ArrayList<>();
                 String parseStr = options.replace("[", "").replace("]", "").trim();
                 Iterable<String> pairsAsString = Splitter.on(';').trimResults().split(parseStr);
@@ -67,6 +66,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                     listOfPairs.add(new ImmutablePair<>(splittedPairIterator.next(), splittedPairIterator.next()));
                 }
                 passedOptionsList = Optional.of(Collections.unmodifiableList(listOfPairs));
+                passedOptionsStr = Optional.of(options);
             } else {
                 throw new TimeoutException();
             }
@@ -151,19 +151,19 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
                         // ================================================================================
                         // print captured data (it has four slots: headerdata xDynamic, bodydata x1 (last))
-                        TraceData traceData = moveRecord.getData();
+                        final TraceData traceData = moveRecord.getData();
                         final String format = moveRecord.getFormat();
                         final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
                         final Optional<Object> bodyOpt = traceData.getBody();
-
-                        final String[] capturedOutBlock = passedOptionsList.isPresent() ? new String[passedOptionsList.get().size() + 1] : new String[1];
+                        final Optional<List<Pair<String, String>>> passedList = getPassedOptions();
+                        final String[] capturedOutBlock = passedList.isPresent() ? new String[passedList.get().size() + 1] : new String[1];
                         Arrays.fill(capturedOutBlock, "");
 
                         switch (format) {
                             case MQFMT_RF_HEADER_2:
                                 if (listOfHeadersOpt.isPresent()) {
                                     MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
-                                    if (passedOptionsList.isPresent()) {
+                                    if (passedList.isPresent()) {
                                         moveRFH2toCaptureBlock(capturedOutBlock, mqrfh2);
                                     }
 
