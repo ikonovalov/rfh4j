@@ -2,6 +2,7 @@ package ru.codeunited.wmq.messaging;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -9,7 +10,7 @@ import java.util.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 14.04.15.
  */
-public final class QueueManagerAttributes {
+public final class QueueManagerAttributes implements Serializable {
 
     private static final int DEF_SIZE = 64;
 

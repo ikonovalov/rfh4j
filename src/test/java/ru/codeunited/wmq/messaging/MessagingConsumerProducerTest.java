@@ -168,19 +168,24 @@ public class MessagingConsumerProducerTest extends QueueingCapability {
                                     if (thisMessage) {
                                         LOG.fine(putRecord.toString());
 
+                                        // check raw data
                                         byte[] dataRaw = putRecord.getDataRaw();
 
-                                        assertThat("Body is null", dataRaw, notNullValue());
-                                        assertThat("Body is empty", dataRaw.length > 0, is(true));
+                                        if (putRecord.getTraceDataLength() > 0) {
+                                            assertThat("Body is null", dataRaw, notNullValue());
+                                            assertThat("Body is empty", dataRaw.length > 0, is(true));
+                                        }
 
+                                        // check aggregated trace data
                                         TraceData traceData = putRecord.getData();
 
-                                        List<MQHeader> listOfHeaders = traceData.getHeaders().get();
-                                        assertThat("Wrong header list size", listOfHeaders.size(), is(1));
+                                        if (traceData.getHeaders().isPresent()) {
+                                            List<MQHeader> listOfHeaders = traceData.getHeaders().get();
+                                            assertThat("Wrong header list size", listOfHeaders.size(), is(1));
 
-                                        Object capturedBody = traceData.getBody().get();
-                                        assertThat("Original message was MQFMT_NONE, so body should be threated as bytes", capturedBody, instanceOf(byte[].class));
-
+                                            Object capturedBody = traceData.getBody().get();
+                                            assertThat("Original message was MQFMT_NONE, so body should be threated as bytes", capturedBody, instanceOf(byte[].class));
+                                        }
 
 
                                         /*DataInput dataInput = new DataInputStream(new ByteArrayInputStream(body));

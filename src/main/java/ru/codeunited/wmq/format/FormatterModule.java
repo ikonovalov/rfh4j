@@ -27,7 +27,7 @@ public class FormatterModule extends AbstractModule {
 
     @Provides @PassedFormatter @Singleton
     public MessageFormatter passedFormatter(ExecutionContext context, Injector injector) {
-        String className = mattchedGroup(context, 1);
+        String className = matchedGroup(context, 1);
         try {
             Class formatterClass = Class.forName(className);
             MessageFormatter formatter = (MessageFormatter) formatterClass.newInstance();
@@ -40,10 +40,10 @@ public class FormatterModule extends AbstractModule {
 
     @Provides @PassedFormatterOptions @Singleton
     public String passedFormatterOptions(ExecutionContext context) {
-        return mattchedGroup(context, 2);
+        return matchedGroup(context, 2);
     }
 
-    private static String mattchedGroup(ExecutionContext context, int group) {
+    private static String matchedGroup(ExecutionContext context, int group) {
         Matcher matcher = FORMATTER_OPT_PATTERN.matcher(context.getOption(RFHConstants.OPT_FORMATTER));
         matcher.matches();
         return matcher.group(group);

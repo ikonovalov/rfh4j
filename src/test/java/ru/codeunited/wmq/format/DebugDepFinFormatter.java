@@ -19,6 +19,7 @@ import ru.codeunited.wmq.messaging.*;
 import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
 import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
 import ru.codeunited.wmq.messaging.pcf.MQHeaderException;
+import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
 
 import javax.inject.Inject;
 import java.io.IOException;
@@ -26,10 +27,15 @@ import java.util.logging.Logger;
 
 import static com.ibm.mq.constants.MQConstants.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * codeunited.ru
+ * ATTENTION!
+ * If TraceMessageData=0 this test will fail.
+ * You should set TraceMessageData > 0, for instance TraceMessageData=1024
+ *
  * konovalov84@gmail.com
  * Created by ikonovalov on 16.04.15.
  */

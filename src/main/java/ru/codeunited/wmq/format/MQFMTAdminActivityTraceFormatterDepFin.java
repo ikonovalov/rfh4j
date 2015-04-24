@@ -34,6 +34,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
     private static final int BUFFER_2Kb = 2048;
 
     private static final int MAX_BODY_LENGTH = 256;
+    private static final int BODY_SLOT = 1;
 
     private volatile Optional<String> passedOptionsStr = Optional.absent();
 
@@ -153,11 +154,13 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         // print captured data (it has four slots: headerdata xDynamic, bodydata x1 (last))
                         final TraceData traceData = moveRecord.getData();
                         final String format = moveRecord.getFormat();
+
+                        final Optional<List<Pair<String, String>>> passedList = getPassedOptions();
+                        final String[] capturedOutBlock = passedList.isPresent() ? new String[passedList.get().size() + BODY_SLOT] : new String[BODY_SLOT];
+                        Arrays.fill(capturedOutBlock, "");
+
                         final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
                         final Optional<Object> bodyOpt = traceData.getBody();
-                        final Optional<List<Pair<String, String>>> passedList = getPassedOptions();
-                        final String[] capturedOutBlock = passedList.isPresent() ? new String[passedList.get().size() + 1] : new String[1];
-                        Arrays.fill(capturedOutBlock, "");
 
                         switch (format) {
                             case MQFMT_RF_HEADER_2:
@@ -215,7 +218,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
     }
 
     public void moveBodyToCaptureBlock(String[] capturedOutBlock, String realBody) {
-        capturedOutBlock[capturedOutBlock.length - 1] = realBody;
+        capturedOutBlock[capturedOutBlock.length - BODY_SLOT] = realBody;
     }
 
     public void moveRFH2toCaptureBlock(String[] capturedOutBlock, MQRFH2 mqrfh2) {

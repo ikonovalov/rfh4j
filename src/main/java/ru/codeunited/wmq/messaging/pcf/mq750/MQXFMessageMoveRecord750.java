@@ -200,7 +200,8 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
 
     @Override
     public Integer getTraceDataLength() {
-        return decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
+        Integer intVal = decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
+        return intVal == null ? 0 : intVal;
     }
 
     @Override
@@ -251,5 +252,25 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
                 .append("objectName", getObjectName())
                 .appendSuper(super.toString())
                 .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        if (isTransmissionMessage()) {
+            return getXMITMessageId().hashCode();
+        } else {
+            return getMessageId().hashCode();
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (isTransmissionMessage()) {
+            return getXMITMessageId().equals(obj);
+        } else {
+            return getMessageId().equals(obj);
+        }
     }
 }

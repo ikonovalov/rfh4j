@@ -127,4 +127,9 @@ public class TraceDataImpl implements TraceData {
             return Optional.absent();
         }
     }
+
+    @Override
+    public boolean isEmpty() {
+        return record.getTraceDataLength() == 0;
+    }
 }
