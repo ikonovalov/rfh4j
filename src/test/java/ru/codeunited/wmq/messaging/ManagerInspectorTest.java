@@ -12,7 +12,6 @@ import ru.codeunited.wmq.frame.ContextInjection;
 import ru.codeunited.wmq.frame.GuiceContextTestRunner;
 import ru.codeunited.wmq.frame.GuiceModules;
 import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
-import ru.codeunited.wmq.messaging.pcf.Queue;
 
 import java.io.IOException;
 import java.util.List;

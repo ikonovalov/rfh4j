@@ -3,10 +3,7 @@ package ru.codeunited.wmq.messaging.pcf.mq750;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 import ru.codeunited.wmq.messaging.MessageTools;
-import ru.codeunited.wmq.messaging.pcf.ActivityTraceCommand;
-import ru.codeunited.wmq.messaging.pcf.ActivityTraceRecord;
-import ru.codeunited.wmq.messaging.pcf.PCFMessageWrapper;
-import ru.codeunited.wmq.messaging.pcf.WrongTypeException;
+import ru.codeunited.wmq.messaging.pcf.*;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,7 +29,7 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
     @Override
     protected void check() {
         if (pcfMessage.getCommand() != MQCMD_ACTIVITY_TRACE)
-            throw new WrongTypeException("Can't handled as MQCMD_ACTIVITY_TRACE. Actual command is " + pcfMessage.getCommand());
+            throw new WrongTypeException("Can't be handled as MQCMD_ACTIVITY_TRACE. Actual command code is " + pcfMessage.getCommand());
         final String commandLevel = decodedParameter(MQIA_COMMAND_LEVEL);
         if (!MQ_750.equals(commandLevel)) {
             throw new WrongTypeException("This command has different level. Required 750 but got " + commandLevel);
@@ -130,18 +127,9 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
     }
 
     @Override
-    public String getTraceDetail() {
+    public ActivityTraceLevel getTraceDetail() {
         Integer level = decodedParameterAsInt(MQIACF_TRACE_DETAIL);
-        switch (level) {
-            case 1:
-                return "LOW";
-            case 2:
-                return "MEDIUM";
-            case 3:
-                return "HIGH";
-            default:
-                return "UNKNOWN";
-        }
+        return ActivityTraceLevel.forCode(level);
     }
 
     @Override

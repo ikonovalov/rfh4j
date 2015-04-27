@@ -69,10 +69,19 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
     String getPutDateTimeISO();
 
+    /**
+     * Can be null if TraceData=0 in a mqat.ini
+     * @param <T>
+     * @return
+     */
     <T> T getDataRaw();
 
     TraceData getData();
 
+    /**
+     * The length of message data (in bytes) that is traced for this connection.
+     * @return size of captured body.
+     */
     Integer getTraceDataLength();
 
     boolean isTransmissionMessage();
