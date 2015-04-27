@@ -165,7 +165,8 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         switch (format) {
                             case MQFMT_RF_HEADER_2:
                                 if (listOfHeadersOpt.isPresent()) {
-                                    MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
+                                    List<MQHeader> headers = listOfHeadersOpt.get();
+                                    MQRFH2 mqrfh2 = (MQRFH2) headers.get(0);
                                     if (passedList.isPresent()) {
                                         moveRFH2toCaptureBlock(capturedOutBlock, mqrfh2);
                                     }
