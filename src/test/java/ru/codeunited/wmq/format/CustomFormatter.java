@@ -3,6 +3,7 @@ package ru.codeunited.wmq.format;
 import com.google.inject.ProvisionException;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
+import com.ibm.mq.constants.MQConstants;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,6 +98,9 @@ public class CustomFormatter {
         MessageFormatter inst1 = factory.formatterFor(message);
         MessageFormatter inst2 = factory.formatterFor(message);
         assertThat(inst1, sameInstance(inst2));
+
+        // now it is true, may be in future we would use another formatter for binary
+        assertThat(inst1, instanceOf(MQFMTStringFormatter.class));
     }
 
     @Test
@@ -107,6 +111,8 @@ public class CustomFormatter {
         MessageFormatter inst1 = factory.formatterFor(message);
         MessageFormatter inst2 = factory.formatterFor(message);
         assertThat(inst1, sameInstance(inst2));
+
+        assertThat(inst1, instanceOf(MQFMTStringFormatter.class));
     }
 
     @Test
@@ -117,6 +123,19 @@ public class CustomFormatter {
         MessageFormatter inst1 = factory.formatterFor(message);
         MessageFormatter inst2 = factory.formatterFor(message);
         assertThat(inst1, sameInstance(inst2));
+    }
+
+    @Test
+    @ContextInjection(cli = "-Q DEFQM --stream --all")
+    public void loadSucessSameInstanceMessageDrivenCICS() throws ParseException, MQException, IOException {
+        final MQMessage message = MQMessageMock.makeNew(MQConstants.MQFMT_CICS);
+
+        MessageFormatter inst1 = factory.formatterFor(message);
+        MessageFormatter inst2 = factory.formatterFor(message);
+        assertThat(inst1, sameInstance(inst2));
+
+        // it can be changed in a next versions
+        assertThat(inst1, instanceOf(MQFMTStringFormatter.class));
     }
 
 }
