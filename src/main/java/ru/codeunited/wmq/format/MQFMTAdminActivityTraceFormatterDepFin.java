@@ -234,6 +234,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         if (realBody.length() > MAX_BODY_LENGTH) {
             realBody = realBody.substring(0, MAX_BODY_LENGTH) + "...";
         }
+        realBody = realBody.replace("\r\n", " ").replace("\n", " ");
         return realBody;
     }
 
