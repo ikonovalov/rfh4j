@@ -172,7 +172,11 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     public Date getPutDateTime() {
         final String gluedPutDateTime = getPutDate() + ' ' + getPutTime();
         try {
-            return TIME_FORMAT.parse(gluedPutDateTime);
+            if (StringUtils.isBlank(gluedPutDateTime)) {
+                return new Date(getHighResolutionTime() / 1000);
+            } else {
+                return TIME_FORMAT.parse(gluedPutDateTime);
+            }
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
@@ -180,14 +184,7 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
 
     @Override
     public String getPutDateTimeISO() {
-        try {
-            return TIME_REFORMATED.format(getPutDateTime());
-        } catch (IllegalArgumentException iae) {
-            if (!isSuccess())
-                return "0000-00-00T00:00:00";
-            else
-                throw iae;
-        }
+        return TIME_REFORMATED.format(getPutDateTime());
     }
 
     @Override
