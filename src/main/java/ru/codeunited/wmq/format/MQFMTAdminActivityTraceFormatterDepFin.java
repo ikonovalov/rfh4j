@@ -107,7 +107,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 List<ActivityTraceRecord> records = activityCommand.getRecords();
 
                 for (ActivityTraceRecord record : records) {
-                    if (!record.isSuccess() || !OPERATION_FILTER.allowed(record)) // skip failed
+                    if (!OPERATION_FILTER.allowed(record)) // skip failed
                         continue;
                     if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
                         MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
@@ -133,6 +133,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         );
 
                         buffer.append(moveRecord.getOperation().name()).append(';'); /* append operation name */
+                        buffer.append(moveRecord.getCompCode()).append(';'); /* append operation status: failed or not */
 
                         buffer.append( /* append queuemanager name */
                                 xmitExchange ?

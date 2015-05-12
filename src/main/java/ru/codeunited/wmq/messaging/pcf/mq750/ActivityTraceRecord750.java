@@ -81,7 +81,7 @@ public class ActivityTraceRecord750 extends PCFGroupParameterWrapper implements 
 
     @Override
     public boolean isSuccess() {
-        return ((Integer) MQCC_OK).equals(decodedParameterAsInt(MQIACF_COMP_CODE));
+        return ((Integer) MQCC_OK).equals(getCompCodeAsInt());
     }
 
     @Override
