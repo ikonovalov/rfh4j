@@ -16,12 +16,18 @@ public class MessageEvent {
 
     private MQMessage message;
 
+    private final long timestamp = System.currentTimeMillis();
+
     private MQXFOperation operation = MQXFOperation.MQXF_UNKNOWN;
 
     private final EventSource eventSource;
 
     public MessageEvent(EventSource eventSource) {
         this.eventSource = eventSource;
+    }
+
+    public long getEventTime() {
+        return timestamp;
     }
 
     public EventSource getEventSource() {
