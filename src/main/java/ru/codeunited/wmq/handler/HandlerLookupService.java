@@ -12,12 +12,9 @@ public class HandlerLookupService {
 
     private final ExecutionContext context;
 
-    private final ConsoleWriter console;
 
-
-    public HandlerLookupService(ExecutionContext context, ConsoleWriter console) {
+    public HandlerLookupService(ExecutionContext context) {
         this.context = context;
-        this.console = console;
     }
 
     public MessageHandler lookup(Class clazz) {

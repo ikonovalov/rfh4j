@@ -56,7 +56,7 @@ public class MQGetCommand extends QueueCommand {
                     // in listener mode shouldWait = true, waitTime() = -1 (infinity)
                     final MQMessage message = shouldWait() ? messageConsumer.get(waitTime()) : messageConsumer.get();
                     queueHasMessages = true;
-                    handleMessage(messageCouter, message, console);
+                    handleMessage(messageCouter, message);
                     messageCouter++;
                 }
                 LOG.fine(">> total " + messageCouter + " in " + (System.currentTimeMillis() - startTime) + "ms");
@@ -89,7 +89,7 @@ public class MQGetCommand extends QueueCommand {
                 .make();
     }
 
-    void handleMessage(final int messageIndex, final MQMessage message, final ConsoleWriter console) throws MQException, IOException, MissedParameterException, NestedHandlerException {
+    void handleMessage(final int messageIndex, final MQMessage message) throws MQException, IOException, MissedParameterException, NestedHandlerException {
 
         // create event
         final EventSource eventSource = new EventSource(getSourceQueueName());
@@ -98,7 +98,7 @@ public class MQGetCommand extends QueueCommand {
         event.setMessage(message);
         event.setOperation(MQXFOperation.MQXF_GET);
 
-        final HandlerLookupService lookupService = new HandlerLookupService(executionContext, console);
+        final HandlerLookupService lookupService = new HandlerLookupService(executionContext);
 
         // lookup handler
         if (executionContext.hasOption(OPT_HANDLER)) {
