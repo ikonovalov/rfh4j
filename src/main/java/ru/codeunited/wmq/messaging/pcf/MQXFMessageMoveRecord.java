@@ -65,6 +65,10 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
     String getPutTime();
 
+    /**
+     * Returns glued PUT_DATE and PUT_TIME if exists and HighResolutionTime if not.
+     * @return
+     */
     Date getPutDateTime();
 
     String getPutDateTimeISO();

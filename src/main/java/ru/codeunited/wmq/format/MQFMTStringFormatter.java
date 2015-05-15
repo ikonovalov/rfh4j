@@ -21,7 +21,7 @@ public class MQFMTStringFormatter extends MQFMTContextAwareFormatter<String> {
 
     @Override
     public String format(final MQMessage message) throws IOException {
-        message.seek(0); // going to begining of message
+        message.seek(0); // going to beginning of message
         final int size = message.getDataLength(); // all remaining data size
         final StringBuffer buffer = new StringBuffer(size);
         buffer.append(String.format("Remain %d bytes", size));

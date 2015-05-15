@@ -33,7 +33,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int BUFFER_2Kb = 2048;
 
-    private static final int MAX_BODY_LENGTH = 256;
+    private static final int MAX_BODY_LENGTH = 512;
     private static final int BODY_SLOT = 1;
 
     private volatile Optional<String> passedOptionsStr = Optional.absent();
@@ -107,7 +107,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 List<ActivityTraceRecord> records = activityCommand.getRecords();
 
                 for (ActivityTraceRecord record : records) {
-                    if (!record.isSuccess() || !OPERATION_FILTER.allowed(record)) // skip failed
+                    if (!OPERATION_FILTER.allowed(record)) // skip failed
                         continue;
                     if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
                         MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
@@ -133,6 +133,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         );
 
                         buffer.append(moveRecord.getOperation().name()).append(';'); /* append operation name */
+                        buffer.append(moveRecord.getCompCode()).append(';'); /* append operation status: failed or not */
 
                         buffer.append( /* append queuemanager name */
                                 xmitExchange ?
@@ -234,6 +235,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         if (realBody.length() > MAX_BODY_LENGTH) {
             realBody = realBody.substring(0, MAX_BODY_LENGTH) + "...";
         }
+        realBody = realBody.replace("\r\n", " ").replace("\n", " ");
         return realBody;
     }
 
