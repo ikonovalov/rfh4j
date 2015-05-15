@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import ru.codeunited.wmq.fx.bus.ReconnectRequiredEvent;
 
 /**
  * codeunited.ru
@@ -25,6 +26,11 @@ public final class TopSceneControllerImpl implements TopSceneController {
     @FXML public void closeApplication(ActionEvent event) throws Exception {
         // shutdown platform
         Platform.exit();
+    }
+
+    @Override
+    @FXML public void reconnectQueueManager() {
+        eventBus.post(new ReconnectRequiredEvent());
     }
 
 }

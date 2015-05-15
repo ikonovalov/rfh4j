@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.fx.controller;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 
 /**
  * codeunited.ru
@@ -15,4 +16,7 @@ public interface TopSceneController {
      * @throws Exception
      */
     void closeApplication(ActionEvent event) throws Exception;
+
+    @FXML
+    void reconnectQueueManager();
 }

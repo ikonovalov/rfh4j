@@ -109,6 +109,19 @@ public class QueueManagerBean {
         return queues;
     }
 
+    public QueueBean reloadQueue(QueueBean bean) throws QMInteractionException {
+        try {
+            List<Queue> queueList = inspector.selectLocalQueues(bean.getName());
+            if (queueList.size() > 1) {
+                throw new IllegalArgumentException("Queue with name " + bean.getName() + " has several responses");
+            }
+            bean.initFromRealQueue(queueList.get(0));
+        } catch (MQException | IOException e) {
+           throw new QMInteractionException("Reload queue [" + bean.getName() + "] failed", e);
+        }
+        return bean;
+    }
+
     public String getName() {
         return name.get();
     }

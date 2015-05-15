@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQMessage;
+import com.ibm.mq.headers.CCSID;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,6 +101,18 @@ public final class MessageTools {
         final byte[] buffer = new byte[message.getDataLength()];
         message.readFully(buffer);
         return buffer;
+    }
+
+    /**
+     * Read full message body as string using message CCSID
+     * @param message
+     * @return
+     * @throws IOException
+     */
+    public static String readMessageBodyToString(MQMessage message) throws IOException {
+        byte[] asByte = readMessageBodyToBytes(message);
+        String bodyAsString = new String(asByte, CCSID.getCodepage(message.characterSet));
+        return bodyAsString;
     }
 
     final private static char[] hexArray = "0123456789ABCDEF".toCharArray();

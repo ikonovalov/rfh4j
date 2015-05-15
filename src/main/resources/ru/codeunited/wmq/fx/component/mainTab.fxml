@@ -44,12 +44,12 @@
                 <Text fx:id="underQtext" strokeType="OUTSIDE" strokeWidth="0.0" text="queue info" wrappingWidth="271.7294921875" />
                 <HBox prefHeight="40.0">
                     <children>
-                        <Button mnemonicParsing="false" text="GET">
+                        <Button mnemonicParsing="false" onMouseClicked="#getMessage" text="GET">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
                         </Button>
-                        <Button mnemonicParsing="false" text="PUT">
+                        <Button mnemonicParsing="false" onMouseClicked="#putMessage" text="PUT">
                             <HBox.margin>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                             </HBox.margin>
@@ -59,7 +59,7 @@
                         <Insets bottom="10.0" top="10.0" />
                     </VBox.margin>
                 </HBox>
-                <TextArea prefHeight="280.0">
+                <TextArea fx:id="mainTextArea" prefHeight="280.0" promptText="you text message">
                     <font>
                         <Font size="10.0" />
                     </font>
@@ -100,6 +100,7 @@
                   <Insets />
                </opaqueInsets>
                 </HBox>
+            <Text fx:id="infoBar" strokeType="OUTSIDE" strokeWidth="0.0" />
             </children>
             <padding>
                 <Insets left="5.0" right="5.0" />

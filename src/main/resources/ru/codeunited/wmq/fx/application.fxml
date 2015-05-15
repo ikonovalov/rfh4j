@@ -40,6 +40,7 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#closeApplication" text="Close"/>
+                        <MenuItem mnemonicParsing="false" onAction="#reconnectQueueManager" text="Reconnect"/>
                         <MenuItem mnemonicParsing="false" text="Save..."/>
                     </items>
                 </Menu>

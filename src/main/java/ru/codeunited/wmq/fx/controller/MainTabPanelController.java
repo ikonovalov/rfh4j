@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.fx.controller;
 
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import ru.codeunited.wmq.fx.QMInteractionException;
 
@@ -21,4 +22,10 @@ public interface MainTabPanelController extends Initializable {
      * @throws QMInteractionException
      */
     void reloadQueues() throws QMInteractionException;
+
+    @FXML
+    void getMessage() throws QMInteractionException;
+
+    @FXML
+    void putMessage() throws QMInteractionException;
 }

@@ -2,6 +2,7 @@ package ru.codeunited.wmq.fx.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import ru.codeunited.wmq.fx.QMInteractionException;
 import ru.codeunited.wmq.messaging.Queue;
 
 import java.util.Objects;
@@ -24,9 +25,29 @@ public final class QueueBean {
         name = new SimpleStringProperty();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        QueueBean queueBean = (QueueBean) o;
+
+        return name.equals(queueBean.name);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
     public void initFromRealQueue(Queue queue) {
         this.queue = Objects.requireNonNull(queue);
         this.name.set(Objects.requireNonNull(queue.getName()));
+    }
+
+    public void reload() throws QMInteractionException {
+        parent.reloadQueue(this);
     }
 
     public void setParent(QueueManagerBean parent) {
