@@ -11,10 +11,46 @@ import static org.mockito.Mockito.*;
  */
 public class MQMessageMock {
 
-    public static MQMessage createMQFMTAdminMessage() {
+    /**
+     * Create new mocked MQMessage with specific format.
+     * @param format
+     * @return
+     */
+    public static MQMessage makeNew(String format) {
         MQMessage message = mock(MQMessage.class);
-        message.format = MQFMT_ADMIN;
+        message.format = format;
         return message;
     }
 
+    /**
+     * MQFMT_ADMIN
+     * @return
+     */
+    public static MQMessage createMQFMTAdminMessage() {
+        return  makeNew(MQFMT_ADMIN);
+    }
+
+    /**
+     * MQFMT_NONE
+     * @return
+     */
+    public static MQMessage createMQFMTNoneMessage() {
+        return  makeNew(MQFMT_NONE);
+    }
+
+    /**
+     * MQFMT_STRING
+     * @return
+     */
+    public static MQMessage createMQFMTStringMessage() {
+        return  makeNew(MQFMT_STRING);
+    }
+
+    /**
+     * MQFMT_DEAD_LETTER_HEADER
+     * @return
+     */
+    public static MQMessage createMQFMTDLHMessage() {
+        return  makeNew(MQFMT_DEAD_LETTER_HEADER);
+    }
 }

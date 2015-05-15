@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import com.google.common.base.MoreObjects;
 import com.ibm.mq.pcf.PCFContent;
 import com.ibm.mq.pcf.PCFParameter;
 
@@ -41,8 +42,14 @@ public class PCFContentWrapper {
         }
     }
 
+    /**
+     * Returns paramter value as-is without casting and convertations.
+     * @param code
+     * @return value as-is or null of where is not such parameter.
+     */
     protected Object decodeParameterRaw(int code) {
-        return PCFUtilService.parameterOf(content, code).getValue();
+        PCFParameter pcfParameter = PCFUtilService.parameterOf(content, code);
+        return pcfParameter == null ? pcfParameter : PCFUtilService.parameterOf(content, code).getValue();
     }
 
     protected List<PCFParameter> getParamaters() {

@@ -1,33 +1,72 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Injector;
+import com.google.inject.Key;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
-import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.tuple.Pair;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.commands.*;
-import ru.codeunited.wmq.handler.NestedHandlerException;
-import ru.codeunited.wmq.messaging.*;
+import ru.codeunited.wmq.messaging.MessageConsumer;
+import ru.codeunited.wmq.messaging.MessageProducer;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+import ru.codeunited.wmq.messaging.QueueManager;
+import ru.codeunited.wmq.messaging.impl.MessageConsumerImpl;
+import ru.codeunited.wmq.messaging.impl.MessageProducerImpl;
+import ru.codeunited.wmq.messaging.impl.QueueInspectorImpl;
 
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.logging.Logger;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assume.assumeTrue;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
+import static ru.codeunited.wmq.frame.CLITestSupport.getStandartInjector;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public abstract class QueueingCapability extends CLITestSupport {
+public abstract class QueueingCapability extends GuiceSupport {
 
     private static final Logger LOG = Logger.getLogger(QueueingCapability.class.getName());
 
     protected static final int MESSAGE_ID_LENGTH = 24;
 
+    @Inject protected CommandChain commandChain;
+
+    @ConnectCommand
+    @Inject protected Command connectCommand;
+
+    @PutCommand
+    @Inject protected Command putCommand;
+
+    @DisconnectCommand
+    @Inject protected Command disconnectCommand;
+
+
     public interface QueueWork {
-        void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException;
+        void work(ExecutionContext context) throws Exception;
+    }
+
+    /**
+     * Check that ACTIVITY TRACE log on the current QM is enabled.
+     * @throws Exception
+     */
+    protected void assumeActivityLogEnable() throws Exception {
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws Exception {
+                try(QueueManager qm = context.getLink().getManager()) {
+                    Pair<Object, String> valuePair = qm.getAttributes().get("MQIA_ACTIVITY_TRACE");
+                    assumeTrue("Activity trace disabled for " + qm.getName(), valuePair.getLeft().equals(1));
+                }
+            }
+        });
     }
 
     /**
@@ -36,62 +75,47 @@ public abstract class QueueingCapability extends CLITestSupport {
      * @throws Exception
      */
     public void communication(QueueWork work) throws Exception {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
-
-        cmd1.execute();
+        long initinalPoint = System.currentTimeMillis();
+        long workPoint = 0;
+        connectCommand.execute();
         try {
+            workPoint = System.currentTimeMillis();
             work.work(context);
-        } catch (RuntimeException rte){
-            context.getQueueManager().backout();
+        } catch (Exception rte){
+            context.getLink().getManager().get().backout();
             throw rte;
         } finally {
-            cmd2.execute();
+            disconnectCommand.execute();
+            long finalPoint = System.currentTimeMillis();
+            LOG.info("Work done in " + (finalPoint - workPoint) + "ms. Total in " + (finalPoint - initinalPoint) + " ms");
         }
     }
 
-    private AbstractCommand prepareMQDisconnectCommand(ExecutionContext context) {
-        return new MQDisconnectCommand().setContext(context);
-    }
-
-    private AbstractCommand prepareMQConnectCommand(ExecutionContext context) {
-        return new MQConnectCommand().setContext(context);
-    }
-
-    protected MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
-        return new MessageConsumerImpl(queue, context.getQueueManager());
+    public static MessageConsumerImpl getMessageConsumer(String queue, ExecutionContext context) throws MQException {
+        return new MessageConsumerImpl(queue, context.getLink());
     }
 
     protected QueueInspectorImpl getMessageInspector(String queue, ExecutionContext context) throws MQException {
-        return new QueueInspectorImpl(queue, context.getQueueManager());
+        return new QueueInspectorImpl(queue, context.getLink());
     }
 
-    protected MQMessage putMessages(String queue, String text) throws ParseException, MissedParameterException, CommandGeneralException, IOException, MQException, IncompatibleOptionsException, NestedHandlerException {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
-
-        cmd1.execute();
-        final MessageProducer consumer = new MessageProducerImpl(queue, context.getQueueManager());
+    protected MQMessage putMessages(String queue, String text) throws IOException, MQException {
+        final MessageProducer consumer = new MessageProducerImpl(queue, context.getLink());
         // send first message
         final MQMessage message = consumer.send(text);
         assertThat(message, notNullValue());
         assertThat(message.messageId, notNullValue());
-        assertThat(message.messageId.length, is(24));
+        assertThat(message.messageId.length, is(MESSAGE_ID_LENGTH));
         LOG.fine("Sent payload [" + text + "]");
 
-        cmd2.execute();
         return message;
     }
 
-    protected void cleanupQueue(String queueName) throws ParseException, MissedParameterException, CommandGeneralException, MQException, IncompatibleOptionsException, NestedHandlerException {
-        final ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
-
-        final Command cmd1 = prepareMQConnectCommand(context);
-        final Command cmd2 = prepareMQDisconnectCommand(context);
+    protected static void cleanupQueue(String queueName) throws Exception {
+        ExecutionContext context = new CLIExecutionContext(getCommandLine_With_Qc());
+        Injector injector = getStandartInjector(context);
+        Command cmd1 = injector.getInstance(Key.get(Command.class, ConnectCommand.class));
+        Command cmd2 = injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
 
         cmd1.execute();
         final MessageConsumer consumer = getMessageConsumer(queueName, context);
@@ -101,7 +125,7 @@ public abstract class QueueingCapability extends CLITestSupport {
                 consumer.get();
             } catch (NoMessageAvailableException e) {
                 queueNotEmpty = false;
-                System.out.println(queueName + " is cleanup");
+                LOG.info(queueName + " is cleaned up.");
             }
         }
         cmd2.execute();

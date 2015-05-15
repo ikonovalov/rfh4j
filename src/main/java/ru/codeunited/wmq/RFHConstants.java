@@ -7,11 +7,19 @@ package ru.codeunited.wmq;
  */
 public final class RFHConstants {
 
+    public static final String OPT_TEXT = "text";
+
     public static final String OPT_STREAM = "stream";
 
     public static final String OPT_PAYLOAD = "payload";
 
     public static final String OPT_CONFIG = "config";
+
+    public static final String OPT_SRCQ = "srcq";
+
+    public static final String OPT_DSTQ = "dstq";
+
+    public static final String OPT_LIST_QLOCAL = "lslq";
 
     public static final String OPT_QMANAGER = "qmanager";
 
@@ -22,6 +30,8 @@ public final class RFHConstants {
     public static final String OPT_TIMES = "times"; // synonym for limit
 
     public static final String OPT_WAIT = "wait";
+
+    public static final String OPT_ALL = "all";
 
     public static final String OPT_FORMATTER = "formatter";
 

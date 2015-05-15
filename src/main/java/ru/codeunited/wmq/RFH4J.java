@@ -1,11 +1,20 @@
 package ru.codeunited.wmq;
 
-import org.apache.commons.cli.*;
+import com.google.inject.Guice;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.commands.*;
+import ru.codeunited.wmq.format.FormatterModule;
+import ru.codeunited.wmq.handler.HandlerModule;
 import ru.codeunited.wmq.handler.NestedHandlerException;
+import ru.codeunited.wmq.messaging.MessagingModule;
+
+import javax.inject.Inject;
 
 /**
  * codeunited.ru
@@ -14,29 +23,47 @@ import ru.codeunited.wmq.handler.NestedHandlerException;
  */
 public class RFH4J {
 
-    private static final Options options = CLIFactory.createOptions();
+    private final Options options = CLIFactory.createOptions();
 
-    private static final CommandLineParser cliParser = CLIFactory.createParser();
+    @Inject
+    private ConsoleWriter consoleWriter;
 
-    private static final ConsoleWriter consoleWriter = new ConsoleWriter(System.out, System.err);
+    @Inject
+    private ExecutionPlanBuilder executionPlanBuilder;
 
     public static void main(String[] args) {
+        RFH4J application = new RFH4J();
+        application.start(args);
+    }
+
+    public void start(String... args) {
+
         try {
-            final CommandLine cli = cliParser.parse(options, args);
+            CommandLineParser cliParser = CLIFactory.createParser();
+            CommandLine cli = cliParser.parse(options, args);
+
             if (cli.hasOption('h') || cli.getOptions().length == 0) {
                 CLIFactory.showHelp();
             } else {
                 final ExecutionContext context = new CLIExecutionContext(cli);
+                Guice.createInjector(
+                        new ContextModule(context),
+                        new CommandsModule(),
+                        new FormatterModule(),
+                        new HandlerModule(),
+                        new MessagingModule()
+                ).injectMembers(this);
+
                 context.setConsoleWriter(consoleWriter);
-                final ExecutionPlanBuilder executionPlanBuilder = new DefaultExecutionPlanBuilder(context);
+
                 final CommandChain commandMaker = executionPlanBuilder.buildChain();
+
                 commandMaker.execute();
             }
 
         } catch (NestedHandlerException | MissedParameterException | ParseException | CommandGeneralException | IncompatibleOptionsException e) {
-            consoleWriter.errorln("Error occurred. ").errorln("Details: " + e.getMessage());
-            consoleWriter.end().flush();
+            System.err.println("Error occurred. Details: " + e.getMessage());
+            System.err.flush();
         }
-
     }
 }

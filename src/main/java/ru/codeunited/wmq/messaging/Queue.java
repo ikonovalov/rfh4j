@@ -1,4 +1,4 @@
-package ru.codeunited.wmq.messaging.pcf;
+package ru.codeunited.wmq.messaging;
 
 /**
  * codeunited.ru

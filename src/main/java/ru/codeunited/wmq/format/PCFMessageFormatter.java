@@ -11,4 +11,5 @@ import com.ibm.mq.pcf.PCFMessage;
 public interface PCFMessageFormatter<T> {
 
     T format(PCFMessage pcfMessage, MQMessage mqMessage);
+
 }

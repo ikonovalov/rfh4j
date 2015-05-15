@@ -3,13 +3,17 @@ package ru.codeunited.wmq.messaging;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQGetMessageOptions;
 import com.ibm.mq.MQMessage;
+import ru.codeunited.wmq.messaging.MessageSelector;
+import ru.codeunited.wmq.messaging.NoMessageAvailableException;
+
+import java.io.Closeable;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 17.11.14.
  */
-public interface MessageConsumer {
+public interface MessageConsumer extends Closeable {
 
     /**
      * Get MQ message with specified GET_MESSAGE_OPTIONS.
@@ -26,7 +30,7 @@ public interface MessageConsumer {
 
     /**
      * Get MQ message and wait specified period of time of no message in queue right now.
-     * @param waitInterval  The maximum time (in milliseconds) get(interval) call waits for a suitable message to arrive.
+     * @param waitInterval  The maximum time (in milliseconds) get(interval) call waits for a suitable message to arrive. Negative value mean unlimited wait.
      * @return MQMessage  dequeue MQMessage.
      * @throws NoMessageAvailableException if no one message in a queue.
      * @throws MQException

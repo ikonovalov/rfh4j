@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.messaging.pcf;
 
+import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
 import com.ibm.mq.pcf.MQCFBS;
@@ -10,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import ru.codeunited.wmq.messaging.pcf.mq750.ActivityTraceCommand750;
 import ru.codeunited.wmq.messaging.pcf.mq800.ActivityTraceCommand800;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 import static com.ibm.mq.constants.MQConstants.*;
@@ -56,6 +58,20 @@ public final class PCFUtilService {
                 return MQConstants.lookup(value, "MQOT_.*");
             case MQIACF_MSG_TYPE:
                 return MQConstants.lookup(value, "MQMT_.*");
+            case MQIA_AUTHORITY_EVENT:
+                return MQConstants.lookup(value, "MQEVR_.*");
+            case MQIA_ACCOUNTING_CONN_OVERRIDE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_CONN_OVERRIDE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_TRACE:
+                return MQConstants.lookup(value, "MQMON_.*");
+            case MQIA_ACTIVITY_RECORDING:
+                return MQConstants.lookup(value, "MQRECORDING_.*");
+            case MQIA_ADOPTNEWMCA_CHECK:
+                return MQConstants.lookup(value, "MQADOPT_CHECK_.*");
+            case MQIA_ADOPTNEWMCA_TYPE:
+                return MQConstants.lookup(value, "MQADOPT_TYPE_.*");
             default:
                 return pcfParameter.getStringValue();
         }
@@ -81,6 +97,23 @@ public final class PCFUtilService {
         if (value != null)
             value = value.trim();
         return value;
+    }
+
+    /**
+     * Create ActivityTraceCommand from MQMessage.
+     * Note: This messages are from "activity trace queue" with MQADMIN format.
+     * @param mqMessage
+     * @return
+     */
+    public static ActivityTraceCommand activityCommandFor(MQMessage mqMessage) {
+        try {
+            PCFMessage pcfMessage = new PCFMessage(mqMessage);
+            mqMessage.seek(0);
+            return activityCommandFor(pcfMessage, mqMessage);
+        } catch (MQException | IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+
     }
 
     /**

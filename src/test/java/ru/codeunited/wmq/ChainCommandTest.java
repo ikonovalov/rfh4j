@@ -9,17 +9,19 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.getCommandLine_With_Qc;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
-public class ChainCommandTest extends CLITestSupport {
+public class ChainCommandTest {
 
     @Test
     public void addCommandToChain() throws ParseException {
-        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChainImpl();
+        maker.setContext(new CLIExecutionContext(getCommandLine_With_Qc()));
         final AbstractCommand cmd1 = new MQConnectCommand();
         final AbstractCommand cmd2 = new MQDisconnectCommand();
 
@@ -40,13 +42,15 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test(expected = UnsupportedOperationException.class)
     public void immutableWorkload() throws ParseException {
-        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChainImpl();
+        maker.setContext(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.getCommandChain().add(new MQDisconnectCommand());
     }
 
     @Test
     public void insertAfterCommandS1() throws ParseException {
-        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChainImpl();
+        maker.setContext(new CLIExecutionContext(getCommandLine_With_Qc()));
         maker.addAfter(new MQConnectCommand(), null);
         assertThat("Wrong chain size after add one command", maker.getCommandChain().size(), is(1));
         assertThat(maker.getCommandChain().get(0), instanceOf(MQConnectCommand.class));
@@ -54,7 +58,8 @@ public class ChainCommandTest extends CLITestSupport {
 
     @Test
     public void insertAfterCommandS3() throws ParseException {
-        final CommandChain maker = new CommandChain(new CLIExecutionContext(getCommandLine_With_Qc()));
+        final CommandChain maker = new CommandChainImpl();
+        maker.setContext(new CLIExecutionContext(getCommandLine_With_Qc()));
         final Command connect = new MQConnectCommand();
         final Command disconnect = new MQDisconnectCommand();
         final MQPutCommand put = new MQPutCommand();

@@ -2,27 +2,31 @@ package ru.codeunited.wmq.format;
 
 import com.ibm.mq.MQMessage;
 import com.ibm.mq.constants.MQConstants;
-import com.ibm.mq.headers.MQMD;
 import com.ibm.mq.pcf.MQCFBS;
 import com.ibm.mq.pcf.MQCFGR;
 import com.ibm.mq.pcf.PCFMessage;
 import com.ibm.mq.pcf.PCFParameter;
 
+import javax.inject.Singleton;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Enumeration;
 
 import static com.ibm.mq.constants.MQConstants.*;
 import static ru.codeunited.wmq.messaging.MessageTools.bytesToHex;
+import static ru.codeunited.wmq.messaging.pcf.PCFUtilService.decodeValue;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 02.02.15.
  */
-public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
+@Singleton
+public class MQFMTAdminCommonFormatter extends MQPCFMessageAbstractFormatter<String> {
 
-    public MQFTMAdminCommonFormatter() {
+    private static final int DEFAULT_OUTPUT_BUFFER_SZ = 128;
+
+    public MQFMTAdminCommonFormatter() {
         super();
     }
 
@@ -34,12 +38,12 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
     @Override
     public String format(PCFMessage pcfMessage, MQMessage mqMessage) {
 
-        final StringBuffer buffer = new StringBuffer();
+        int paramCount = pcfMessage.getParameterCount();
+
+        final StringBuffer buffer = new StringBuffer(DEFAULT_OUTPUT_BUFFER_SZ * paramCount);
 
         // print MQFTM_ADMIN
         boarder(buffer);
-
-        int paramCount = pcfMessage.getParameterCount();
 
         buffer.append(String.format("Command: %d\n", pcfMessage.getCommand()));
         buffer.append(String.format("Parameters count: %d\n", paramCount));
@@ -61,7 +65,7 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
 
     private StringBuffer formatParameters(Enumeration<PCFParameter> parameters, int depth) {
         final String offset = depthStringOffset(depth);
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuffer buffer = new StringBuffer(DEFAULT_OUTPUT_BUFFER_SZ);
         int pIndex = 0;
         while(parameters.hasMoreElements()) {
             PCFParameter pcfParameter = parameters.nextElement(); // MQGACF_ACTIVITY_TRACE,  "MQI Operation"
@@ -91,25 +95,5 @@ public class MQFTMAdminCommonFormatter extends MQPCFMessageAbstractFormatter<Str
                 offset, pcfParameter.getClass().getSimpleName(), pIndex++, pcfParameter.getParameter(), pName, pStringValue
         ));
         return pIndex;
-    }
-
-    private String decodeValue(PCFParameter pcfParameter) {
-        final int code = pcfParameter.getParameter();
-        final Object value = pcfParameter.getValue();
-        switch (code) { //http://www-01.ibm.com/support/knowledgecenter/SSFKSJ_7.5.0/com.ibm.mq.ref.dev.doc/q090210_.htm
-            case MQIACF_OPERATION_ID:
-                return MQConstants.lookup(value, "MQXF_.*");
-            case MQIACF_COMP_CODE:
-                return MQConstants.lookup(value, "MQCC_.*");
-            case MQIA_PLATFORM:
-                return MQConstants.lookup(value, "MQPL_.*");
-            case MQIA_APPL_TYPE:
-                return MQConstants.lookup(value, "MQAT_.*");
-            case MQBACF_MESSAGE_DATA:
-                return new String(((MQCFBS) pcfParameter).getString(), Charset.forName("UTF-8"));
-            default:
-                return pcfParameter.getStringValue();
-        }
-
     }
 }

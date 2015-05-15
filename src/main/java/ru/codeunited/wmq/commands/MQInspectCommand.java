@@ -4,13 +4,14 @@ import com.ibm.mq.MQException;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleTable;
 import ru.codeunited.wmq.cli.ConsoleWriter;
-import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.ManagerInspector;
-import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
-import ru.codeunited.wmq.messaging.pcf.Queue;
+import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
+import ru.codeunited.wmq.messaging.Queue;
 
 import java.io.IOException;
 import java.util.List;
+import static ru.codeunited.wmq.RFHConstants.*;
+import static ru.codeunited.wmq.cli.TableColumnName.*;
 
 /**
  * codeunited.ru
@@ -18,7 +19,6 @@ import java.util.List;
  * Created by ikonovalov on 19.11.14.
  */
 public class MQInspectCommand extends QueueCommand {
-
 
     @Override
     protected void validateOptions() throws IncompatibleOptionsException, MissedParameterException {
@@ -29,12 +29,12 @@ public class MQInspectCommand extends QueueCommand {
     @Override
     protected void work() throws CommandGeneralException, MissedParameterException {
         final ConsoleWriter console = getConsoleWriter();
-        final ConsoleTable table = console.createTable(TableColumnName.QUEUE, TableColumnName.CAPACITY, TableColumnName.OPEN_INPUT, TableColumnName.OPEN_OUTPUT);
+        final ConsoleTable table = console.createTable(QUEUE, CAPACITY, OPEN_INPUT, OPEN_OUTPUT);
 
         final ExecutionContext ctx = getExecutionContext();
         try {
-            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getQueueManager());
-            final String filter = ctx.getOption("lslq", "*");
+            final ManagerInspector managerInspector = new ManagerInspectorImpl(ctx.getLink());
+            final String filter = ctx.getOption(OPT_LIST_QLOCAL, "*");
             final List<Queue> queues = managerInspector.selectLocalQueues(filter);
             for (final Queue next : queues) {
                 table.append(

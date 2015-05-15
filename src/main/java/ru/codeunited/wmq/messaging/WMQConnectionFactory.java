@@ -1,7 +1,6 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
-import com.ibm.mq.MQQueueManager;
 
 /**
  * codeunited.ru
@@ -15,6 +14,6 @@ public interface WMQConnectionFactory {
      * @return
      * @throws MQException
      */
-    MQQueueManager connectQueueManager(ConnectionOptions connectionOptions) throws MQException;
+    MQLink connectQueueManager(ConnectionOptions connectionOptions) throws MQException;
 
 }

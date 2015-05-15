@@ -8,13 +8,14 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 import static ru.codeunited.wmq.RFHConstants.*;
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 15.11.14.
  */
-public class ContextTest extends CLITestSupport{
+public class ContextTest {
 
     @Test
     public void shouldHaveDefaultConsoleWriter() {

@@ -22,11 +22,10 @@ public class MQPropertiesComposer {
 
     public static final String DEFAULT_CONFIG_PATH = "./default.properties";
 
-    private static Logger LOG = Logger.getLogger(MQPropertiesComposer.class.getName());
-
     private final Properties defaultProperties = new Properties();
 
     {
+        defaultProperties.put(APPNAME_PROPERTY, RFH4J.class.getSimpleName());
         defaultProperties.put(HOST_NAME_PROPERTY, DEFAULT_HOST);
         defaultProperties.put(PORT_PROPERTY, DEFAULT_PORT);
         defaultProperties.put(TRANSPORT_PROPERTY, TRANSPORT_MQSERIES_CLIENT);

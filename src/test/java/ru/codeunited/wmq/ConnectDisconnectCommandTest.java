@@ -1,5 +1,6 @@
 package ru.codeunited.wmq;
 
+import com.google.inject.Key;
 import org.apache.commons.cli.CommandLine;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
@@ -7,13 +8,14 @@ import ru.codeunited.wmq.commands.*;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
 import static org.junit.Assert.assertTrue;
+import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
 
 /**
  * codeunited.ru
  * konovalov84@gmail.com
  * Created by ikonovalov on 23.10.14.
  */
-public class ConnectDisconnectCommandTest extends CLITestSupport {
+public class ConnectDisconnectCommandTest extends GuiceSupport {
 
 
     @Test
@@ -41,7 +43,9 @@ public class ConnectDisconnectCommandTest extends CLITestSupport {
     }
 
     private void connectOperation(CommandLine commandLine) throws CommandGeneralException, MissedParameterException, IncompatibleOptionsException, NestedHandlerException {
-        final MQConnectCommand connectCommand = new MQConnectCommand(new CLIExecutionContext(commandLine));
+        setup(new CLIExecutionContext(commandLine));
+
+        final MQConnectCommand connectCommand = (MQConnectCommand) injector.getInstance(Key.get(Command.class, ConnectCommand.class));
         assertTrue(connectCommand.selfStateCheckOK());
         assertTrue("Bad initial state in ConnectCommand", ReturnCode.READY == connectCommand.getState());
 

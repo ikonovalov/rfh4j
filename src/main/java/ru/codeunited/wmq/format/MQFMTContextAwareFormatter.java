@@ -2,6 +2,8 @@ package ru.codeunited.wmq.format;
 
 import ru.codeunited.wmq.ExecutionContext;
 
+import javax.inject.Inject;
+
 /**
  * codeunited.ru
  * konovalov84@gmail.com
@@ -11,7 +13,11 @@ public abstract class MQFMTContextAwareFormatter<T> implements MessageFormatter<
 
     protected ExecutionContext context;
 
+    @Inject
     public void attach(ExecutionContext context) {
+        if (this.context != null) {
+            throw new IllegalStateException("Context already set");
+        }
         this.context = context;
     }
 

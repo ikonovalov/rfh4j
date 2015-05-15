@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.handler;
 
-import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.cli.ConsoleTable;
@@ -8,6 +7,8 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.cli.TableColumnName;
 import ru.codeunited.wmq.messaging.MessageTools;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import static ru.codeunited.wmq.messaging.MessageTools.fileNameForMessage;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.02.15.
  */
+@Singleton
 public class BodyToFileHandler extends CommonMessageHandler<File> {
 
     private static final TableColumnName[] TABLE_HEADER = {
@@ -32,6 +34,7 @@ public class BodyToFileHandler extends CommonMessageHandler<File> {
             TableColumnName.OUTPUT
     };
 
+    @Inject
     public BodyToFileHandler(ExecutionContext context, ConsoleWriter console) {
         super(context, console);
     }
@@ -54,13 +57,13 @@ public class BodyToFileHandler extends CommonMessageHandler<File> {
             table.append(
                     String.valueOf(messageEvent.getMessageIndex()),
                     messageEvent.getOperation().name(),
-                    getContext().getQueueManager().getName(),
+                    getContext().getLink().getOptions().getQueueManagerName(),
                     messageEvent.getEventSource().getName(),
                     messageEvent.getHexMessageId(),
                     messageEvent.getHexCorrelationId(),
                     destination.getAbsolutePath()
             ).make();
-        } catch (MQException | IOException e) {
+        } catch (IOException e) {
             throw NestedHandlerException.nest(e);
         }
         return destination;
