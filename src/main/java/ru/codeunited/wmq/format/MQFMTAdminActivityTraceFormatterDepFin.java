@@ -33,7 +33,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int BUFFER_2Kb = 2048;
 
-    private static final int MAX_BODY_LENGTH = 256;
+    private static final int MAX_BODY_LENGTH = 512;
     private static final int BODY_SLOT = 1;
 
     private volatile Optional<String> passedOptionsStr = Optional.absent();
