@@ -13,10 +13,13 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.ParseException;
 import ru.codeunited.wmq.cli.CLIFactory;
 import ru.codeunited.wmq.commands.CommandsModule;
+import ru.codeunited.wmq.format.FormatterModule;
 import ru.codeunited.wmq.fx.*;
 import ru.codeunited.wmq.fx.bus.ShutdownEvent;
 import ru.codeunited.wmq.fx.controller.TopSceneController;
 import ru.codeunited.wmq.fx.model.MainTabModelImpl;
+import ru.codeunited.wmq.handler.HandlerModule;
+import ru.codeunited.wmq.messaging.MessagingModule;
 
 /**
  * This is realy a part of a model.
@@ -58,7 +61,14 @@ public class RFHFX extends Application {
         String[] args = getParameters().getRaw().toArray(new String[0]);
         CommandLine cli = CLIFactory.createParser().parse(CLIFactory.createOptions(), args);
         ExecutionContext context = new FXExecutionContext(cli);
-        final Injector injector = Guice.createInjector(new ContextModule(context), new CommandsModule(), new GuiceModule());
+        final Injector injector = Guice.createInjector(
+                new ContextModule(context),
+                new CommandsModule(),
+                new FormatterModule(),
+                new HandlerModule(),
+                new MessagingModule(),
+                new FXModule()
+        );
 
         // set event bus instance
         eventBus = injector.getInstance(EventBus.class);

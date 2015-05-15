@@ -27,7 +27,7 @@ public class TopicPub extends QueueingCapability {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
-                final MQQueueManager queueManager = context.getQueueManager();
+                final MQQueueManager queueManager = context.getLink().getManager().get();
 
 
                 //MQTopic subscriber = queueManager.accessTopic("LXFT/GLOBAL/+", null, MQTOPIC_OPEN_AS_SUBSCRIPTION, MQSO_CREATE  );

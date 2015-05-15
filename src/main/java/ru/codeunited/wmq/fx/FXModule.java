@@ -24,9 +24,9 @@ import ru.codeunited.wmq.fx.model.*;
  * konovalov84@gmail.com
  * Created by ikonovalov on 06.04.15.
  */
-public class GuiceModule extends AbstractModule {
+public class FXModule extends AbstractModule {
 
-    public GuiceModule() {
+    public FXModule() {
         super();
     }
 

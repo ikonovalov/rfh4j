@@ -2,7 +2,7 @@ package ru.codeunited.wmq.fx.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import ru.codeunited.wmq.messaging.pcf.Queue;
+import ru.codeunited.wmq.messaging.Queue;
 
 import java.util.Objects;
 

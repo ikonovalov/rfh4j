@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.fx.model;
 
+import com.google.inject.Singleton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import ru.codeunited.wmq.fx.Draft;
@@ -12,6 +13,7 @@ import javax.inject.Provider;
  * konovalov84@gmail.com
  * Created by ikonovalov on 19.03.15.
  */
+@Singleton
 public final class MainTabModelImpl implements MainTabModel {
 
     private final ObservableList<QueueManagerBean> qmList;

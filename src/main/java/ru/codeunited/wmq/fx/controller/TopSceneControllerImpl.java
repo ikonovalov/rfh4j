@@ -6,7 +6,6 @@ import com.google.inject.Singleton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import ru.codeunited.wmq.fx.bus.ShutdownEvent;
 
 /**
  * codeunited.ru

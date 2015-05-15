@@ -11,8 +11,9 @@ import ru.codeunited.wmq.fx.QMInteractionException;
 import ru.codeunited.wmq.fx.Draft;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 import ru.codeunited.wmq.messaging.ManagerInspector;
-import ru.codeunited.wmq.messaging.ManagerInspectorImpl;
-import ru.codeunited.wmq.messaging.pcf.Queue;
+import ru.codeunited.wmq.messaging.impl.ManagerInspectorImpl;
+import ru.codeunited.wmq.messaging.Queue;
+
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -58,13 +59,8 @@ public class QueueManagerBean {
     }
 
     private void postConnectOperations() throws QMInteractionException {
-        try {
-            this.inspector = new ManagerInspectorImpl(context.getQueueManager());
-        } catch (MQException e) {
-            throw new QMInteractionException("Inspector creation failure", e);
-        }
+        this.inspector = new ManagerInspectorImpl(context.getLink());
         reloadQueues();
-
     }
 
     public ReturnCode connect() throws QMInteractionException {
