@@ -46,7 +46,7 @@ public class MessageProducerImpl implements MessageProducer {
 
     @Override
     public MQMessage send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
-        final MQMessage message = MessageTools.createUTFMessage();
+        final MQMessage message = MessageTools.createMessage(MessageTools.UTF8_CCSID);
         MessageTools.writeStreamToMessage(stream, message);
         return putWithOptions(message, options);
     }

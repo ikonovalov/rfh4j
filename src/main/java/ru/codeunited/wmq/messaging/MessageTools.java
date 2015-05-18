@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
+import static com.ibm.mq.constants.CMQC.MQFMT_NONE;
 import static com.ibm.mq.constants.MQConstants.MQFMT_STRING;
 import static com.ibm.mq.constants.MQConstants.MQPER_PERSISTENT;
 
@@ -16,7 +17,7 @@ import static com.ibm.mq.constants.MQConstants.MQPER_PERSISTENT;
  */
 public final class MessageTools {
 
-    private static final int DEFAULT_CHARACTER_SET = 1208;
+    public static final int UTF8_CCSID = 1208;
 
     private static final int STREAM_BUFFER_SZ = 2048;
 
@@ -27,7 +28,7 @@ public final class MessageTools {
     }
 
     /**
-     * Create MQMessage with specified characterSet.
+     * Create MQMessage with specified characterSet and MQFMT_NONE
      * @param charset for example 1208 (UTF-8)
      * @return MQMessage
      */
@@ -35,7 +36,7 @@ public final class MessageTools {
         final MQMessage message = createEmptyMessage();
         message.characterSet = charset;
         message.persistence = MQPER_PERSISTENT;
-        message.format = MQFMT_STRING;
+        message.format = MQFMT_NONE;
         return message;
     }
 
@@ -44,21 +45,13 @@ public final class MessageTools {
     }
 
     /**
-     * Set MQMessage format to STR (8)
-     * @param message for setup
-     * @return input MQMessage, not copy.
-     */
-    public static MQMessage stringFormat(MQMessage message) {
-        message.format = MQFMT_STRING;
-        return message;
-    }
-
-    /**
-     * Create MQMessage with characterSet = 1208;
+     * Create MQMessage with characterSet = 1208 and MQFMT_STRING
      * @return MQMessage
      */
     public static MQMessage createUTFMessage() {
-        return createMessage(DEFAULT_CHARACTER_SET);
+        MQMessage mqMessage = createMessage(UTF8_CCSID);
+        mqMessage.format = MQFMT_STRING;
+        return mqMessage;
     }
 
     /**
@@ -70,14 +63,6 @@ public final class MessageTools {
      */
     public static void writeStringToMessage(String str, MQMessage message) throws IOException {
         message.writeString(str);
-    }
-
-    public void writeUTFToMessage(String utf, MQMessage message) throws IOException {
-        message.writeUTF(utf);
-    }
-
-    public static String messageIdAsString(MQMessage message) {
-        return bytesToHex(message.messageId);
     }
 
     public static String fileNameForMessage(MQMessage message) {
@@ -92,7 +77,6 @@ public final class MessageTools {
             message.write(buffer, 0, readCount);
             totalBytes += readCount;
         }
-
         LOG.fine("File with size " + totalBytes + "b stored in a message.");
     }
 

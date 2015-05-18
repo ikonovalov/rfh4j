@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.codeunited.wmq.messaging.HeaderUtilService;
+import ru.codeunited.wmq.messaging.MessageTools;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,8 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int BUFFER_2Kb = 2048;
 
-    private static final int MAX_BODY_LENGTH = 512;
+    private static final int MAX_BODY_LENGTH = 1024 * 1024; // 1Mb
+
     private static final int BODY_SLOT = 1;
 
     private volatile Optional<String> passedOptionsStr = Optional.absent();
@@ -174,10 +176,9 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
                                     if (bodyOpt.isPresent()) {
                                         if (MQFMT_STRING.equals(mqrfh2.getFormat())) {
-                                            String realBody = trimBodyToMaxSize(bodyOpt);
-                                            moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                            moveBodyToCaptureBlock(capturedOutBlock, (String) bodyOpt.get());
                                         } else {
-                                            moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                            moveBodyToCaptureBlock(capturedOutBlock, (byte[]) bodyOpt.get());
                                         }
                                     }
                                 }
@@ -185,13 +186,12 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                             case MQFMT_NONE:
                             case MQFMT_ADMIN:
                                 if (bodyOpt.isPresent()) {
-                                    moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                    moveBodyToCaptureBlock(capturedOutBlock, (byte[]) bodyOpt.get());
                                 }
                                 break;
                             case MQFMT_STRING:
                                 if (bodyOpt.isPresent()) {
-                                    String realBody = trimBodyToMaxSize(bodyOpt);
-                                    moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                    moveBodyToCaptureBlock(capturedOutBlock, (String) bodyOpt.get());
                                 }
                                 break;
                             default:
@@ -219,8 +219,16 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         }
     }
 
-    public void moveBodyToCaptureBlock(String[] capturedOutBlock, String realBody) {
-        capturedOutBlock[capturedOutBlock.length - BODY_SLOT] = realBody;
+    private void moveBodyToCaptureBlock(String[] capturedOutBlock, String stringBody) {
+        capturedOutBlock[bodyBlockPosition(capturedOutBlock)] = trimBodyToMaxSize(stringBody);
+    }
+
+    private void moveBodyToCaptureBlock(String[] capturedOutBlock, byte[] binaryBody) {
+        moveBodyToCaptureBlock(capturedOutBlock, MessageTools.bytesToHex(binaryBody));
+    }
+
+    private int bodyBlockPosition(String[] capturedOutBlock) {
+        return capturedOutBlock.length - BODY_SLOT;
     }
 
     public void moveRFH2toCaptureBlock(String[] capturedOutBlock, MQRFH2 mqrfh2) {
@@ -230,8 +238,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         }
     }
 
-    protected static String trimBodyToMaxSize(Optional<Object> bodyOpt) {
-        String realBody = (String) bodyOpt.get();
+    private static String trimBodyToMaxSize(String realBody) {
         if (realBody.length() > MAX_BODY_LENGTH) {
             realBody = realBody.substring(0, MAX_BODY_LENGTH) + "...";
         }
