@@ -17,7 +17,6 @@ import static ru.codeunited.wmq.frame.CLITestSupport.prepareCommandLine;
  */
 public class ConnectDisconnectCommandTest extends GuiceSupport {
 
-
     @Test
     public void makeBindingConnection() throws Exception {
 
@@ -53,7 +52,7 @@ public class ConnectDisconnectCommandTest extends GuiceSupport {
         assertTrue("Unexpected return code in connect operation " + returnCode.name(), returnCode == ReturnCode.SUCCESS);
         assertTrue("Connection command not in final state", ReturnCode.SUCCESS == connectCommand.getState());
 
-        final MQDisconnectCommand disconnectCommand = new MQDisconnectCommand();
+        final MQDisconnectCommand disconnectCommand = (MQDisconnectCommand) injector.getInstance(Key.get(Command.class, DisconnectCommand.class));
         connectCommand.copyEnvironmentTo(disconnectCommand);
         assertTrue("Disconnect command in bad initial state " + disconnectCommand.getState(), ReturnCode.READY == disconnectCommand.getState());
 

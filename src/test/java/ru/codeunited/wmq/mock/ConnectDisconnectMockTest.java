@@ -1,5 +1,6 @@
 package ru.codeunited.wmq.mock;
 
+import com.google.common.eventbus.EventBus;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 import ru.codeunited.wmq.cli.CLIExecutionContext;
@@ -17,8 +18,20 @@ public class ConnectDisconnectMockTest {
 
     @Test
     public void connectDisconnectWithMockFactory() throws ParseException, MissedParameterException, CommandGeneralException, IncompatibleOptionsException, NestedHandlerException {
-        final MQConnectCommand connectCommand = new MQConnectCommand(new WMQConnectionFactoryMocked());
-        final MQDisconnectCommand disconnectCommand = new MQDisconnectCommand();
+        final EventBus fakeEventBus = new EventBus();
+        final MQConnectCommand connectCommand = new MQConnectCommand(new WMQConnectionFactoryMocked()) {
+            @Override
+            public EventBus getEventBus() {
+                return fakeEventBus;
+            }
+        };
+
+        final MQDisconnectCommand disconnectCommand = new MQDisconnectCommand() {
+            @Override
+            public EventBus getEventBus() {
+                return fakeEventBus;
+            }
+        };
         final CommandChain chain = new CommandChainImpl();
         chain.setContext(new CLIExecutionContext(getCommandLine_With_Qc()));
         chain

@@ -101,7 +101,7 @@ public class DebugDepFinFormatter extends QueueingCapability {
                                 LOG.info("\n" + out);
                             }
                             if (StringUtils.isNotEmpty(out) && out.contains(sendMessageId.toLowerCase())) { // skip empty (restricted rows)
-                                assertThat(out, containsString(";[bytes]"));
+                                assertThat(out, containsString(";616E6420736F6D6520646174612068657265"));
 
                             }
                         } catch (NoMessageAvailableException noMessage) {
@@ -158,7 +158,7 @@ public class DebugDepFinFormatter extends QueueingCapability {
                                 LOG.info("\n" + out);
                             }
                             if (StringUtils.isNotEmpty(out) && out.contains(sendMessageId.toLowerCase())) { // skip empty (restricted rows)
-                                assertThat(out, containsString(";i15;t15;s15;[bytes]"));
+                                assertThat(out, containsString(";i15;t15;s15;616E6420736F6D6520646174612068657265"));
 
                             }
                         } catch (NoMessageAvailableException noMessage) {
