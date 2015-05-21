@@ -38,7 +38,7 @@ public class MessageConsumerImpl implements MessageConsumer {
         try {
             queue.get(message, getMessageOptions);
         } catch (MQException mqe) {
-            if (mqe.reasonCode == 2033)
+            if (mqe.reasonCode == MQRC_NO_MSG_AVAILABLE)
                 throw new NoMessageAvailableException(mqe);
             else
                 throw mqe;

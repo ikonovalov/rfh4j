@@ -51,7 +51,11 @@ public interface ActivityTraceCommand {
 
     String connectionName();
 
-    String getTraceDetail();
+    /**
+     * Get current activity trace level enabled into MQ
+     * @return
+     */
+    ActivityTraceLevel getTraceDetail();
 
     String getPlatform();
 

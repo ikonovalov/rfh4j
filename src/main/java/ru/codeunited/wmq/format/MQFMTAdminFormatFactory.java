@@ -22,8 +22,11 @@ class MQFMTAdminFormatFactory implements FormatterFactory {
 
     private final ExecutionContext context;
 
-    @Inject
-    private Provider<Injector> injectorProvider;
+    @Inject @MQCMDActivityTrace
+    private MessageFormatter activityTraceFormatter;
+
+    @Inject @MQFMTAdmin
+    private MessageFormatter defaultAdminMessageFormatter;
 
     @Inject
     MQFMTAdminFormatFactory(ExecutionContext context) {
@@ -31,16 +34,16 @@ class MQFMTAdminFormatFactory implements FormatterFactory {
     }
 
     @Override
-    public MQPCFMessageAbstractFormatter formatterFor(MQMessage message) throws MQException, IOException {
+    public MessageFormatter formatterFor(MQMessage message) throws MQException, IOException {
         final PCFMessage pcfMessage = new PCFMessage(message);
         final int commandCode = pcfMessage.getCommand();
-        final MQPCFMessageAbstractFormatter formatter;
+        final MessageFormatter formatter;
         switch (commandCode) {
             case MQCMD_ACTIVITY_TRACE:
-                formatter = new MQFMTAdminActivityTraceFormatter();
+                formatter = activityTraceFormatter;
                 break;
             default:
-                formatter = new MQFMTAdminCommonFormatter();
+                formatter = defaultAdminMessageFormatter;
         }
         return formatter;
     }

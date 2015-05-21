@@ -65,14 +65,27 @@ public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
     String getPutTime();
 
+    /**
+     * Returns glued PUT_DATE and PUT_TIME if exists and HighResolutionTime if not.
+     * @return
+     */
     Date getPutDateTime();
 
     String getPutDateTimeISO();
 
+    /**
+     * Can be null if TraceData=0 in a mqat.ini
+     * @param <T>
+     * @return
+     */
     <T> T getDataRaw();
 
     TraceData getData();
 
+    /**
+     * The length of message data (in bytes) that is traced for this connection.
+     * @return size of captured body.
+     */
     Integer getTraceDataLength();
 
     boolean isTransmissionMessage();

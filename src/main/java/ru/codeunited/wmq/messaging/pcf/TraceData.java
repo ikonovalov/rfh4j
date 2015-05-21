@@ -28,4 +28,6 @@ public interface TraceData {
 
     Optional<String> getBodyFormat();
 
+    boolean isEmpty();
+
 }

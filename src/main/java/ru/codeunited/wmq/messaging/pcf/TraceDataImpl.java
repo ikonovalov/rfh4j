@@ -42,7 +42,7 @@ public class TraceDataImpl implements TraceData {
 
         final byte[] data = record.getDataRaw();
 
-        if (data == null) // maybe trace data is disabled
+        if (data == null || data.length == 0) // maybe trace data is disabled. null - field doesn't exists. zero-len - empty field.
             return;
 
         headerList = new ArrayList<>(2);
@@ -126,5 +126,10 @@ public class TraceDataImpl implements TraceData {
         } else {
             return Optional.absent();
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return record.getTraceDataLength() == 0;
     }
 }

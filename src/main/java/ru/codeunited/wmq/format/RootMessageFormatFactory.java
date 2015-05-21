@@ -1,6 +1,10 @@
 package ru.codeunited.wmq.format;
 
+import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
+import com.google.inject.Key;
+import com.google.inject.name.Names;
+import com.google.inject.spi.Message;
 import com.ibm.mq.MQException;
 import com.ibm.mq.MQMessage;
 import ru.codeunited.wmq.ExecutionContext;
@@ -30,7 +34,7 @@ public class RootMessageFormatFactory implements FormatterFactory {
     @Inject
     private Provider<Injector> injectorProvider;
 
-    @Inject @PassedFormatter
+    @Inject @PassedFormatter /* use only as lazy binding */
     private Provider<MessageFormatter> passedFormatterProvider;
 
     @Inject
@@ -49,24 +53,33 @@ public class RootMessageFormatFactory implements FormatterFactory {
             formatter = passedFormatterProvider.get();
         } else { /* automatic mode */
             formatter = loadMessageDrivenFormatter(message);
-            injectorProvider.get().injectMembers(formatter);
         }
         return formatter;
     }
 
+    /**
+     * Load message formatter according message type. It use "named" binding.
+     * @param message
+     * @return
+     * @throws MQException
+     * @throws IOException
+     */
     protected MessageFormatter loadMessageDrivenFormatter(MQMessage message) throws MQException, IOException {
         MessageFormatter formatter;
         final String format = message.format;
         switch (format) {
-            case MQFMT_STRING:
-                formatter = new MQFMTStringFormatter();
-                break;
             case MQFMT_ADMIN:
                 formatter = adminFormatFactory.formatterFor(message);
                 break;
             default:
-                formatter = new MQFMTStringFormatter();
+                try {
+                    formatter = injectorProvider.get().getInstance(Key.get(MessageFormatter.class, Names.named(format)));
+                } catch (ConfigurationException configException) {
+                    /* try to handle unsupported message with default (binary handler) */
+                    formatter = injectorProvider.get().getInstance(Key.get(MessageFormatter.class, MQFMTNone.class));
+                }
         }
+
         return formatter;
     }
 }

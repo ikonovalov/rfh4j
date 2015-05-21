@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.codeunited.wmq.messaging.HeaderUtilService;
+import ru.codeunited.wmq.messaging.MessageTools;
 import ru.codeunited.wmq.messaging.pcf.*;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,9 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
 
     private static final int BUFFER_2Kb = 2048;
 
-    private static final int MAX_BODY_LENGTH = 256;
+    private static final int MAX_BODY_LENGTH = 1024 * 1024; // 1Mb
+
+    private static final int BODY_SLOT = 1;
 
     private volatile Optional<String> passedOptionsStr = Optional.absent();
 
@@ -106,7 +109,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                 List<ActivityTraceRecord> records = activityCommand.getRecords();
 
                 for (ActivityTraceRecord record : records) {
-                    if (!record.isSuccess() || !OPERATION_FILTER.allowed(record)) // skip failed
+                    if (!OPERATION_FILTER.allowed(record)) // skip failed
                         continue;
                     if (record.getOperation().anyOf(MQXFOperation.MQXF_GET, MQXFOperation.MQXF_PUT)) {
                         MQXFMessageMoveRecord moveRecord = (MQXFMessageMoveRecord) record;
@@ -132,6 +135,7 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         );
 
                         buffer.append(moveRecord.getOperation().name()).append(';'); /* append operation name */
+                        buffer.append(moveRecord.getCompCode()).append(';'); /* append operation status: failed or not */
 
                         buffer.append( /* append queuemanager name */
                                 xmitExchange ?
@@ -153,26 +157,28 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                         // print captured data (it has four slots: headerdata xDynamic, bodydata x1 (last))
                         final TraceData traceData = moveRecord.getData();
                         final String format = moveRecord.getFormat();
+
+                        final Optional<List<Pair<String, String>>> passedList = getPassedOptions();
+                        final String[] capturedOutBlock = passedList.isPresent() ? new String[passedList.get().size() + BODY_SLOT] : new String[BODY_SLOT];
+                        Arrays.fill(capturedOutBlock, "");
+
                         final Optional<List<MQHeader>> listOfHeadersOpt = traceData.getHeaders();
                         final Optional<Object> bodyOpt = traceData.getBody();
-                        final Optional<List<Pair<String, String>>> passedList = getPassedOptions();
-                        final String[] capturedOutBlock = passedList.isPresent() ? new String[passedList.get().size() + 1] : new String[1];
-                        Arrays.fill(capturedOutBlock, "");
 
                         switch (format) {
                             case MQFMT_RF_HEADER_2:
                                 if (listOfHeadersOpt.isPresent()) {
-                                    MQRFH2 mqrfh2 = (MQRFH2) listOfHeadersOpt.get().get(0);
+                                    List<MQHeader> headers = listOfHeadersOpt.get();
+                                    MQRFH2 mqrfh2 = (MQRFH2) headers.get(0);
                                     if (passedList.isPresent()) {
                                         moveRFH2toCaptureBlock(capturedOutBlock, mqrfh2);
                                     }
 
                                     if (bodyOpt.isPresent()) {
                                         if (MQFMT_STRING.equals(mqrfh2.getFormat())) {
-                                            String realBody = trimBodyToMaxSize(bodyOpt);
-                                            moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                            moveBodyToCaptureBlock(capturedOutBlock, (String) bodyOpt.get());
                                         } else {
-                                            moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                            moveBodyToCaptureBlock(capturedOutBlock, (byte[]) bodyOpt.get());
                                         }
                                     }
                                 }
@@ -180,13 +186,12 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
                             case MQFMT_NONE:
                             case MQFMT_ADMIN:
                                 if (bodyOpt.isPresent()) {
-                                    moveBodyToCaptureBlock(capturedOutBlock, "[bytes]");
+                                    moveBodyToCaptureBlock(capturedOutBlock, (byte[]) bodyOpt.get());
                                 }
                                 break;
                             case MQFMT_STRING:
                                 if (bodyOpt.isPresent()) {
-                                    String realBody = trimBodyToMaxSize(bodyOpt);
-                                    moveBodyToCaptureBlock(capturedOutBlock, realBody);
+                                    moveBodyToCaptureBlock(capturedOutBlock, (String) bodyOpt.get());
                                 }
                                 break;
                             default:
@@ -214,8 +219,16 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         }
     }
 
-    public void moveBodyToCaptureBlock(String[] capturedOutBlock, String realBody) {
-        capturedOutBlock[capturedOutBlock.length - 1] = realBody;
+    private void moveBodyToCaptureBlock(String[] capturedOutBlock, String stringBody) {
+        capturedOutBlock[bodyBlockPosition(capturedOutBlock)] = trimBodyToMaxSize(stringBody);
+    }
+
+    private void moveBodyToCaptureBlock(String[] capturedOutBlock, byte[] binaryBody) {
+        moveBodyToCaptureBlock(capturedOutBlock, MessageTools.bytesToHex(binaryBody));
+    }
+
+    private int bodyBlockPosition(String[] capturedOutBlock) {
+        return capturedOutBlock.length - BODY_SLOT;
     }
 
     public void moveRFH2toCaptureBlock(String[] capturedOutBlock, MQRFH2 mqrfh2) {
@@ -225,11 +238,11 @@ public class MQFMTAdminActivityTraceFormatterDepFin extends MQActivityTraceForma
         }
     }
 
-    protected static String trimBodyToMaxSize(Optional<Object> bodyOpt) {
-        String realBody = (String) bodyOpt.get();
+    private static String trimBodyToMaxSize(String realBody) {
         if (realBody.length() > MAX_BODY_LENGTH) {
             realBody = realBody.substring(0, MAX_BODY_LENGTH) + "...";
         }
+        realBody = realBody.replace("\r\n", " ").replace("\n", " ");
         return realBody;
     }
 

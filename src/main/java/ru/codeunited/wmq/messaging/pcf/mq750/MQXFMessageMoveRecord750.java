@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging.pcf.mq750;
 
 import com.ibm.mq.pcf.MQCFGR;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import ru.codeunited.wmq.messaging.pcf.MQXFMessageMoveRecord;
 import ru.codeunited.wmq.messaging.pcf.TraceData;
@@ -11,8 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static com.ibm.mq.constants.CMQC.MQFMT_XMIT_Q_HEADER;
-import static com.ibm.mq.constants.CMQC.MQIA_CODED_CHAR_SET_ID;
+import static com.ibm.mq.constants.CMQC.*;
 import static com.ibm.mq.constants.CMQCFC.*;
 
 /**
@@ -105,7 +105,12 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
 
     @Override
     public String getFormat() {
-        return (String) decodeParameterRaw(MQCACH_FORMAT_NAME);
+        String format =  (String) decodeParameterRaw(MQCACH_FORMAT_NAME);
+        // fix issues for some clients who are sending \u0000 x8 instead 32 x8
+        if (format != null && format.contains("\u0000")) {
+            format = format.replace("\u0000", " ");
+        }
+        return StringUtils.isNotEmpty(format) ? format : MQFMT_NONE;
     }
 
     @Override
@@ -167,7 +172,11 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     public Date getPutDateTime() {
         final String gluedPutDateTime = getPutDate() + ' ' + getPutTime();
         try {
-            return TIME_FORMAT.parse(gluedPutDateTime);
+            if (StringUtils.isBlank(gluedPutDateTime)) {
+                return new Date(getHighResolutionTime() / 1000);
+            } else {
+                return TIME_FORMAT.parse(gluedPutDateTime);
+            }
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
@@ -200,7 +209,8 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
 
     @Override
     public Integer getTraceDataLength() {
-        return decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
+        Integer intVal = decodedParameterAsInt(MQIACF_TRACE_DATA_LENGTH);
+        return intVal == null ? 0 : intVal;
     }
 
     @Override
@@ -251,5 +261,25 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
                 .append("objectName", getObjectName())
                 .appendSuper(super.toString())
                 .toString();
+    }
+
+    @Override
+    public int hashCode() {
+        if (isTransmissionMessage()) {
+            return getXMITMessageId().hashCode();
+        } else {
+            return getMessageId().hashCode();
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (isTransmissionMessage()) {
+            return getXMITMessageId().equals(obj);
+        } else {
+            return getMessageId().equals(obj);
+        }
     }
 }
