@@ -193,6 +193,16 @@ public abstract class MQXFMessageMoveRecord750 extends ActivityTraceRecord750 im
     }
 
     @Override
+    public Date getHighResolutionTimeDate() {
+        return new Date(getHighResolutionTime() / 1000);
+    }
+
+    @Override
+    public String getHighResolutionTimeISO() {
+        return TIME_REFORMATED.format(getHighResolutionTimeDate());
+    }
+
+    @Override
     public Integer getMessageLength() {
         return decodedParameterAsInt(MQIACF_MSG_LENGTH);
     }
