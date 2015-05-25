@@ -35,4 +35,6 @@ public final class RFHConstants {
 
     public static final String OPT_FORMATTER = "formatter";
 
+    public static final String OPT_FORMATTER_CONFIG = "fconfig";
+
 }

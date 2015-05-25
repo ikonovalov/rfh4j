@@ -21,7 +21,7 @@ public class FormatterModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        // formatter factorys
+        // formatter factories
         bind(FormatterFactory.class).to(Key.get(FormatterFactory.class, RootFormatFactory.class));
         bind(FormatterFactory.class).annotatedWith(RootFormatFactory.class).to(RootMessageFormatFactory.class);
         bind(FormatterFactory.class).annotatedWith(AdminMessageFormatFactory.class).to(MQFMTAdminFormatFactory.class);
@@ -51,6 +51,8 @@ public class FormatterModule extends AbstractModule {
             MessageFormatter formatter = (MessageFormatter) formatterClass.newInstance();
             injector.injectMembers(formatter);
             return formatter;
+        } catch (CustomFormatterException cfe) {
+            throw cfe;
         } catch (Exception  e) {
             throw new CustomFormatterException(String.format("Can't load class [%s]", className, e));
         }

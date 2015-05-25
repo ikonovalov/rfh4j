@@ -184,6 +184,12 @@ public class CLIFactory {
                 .hasArg(YES)
                 .create();
 
+        final Option formatterConfig = OptionBuilder
+                .withLongOpt(OPT_FORMATTER_CONFIG)
+                .withDescription("Formatter configuration file if required")
+                .hasArg(YES)
+                .create();
+
         messagePayload
                 .addOption(textMessage)
                 .addOption(filePayload)
@@ -211,6 +217,7 @@ public class CLIFactory {
                 .addOption(times)
                 .addOption(transport)
                 .addOption(formatter)
+                .addOption(formatterConfig)
                 .addOptionGroup(messagePayload);
 
         return options;

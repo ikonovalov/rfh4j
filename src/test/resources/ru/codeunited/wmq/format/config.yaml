@@ -1,0 +1,14 @@
+operations:
+  - MQXF_GET: &default
+      comp_code: all
+      handle_xmit: yes
+      fields:
+          - highResolutionTimeISO
+          - messageId
+          - format
+
+  - MQXF_PUT:
+      *default
+  - MQXF_PUT1:
+      *default
+
