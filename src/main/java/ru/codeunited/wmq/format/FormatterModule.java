@@ -6,6 +6,7 @@ import static com.ibm.mq.constants.MQConstants.*;
 import ru.codeunited.wmq.ExecutionContext;
 import ru.codeunited.wmq.RFHConstants;
 
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +18,8 @@ import java.util.regex.Pattern;
 public class FormatterModule extends AbstractModule {
 
     protected static final Pattern FORMATTER_OPT_PATTERN = Pattern.compile("^([\\w\\d.]+)(\\[[\\w.;]+\\])?$");
+
+    private static Logger LOG = Logger.getLogger(FormatterModule.class.getName());
 
     @Override
     protected void configure() {
@@ -53,6 +56,9 @@ public class FormatterModule extends AbstractModule {
             return formatter;
         } catch (CustomFormatterException cfe) {
             throw cfe;
+        } catch(ProvisionException pe) {
+            LOG.severe(pe.getCause().getMessage());
+            throw pe;
         } catch (Exception  e) {
             throw new CustomFormatterException(String.format("Can't load class [%s]", className, e));
         }

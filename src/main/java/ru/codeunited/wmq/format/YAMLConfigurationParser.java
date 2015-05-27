@@ -3,9 +3,7 @@ package ru.codeunited.wmq.format;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * codeunited.ru

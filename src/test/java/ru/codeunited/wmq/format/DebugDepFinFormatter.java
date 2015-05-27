@@ -230,5 +230,62 @@ public class DebugDepFinFormatter extends QueueingCapability {
             }
         });
     }
+
+    @Test /* cc=[all,ok,warning,fail] */
+    @ContextInjection(cli = "-Q DEFQM --channel JVM.DEF.SVRCONN --transport=client --formatter=ru.codeunited.wmq.format.MQFMTAdminActivityTraceFormatterDepFin --fconfig=src/test/resources/ru/codeunited/wmq/format/dep-fin.yaml")
+    public void spawnRFH2ActitvityConfiguredFieldsFailOff() throws Exception {
+
+        assumeActivityLogEnable();
+
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws Exception {
+                try (
+                        final MessageProducer producer = new MessageProducerImpl(THE_QUEUE, context.getLink());
+                        final MessageConsumer consumer = new MessageConsumerImpl(ACTIVITY_QUEUE, context.getLink())
+                ) {
+                    final MQMessage sentMessage = producer.send(new CustomSendAdjuster() {
+                        @Override
+                        public void setup(MQMessage message) throws IOException, MQException {
+                            message.setStringProperty("id", "i15");
+                            message.setStringProperty("type", "t15");
+                            message.setStringProperty("status", "s15");
+                            message.writeString("and some data here");
+                            message.format = MQFMT_NONE;
+                            message.persistence = MQPER_NOT_PERSISTENT;
+                        }
+
+                        @Override
+                        public void setup(MQPutMessageOptions options) {
+                            options.options = MQPMO_NEW_MSG_ID | MQPMO_NO_SYNCPOINT;
+                        }
+                    });
+
+                    final String sendMessageId = MessageTools.bytesToHex(sentMessage.messageId);
+                    LOG.info("Sent message with " + sendMessageId);
+                    boolean dontStop = true;
+                    while (dontStop) {
+                        try {
+                            MQMessage message = consumer.get();
+                            MessageFormatter<String> formatter = formatterFactory.formatterFor(message);
+                            String out = formatter.format(message);
+                            if (StringUtils.isNotEmpty(out)) {
+                                LOG.info("\n" + out);
+                            }
+                            if (StringUtils.isNotEmpty(out) && out.contains(sendMessageId.toLowerCase())) { // skip empty (restricted rows)
+                                assertThat(out, containsString(";i15;t15;s15;616E6420736F6D6520646174612068657265"));
+
+                            }
+                        } catch (NoMessageAvailableException noMessage) {
+                            dontStop = false;
+                        } catch (MQHeaderException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+            }
+        });
+    }
 }
 

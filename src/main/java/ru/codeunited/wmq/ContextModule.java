@@ -11,6 +11,7 @@ import ru.codeunited.wmq.cli.ConsoleWriter;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 
 /**
  * codeunited.ru
@@ -42,7 +43,14 @@ public class ContextModule extends AbstractModule {
 
     @Provides @Singleton @MainBus
     EventBus mainEventBus() {
-        Executor executor = Executors.newFixedThreadPool(10);
+        Executor executor = Executors.newFixedThreadPool(10, new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread thread = new Thread(r);
+                thread.setDaemon(true);
+                return thread;
+            }
+        });
         EventBus eventBus = new AsyncEventBus(RFH4J.class.getName(), executor);
         eventBus.register(new DeadMessageListener());
         return eventBus;
