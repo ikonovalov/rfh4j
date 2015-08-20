@@ -22,6 +22,10 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
 
     private static final String MQ_750 = "750";
 
+    private String format = "";
+
+    private byte[] correlationId = MQMI_NONE;
+
     public ActivityTraceCommand750(PCFMessage pcfMessage) {
         super(pcfMessage);
     }
@@ -38,7 +42,7 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
 
     @Override
     public String getCorrelationId() {
-        return MessageTools.bytesToHex(super.getCorrelationIdBytes());
+        return MessageTools.bytesToHex(getCorrelationIdBytes());
     }
 
     @Override
@@ -145,5 +149,25 @@ public class ActivityTraceCommand750 extends PCFMessageWrapper implements Activi
             traceRecords.add(ActivityTraceRecord750.create(par));
         }
         return traceRecords;
+    }
+
+    @Override
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    @Override
+    public byte[] getCorrelationIdBytes() {
+        return correlationId;
+    }
+
+    @Override
+    public void setCorrelationIdBytes(byte[] correlationId) {
+        this.correlationId = correlationId;
     }
 }

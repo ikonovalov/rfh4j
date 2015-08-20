@@ -69,7 +69,7 @@ public class ManagerInspectorImpl implements ManagerInspector {
 
     @Override
     public List<Queue> selectLocalQueues(String filter) throws MQException, IOException {
-        final PCFMessage request = new PCFMessage (InquireCommand.QUEUE.object());
+        final PCFMessage request = new PCFMessage (InquireCommand.QUEUE_NAMES.object());
 
         request.addParameter(MQCA_Q_NAME, filter);
         request.addParameter(MQIA_Q_TYPE, MQQT_LOCAL);

@@ -124,7 +124,7 @@ public final class PCFUtilService {
      */
     public static ActivityTraceCommand activityCommandFor(PCFMessage pcfMessage, MQMessage mqMessage) {
         String commandLevel = decodedParameter(pcfMessage, MQIA_COMMAND_LEVEL);
-        PCFMessageWrapper wrapper;
+        ActivityTraceCommand wrapper;
         switch(commandLevel) { /* this is WMQ version switcher */
             case "750":
                 wrapper = new ActivityTraceCommand750(pcfMessage);
@@ -138,6 +138,6 @@ public final class PCFUtilService {
         // perform missed augmentation
         wrapper.setFormat(mqMessage.format);
         wrapper.setCorrelationIdBytes(mqMessage.correlationId);
-        return (ActivityTraceCommand) wrapper;
+        return wrapper;
     }
 }

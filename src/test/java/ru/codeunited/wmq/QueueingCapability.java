@@ -61,7 +61,7 @@ public abstract class QueueingCapability extends GuiceSupport {
         communication(new QueueWork() {
             @Override
             public void work(ExecutionContext context) throws Exception {
-                try(QueueManager qm = context.getLink().getManager()) {
+                try (QueueManager qm = context.getLink().getManager()) {
                     Pair<Object, String> valuePair = qm.getAttributes().get("MQIA_ACTIVITY_TRACE");
                     assumeTrue("Activity trace disabled for " + qm.getName(), valuePair.getLeft().equals(1));
                 }
@@ -82,7 +82,11 @@ public abstract class QueueingCapability extends GuiceSupport {
             workPoint = System.currentTimeMillis();
             work.work(context);
         } catch (Exception rte){
-            context.getLink().getManager().get().backout();
+            try {
+                context.getLink().getManager().get().backout();
+            } catch (Exception e) {
+
+            }
             throw rte;
         } finally {
             disconnectCommand.execute();
