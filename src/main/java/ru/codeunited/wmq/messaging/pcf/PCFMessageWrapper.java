@@ -11,12 +11,16 @@ public class PCFMessageWrapper extends PCFContentWrapper {
 
     protected final PCFMessage pcfMessage;
 
-    protected PCFMessageWrapper(PCFMessage pcfMessage) {
+    public PCFMessageWrapper(PCFMessage pcfMessage) {
         super(pcfMessage);
         this.pcfMessage = pcfMessage;
         check();
     }
 
+    /**
+     * Implement this method only if you want to check incoming PCFMessage against you specific implementation.
+     * Not all PCFMessages can be handled by your implementation.
+     */
     protected void check() {
 
     }

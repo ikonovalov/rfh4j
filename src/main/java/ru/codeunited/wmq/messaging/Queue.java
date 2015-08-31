@@ -9,13 +9,13 @@ public class Queue {
 
     private final String name;
 
-    private int depth = -1;
+    private int depth = -1; // STATUS
 
-    private int maxDepth = -1;
+    private int maxDepth = -1; // DEF
 
-    private int inputCount = 0;
+    private int inputCount = 0; // STATUS
 
-    private int outputCount = 0;
+    private int outputCount = 0; // STATUS
 
     public Queue(String name) {
         this.name = name.trim();
@@ -75,10 +75,13 @@ public class Queue {
 
     @Override
     public String toString() {
-        return "Queue{" +
-                "name='" + name + '\'' +
-                ", depth=" + depth +
-                ", maxDepth=" + maxDepth +
-                '}';
+        final StringBuilder sb = new StringBuilder("Queue{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", depth=").append(depth);
+        sb.append(", maxDepth=").append(maxDepth);
+        sb.append(", inputCount=").append(inputCount);
+        sb.append(", outputCount=").append(outputCount);
+        sb.append('}');
+        return sb.toString();
     }
 }

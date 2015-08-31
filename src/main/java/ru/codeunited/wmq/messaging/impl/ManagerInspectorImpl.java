@@ -6,13 +6,11 @@ import com.ibm.mq.pcf.PCFMessageAgent;
 import com.ibm.mq.pcf.PCFParameter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import ru.codeunited.wmq.messaging.MQLink;
-import ru.codeunited.wmq.messaging.ManagerInspector;
-import ru.codeunited.wmq.messaging.QueueInspector;
-import ru.codeunited.wmq.messaging.QueueManagerAttributes;
+import ru.codeunited.wmq.messaging.*;
+import ru.codeunited.wmq.messaging.Queue;
 import ru.codeunited.wmq.messaging.pcf.InquireCommand;
 import ru.codeunited.wmq.messaging.pcf.PCFUtilService;
-import ru.codeunited.wmq.messaging.Queue;
+import ru.codeunited.wmq.messaging.pcf.QueueType;
 
 import java.io.IOException;
 import java.util.*;
@@ -51,7 +49,7 @@ public class ManagerInspectorImpl implements ManagerInspector {
     public QueueManagerAttributes managerAttributes() throws MQException, IOException {
         QueueManagerAttributes attrs = new QueueManagerAttributes();
 
-        PCFMessage request = new PCFMessage (InquireCommand.QMGR.object());
+        PCFMessage request = new PCFMessage (InquireCommand.QMGR.commandCode());
         request.addParameter(MQIACF_Q_MGR_ATTRS, new int[]{MQIACF_ALL}); /* MQIACF_Q_MGR_ATTRS is a MQCFIL type (IL -> integer list) */
         PCFMessage[] responses = query(request);
 
@@ -69,14 +67,8 @@ public class ManagerInspectorImpl implements ManagerInspector {
 
     @Override
     public List<Queue> selectLocalQueues(String queueNameFilter) throws MQException, IOException {
-        final PCFMessage request = new PCFMessage (InquireCommand.QUEUE_NAMES.object());
-
-        request.addParameter(MQCA_Q_NAME, queueNameFilter);
-        request.addParameter(MQIA_Q_TYPE, MQQT_LOCAL);
-
-        final PCFMessage[] responses = query(request);
-        final String[] names = (String[]) responses[0].getParameterValue(MQCACF_Q_NAMES);
-        final List<Queue> queues = new ArrayList<>(names.length);
+        List<String> names = inquireQueueNames(queueNameFilter, QueueType.LOCAL);
+        List<Queue> queues = new ArrayList<>(names.size());
         for (String queueName : names) {
             final Queue queue = new Queue(queueName);
             try (final QueueInspector inspector = new QueueInspectorImpl(queueName, link)) {
@@ -88,6 +80,42 @@ public class ManagerInspectorImpl implements ManagerInspector {
             }
         }
         return queues;
+    }
+
+    @Override
+    public List<String> inquireQueueNames(String queueNameFilter, QueueType queueType) throws MQException, IOException {
+        final PCFMessage request = new PCFMessage (InquireCommand.QUEUE_NAMES.commandCode());
+
+        request.addParameter(MQCA_Q_NAME, queueNameFilter);
+        request.addParameter(MQIA_Q_TYPE, queueType.code());
+
+        PCFMessage[] responses = query(request);
+        String[] names = (String[]) responses[0].getParameterValue(MQCACF_Q_NAMES);
+
+        return Arrays.asList(names);
+    }
+
+    @Override
+    public List<QueueStatus> inquireQueueStatus(String queueNameFilter) throws MQException, IOException {
+        final PCFMessage request = new PCFMessage (InquireCommand.QUEUE_STATUS.commandCode());
+
+        request.addParameter(MQCA_Q_NAME, queueNameFilter);
+
+        PCFMessage[] responseStatus = query(request);
+        List<QueueStatus> result = new ArrayList<>(responseStatus.length);
+        for (PCFMessage queueStatusMessage : responseStatus) {
+            String queueName = (String) queueStatusMessage.getParameterValue(MQCA_Q_NAME);
+            int currentDepth = (int) queueStatusMessage.getParameterValue(MQIA_CURRENT_Q_DEPTH);
+            int inputCount = (int) queueStatusMessage.getParameterValue(MQIA_OPEN_INPUT_COUNT);
+            int outputCount = (int) queueStatusMessage.getParameterValue(MQIA_OPEN_OUTPUT_COUNT);
+            QueueStatus queue = new QueueStatus(queueName);
+            queue.setDepth(currentDepth);
+            queue.setInputCount(inputCount);
+            queue.setOutputCount(outputCount);
+            result.add(queue);
+        }
+
+        return result;
     }
 
     @Override

@@ -57,7 +57,7 @@ public final class MessageTools {
     /**
      * Write string to MQMessage
      * @param str - string message.
-     * @param message - MQQueue object
+     * @param message - MQQueue commandCode
      * @return MQMessage with written str
      * @throws IOException
      */

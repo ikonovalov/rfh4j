@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.messaging;
 
 import com.ibm.mq.MQException;
+import ru.codeunited.wmq.messaging.pcf.QueueType;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -26,4 +27,7 @@ public interface ManagerInspector extends Closeable {
      */
     List<Queue> selectLocalQueues(String queueNameFilter) throws MQException, IOException;
 
+    List<String> inquireQueueNames(String queueNameFilter, QueueType queueType) throws MQException, IOException;
+
+    List<QueueStatus> inquireQueueStatus(String queueNameFilter) throws MQException, IOException;
 }
