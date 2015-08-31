@@ -17,6 +17,13 @@ public interface ManagerInspector extends Closeable {
 
     QueueManagerAttributes managerAttributes() throws MQException, IOException;
 
-    List<Queue> selectLocalQueues(String filter) throws MQException, IOException;
+    /**
+     * Appect full queue name, * or "QNAM*" pattern
+     * @param queueNameFilter
+     * @return
+     * @throws MQException
+     * @throws IOException
+     */
+    List<Queue> selectLocalQueues(String queueNameFilter) throws MQException, IOException;
 
 }
