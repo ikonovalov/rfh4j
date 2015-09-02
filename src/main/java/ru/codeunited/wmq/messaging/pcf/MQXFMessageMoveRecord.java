@@ -9,9 +9,13 @@ import java.util.Date;
  */
 public interface MQXFMessageMoveRecord extends ActivityTraceRecord {
 
+    Date getHighResolutionTimeDate();
+
     Long getHighResolutionTime();
 
     Integer getHObject();
+
+    String getHighResolutionTimeISO();
 
     Integer getMessageLength();
 

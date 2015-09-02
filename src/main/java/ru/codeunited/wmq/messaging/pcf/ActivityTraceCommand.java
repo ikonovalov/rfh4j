@@ -60,4 +60,12 @@ public interface ActivityTraceCommand {
     String getPlatform();
 
     List<ActivityTraceRecord> getRecords();
+
+    void setFormat(String format);
+
+    String getFormat();
+
+    void setCorrelationIdBytes(byte[] correlationId);
+
+    byte[] getCorrelationIdBytes();
 }

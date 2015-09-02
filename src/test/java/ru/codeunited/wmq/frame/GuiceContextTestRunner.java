@@ -41,42 +41,40 @@ public class GuiceContextTestRunner extends BlockJUnit4ClassRunner {
     protected Statement methodInvoker(FrameworkMethod method, Object test) {
         ContextInjection injection = method.getMethod().getAnnotation(ContextInjection.class);
         if (injection != null) {
-            if (StringUtils.isNotBlank(injection.cli())) {
-                String cli = injection.cli();
-                try {
-                    ExecutionContext context = new CLIExecutionContext(prepareCommandLine(cli));
-                    GuiceModules modAnnotation = test.getClass().getAnnotation(GuiceModules.class);
-                    if (modAnnotation != null) {
-                        Class<? extends Module>[] moduleClasses = modAnnotation.value();
-                        List<Module> instantinatedModules = new ArrayList<>(moduleClasses.length);
-                        for (Class moduleClass : moduleClasses) {
-                            // find execution context's constructors
+            String cli = injection.cli();
+            try {
+                ExecutionContext context = new CLIExecutionContext(prepareCommandLine(cli));
+                GuiceModules modAnnotation = test.getClass().getAnnotation(GuiceModules.class);
+                if (modAnnotation != null) {
+                    Class<? extends Module>[] moduleClasses = modAnnotation.value();
+                    List<Module> instantinatedModules = new ArrayList<>(moduleClasses.length);
+                    for (Class moduleClass : moduleClasses) {
+                        // find execution context's constructors
+                        try {
+                            Constructor<Module> constructor = moduleClass.getConstructor(ExecutionContext.class);
+                            Module moduleInstance = constructor.newInstance(context);
+                            instantinatedModules.add(moduleInstance);
+                        } catch (NoSuchMethodException e) {
+                            // try to get default constructor
                             try {
-                                Constructor<Module> constructor = moduleClass.getConstructor(ExecutionContext.class);
-                                Module moduleInstance = constructor.newInstance(context);
+                                Constructor<Module> constructor = moduleClass.getConstructor();
+                                Module moduleInstance = constructor.newInstance();
                                 instantinatedModules.add(moduleInstance);
-                            } catch (NoSuchMethodException e) {
-                                // try to get default constructor
-                                try {
-                                    Constructor<Module> constructor = moduleClass.getConstructor();
-                                    Module moduleInstance = constructor.newInstance();
-                                    instantinatedModules.add(moduleInstance);
-                                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e1) {
-                                    // now it's time to blow
-                                    throw new RuntimeException(e);
-                                }
-                            } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e1) {
+                                // now it's time to blow
                                 throw new RuntimeException(e);
                             }
+                        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                            throw new RuntimeException(e);
                         }
-
-                        // create Injector
-                        Injector injector = Guice.createInjector(instantinatedModules);
-                        injector.injectMembers(test);
                     }
-                } catch (ParseException e) {
-                    throw new RuntimeException(e); // blow silent
+
+                    // create Injector
+                    Injector injector = Guice.createInjector(instantinatedModules);
+                    injector.injectMembers(test);
                 }
+            } catch (ParseException e) {
+                throw new RuntimeException(e); // blow silent
             }
         }
         return super.methodInvoker(method, test);

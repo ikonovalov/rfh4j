@@ -24,7 +24,7 @@ public class MessageProducerImpl implements MessageProducer {
 
     public MessageProducerImpl(String queueName, MQLink link) throws MQException {
         MQQueueManager queueManager = link.getManager().get();
-        this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT | MQOO_FAIL_IF_QUIESCING);
+        this.queue = queueManager.accessQueue(queueName, MQOO_OUTPUT | MQOO_BIND_NOT_FIXED | MQOO_FAIL_IF_QUIESCING);
         initialize();
     }
 
@@ -46,7 +46,7 @@ public class MessageProducerImpl implements MessageProducer {
 
     @Override
     public MQMessage send(InputStream stream, MQPutMessageOptions options) throws IOException, MQException {
-        final MQMessage message = MessageTools.createUTFMessage();
+        final MQMessage message = MessageTools.createMessage(MessageTools.UTF8_CCSID);
         MessageTools.writeStreamToMessage(stream, message);
         return putWithOptions(message, options);
     }

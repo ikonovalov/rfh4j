@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.messaging.pcf;
 
-import com.google.common.base.MoreObjects;
 import com.ibm.mq.pcf.PCFContent;
 import com.ibm.mq.pcf.PCFParameter;
 

@@ -1,6 +1,7 @@
 package ru.codeunited.wmq.commands;
 
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.bus.QMDisconnectedEvent;
 import ru.codeunited.wmq.messaging.MQLink;
 
 import java.io.IOException;
@@ -17,8 +18,10 @@ public class MQDisconnectCommand extends AbstractCommand {
         final ExecutionContext context = getExecutionContext();
         final MQLink link  = context.getLink();
         try {
-            if (link != null)
+            if (link != null) {
                 link.close();
+                getEventBus().post(new QMDisconnectedEvent(link));
+            }
         } catch (IOException e) {
             throw new CommandGeneralException(e);
         }

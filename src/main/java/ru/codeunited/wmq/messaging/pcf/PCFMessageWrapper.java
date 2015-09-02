@@ -1,6 +1,5 @@
 package ru.codeunited.wmq.messaging.pcf;
 
-import static com.ibm.mq.constants.MQConstants.*;
 import com.ibm.mq.pcf.PCFMessage;
 
 /**
@@ -12,32 +11,16 @@ public class PCFMessageWrapper extends PCFContentWrapper {
 
     protected final PCFMessage pcfMessage;
 
-    private String format = "";
-
-    private byte[] correlationId = MQMI_NONE;
-
-    protected PCFMessageWrapper(PCFMessage pcfMessage) {
+    public PCFMessageWrapper(PCFMessage pcfMessage) {
         super(pcfMessage);
         this.pcfMessage = pcfMessage;
         check();
     }
 
-    protected String getFormat() {
-        return format;
-    }
-
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
-    protected byte[] getCorrelationIdBytes() {
-        return correlationId;
-    }
-
-    public void setCorrelationIdBytes(byte[] correlationId) {
-        this.correlationId = correlationId;
-    }
-
+    /**
+     * Implement this method only if you want to check incoming PCFMessage against you specific implementation.
+     * Not all PCFMessages can be handled by your implementation.
+     */
     protected void check() {
 
     }

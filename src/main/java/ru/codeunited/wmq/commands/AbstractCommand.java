@@ -1,6 +1,8 @@
 package ru.codeunited.wmq.commands;
 
+import com.google.common.eventbus.EventBus;
 import ru.codeunited.wmq.ExecutionContext;
+import ru.codeunited.wmq.bus.MainBus;
 import ru.codeunited.wmq.cli.ConsoleWriter;
 import ru.codeunited.wmq.handler.NestedHandlerException;
 
@@ -19,6 +21,14 @@ public abstract class AbstractCommand implements Command {
     protected ReturnCode currentState = ReturnCode.READY;
 
     protected static final Logger LOG = Logger.getLogger(Command.class.getName());
+
+
+    @Inject @MainBus
+    private EventBus eventBus;
+
+    public EventBus getEventBus() {
+        return eventBus;
+    }
 
     /**
      * Real work implementation for command.

@@ -1,0 +1,14 @@
+#setup comp_code acceptance level [all, ok, warn, failed]
+compCode: ok
+
+#setup traceable operations (see MQXF_***)
+operations:
+    - MQXF_GET
+    - MQXF_PUT
+
+#setup rfh2 header output
+rfh2:
+    usr:
+        - id
+        - type
+        - status

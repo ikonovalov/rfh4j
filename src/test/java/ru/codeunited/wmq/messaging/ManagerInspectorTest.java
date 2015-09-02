@@ -113,4 +113,23 @@ public class ManagerInspectorTest extends QueueingCapability {
         });
     }
 
+    @Test(timeout = 5000)
+    @ContextInjection(cli = "-Q DEFQM -c JVM.DEF.SVRCONN")
+    public void getQueueStatus() throws Exception {
+        communication(new QueueWork() {
+            @Override
+            public void work(ExecutionContext context) throws MQException, IOException, NoMessageAvailableException {
+                try (final ManagerInspector inspector = new ManagerInspectorImpl(context.getLink())) {
+                    final List<QueueStatus> rfhQueues = inspector.inquireQueueStatus("RFH.*");
+                    assertThat(rfhQueues.isEmpty(), is(false));
+                    for (Queue queue : rfhQueues) {
+                        assertThat(queue.getName(), notNullValue());
+                        assertThat(queue.getName(), startsWith("RFH"));
+                        assertThat(queue.getDepth(), not(-1));
+                    }
+                }
+            }
+        });
+    }
+
 }
